@@ -1,0 +1,102 @@
+.header-root {
+  margin: 0;
+  padding: 0;
+}
+
+.header-container {
+  position: fixed;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0px;
+  z-index: 1000;
+}
+
+.logo {
+  height: 35px;
+  margin: 0px 5px;
+}
+
+.icon{
+  width: 35px;
+  height: 35px;
+  border: 2px solid white;
+  color: gray;
+  cursor: pointer;
+  padding: 0px 5px;
+}
+
+.icon-selected{
+  color: #000000;
+}
+
+.profile-picture{
+  width: 35px;
+  height: 35px;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 50px;
+  padding: 0px 5px;
+}
+
+.desktop-nav-link {
+  text-decoration: none;
+  font-weight: 500;
+  color: #000000;
+  font-size: 18px;
+  padding: 10px 10px;
+  margin: 0px 5px;
+}
+
+.nav-selected {
+  background-color: #000000;
+  color: #ffffff;
+  border-radius: 30px;
+}
+
+.search-container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.search-input {
+  padding: 0px 12px;
+  width: 100%;
+  height: 40px;
+  margin: 0px 5px;
+}
+
+.main-button {
+  font-size: 18px;
+  font-weight: 500;
+  background-color: var(--MainColor);
+  color: #ffffff;
+  border-radius: 30px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.left-nav-links {
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    bottom: -10px;
+    justify-content: space-around;
+    flex: 1;
+    box-shadow: rgba(0, 0, 0, 0.1) 10px 0px 8px 4px;
+  }
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    padding: 10px;
+  }
+}
+
+@media(min-width: 769px) {
+  .header-container {
+    top: 0;
+  }
+}

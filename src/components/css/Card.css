@@ -1,0 +1,83 @@
+.card {
+    padding: 0;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.card-margin {
+    border-radius: 16px;
+    margin: 15px 10px;
+}
+
+.small {
+    width: 200px;
+}
+
+.medium {
+    width: 250px;
+}
+
+.large {
+    width: 400px; 
+    height: 350px; 
+    border-radius: 0px;
+    margin: 0px;
+}
+
+.bg-img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.card-bg-tint {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.content {
+    text-align: center;
+    width: 80%;
+}
+
+.author {
+    padding-top: 5px;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.explore-bg-tint {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    z-index: 1;
+}
+
+.explore-card-name {
+    font-size: 2rem;
+    color: aliceblue;
+}
+
+.explore-card-slogan {
+    color: aliceblue;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}

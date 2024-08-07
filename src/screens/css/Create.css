@@ -1,0 +1,159 @@
+.create-page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-align: left;
+    margin: 75px 0px 10px 25px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0px 25px;
+    padding: 25px;
+    border-radius: 50px;
+    border: 1px solid rgb(224,224,224);
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+    width: 512px;
+    border-radius: 25px;
+    margin: 15px;
+}
+
+.uploaded-image {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 25px;
+}
+
+input::file-selector-button {
+    width: 250px;
+    height: 350px;
+    border-radius: 25px;
+}
+
+.input-create , .category-input , .preview-color,.input-create-content {
+    display: block;
+    height: 50px;
+    margin: 5px 0;
+    color: rgb(97, 97, 97);
+    padding:0px 0px 0px 10px;
+}
+
+.input-create {
+    width: 600px;
+}
+
+.input-create-content {
+    height: 120px;
+    width: 600px;
+}
+
+.select {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.category-input {
+    width: 200px;
+}
+
+.preview-color {
+    margin:5px 10px 5px 0px;
+    width: 50px;
+}
+
+.color-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.color-picker {
+    position: absolute;
+}
+
+.button {
+    margin: 0;
+}
+
+.submit-post {
+    border: none;
+    height: 50px;
+    width: 610px;
+    margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+    .create-page-title {
+        margin-top: 25px;
+    }
+    .img-container{
+        margin: 0;
+        padding: 0;
+    }
+
+    .input-create , .input-create-content {
+        display: block;
+        width: 400px;
+    }
+
+    .category-input {
+        width: 100px;
+    }
+
+    .category-color-container {
+        display: flex;
+        width: 400px;
+        justify-content: space-between;
+    }
+
+    .submit-post {
+        width: 400px;
+    }
+
+    .form-group {
+        margin-bottom: 100px;
+    }
+}
+@media (max-width: 512px) {
+    .img-container{
+        margin: 0;
+        padding: 0;
+    }
+
+    .input-create , .input-create-content {
+        display: block;
+        width: 250px;
+    }
+
+    .category-input {
+        width: 250px;
+    }
+
+    .category-color-container {
+        display: flex;
+        flex-direction: column;
+        width: 250px;
+    }
+    .color-container {
+        width: 250px;
+        justify-content: space-between;
+    }
+    .submit-post {
+        width: 250px;
+    }
+
+    .form-group {
+        margin-bottom: 80px;
+    }
+  }

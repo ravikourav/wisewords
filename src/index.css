@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  --MainColor: #6495ed;
+}
+
+.main-button {
+  font-size: 18px;
+  font-weight: 500;
+  background-color: var(--MainColor);
+  color: #ffffff;
+  border-radius: 30px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.main-input {
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 1rem;
+}
