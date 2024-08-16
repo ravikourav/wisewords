@@ -1,7 +1,7 @@
 import React, { useState , useEffect, useContext} from 'react';
 import './css/Header.css';
 import placeholder from '../assets/icon/profile.png';
-import { Link , useLocation } from 'react-router-dom';
+import { Link , useLocation, useSearchParams } from 'react-router-dom';
 
 import { useMediaQuery } from 'react-responsive';
 
@@ -13,9 +13,12 @@ import { ReactComponent as BellIcon} from '../assets/icon/bell.svg';
 import NotificationModel from './NotificationModel.js';
 
 import {  AuthContext } from '../hooks/AuthContext.js';
+import Button from './Button.js';
 
 function Header()  {
   const location = useLocation();
+  const [searchParams , setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('search') || '');
   const [Selected , setSelected] = useState(location);
   const { isLoggedIn } = useContext(AuthContext);
 
@@ -45,11 +48,21 @@ function Header()  {
     }
   }
 
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+    if (e.key === 'Enter') {
+      setSearchParams({
+        search: value
+      });
+    }
+  }
+
   return (
     <div className='header-root' >
       {!isMobile ? (
       <div className="header-container">
-        <img className="logo" src="/logo192.png" alt="Logo" />
+        <img className="header-logo" src="/logo192.png" alt="Logo" />
         <div className="nav-links">
           <Link className={`desktop-nav-link ${Selected === 'Home' ? 'nav-selected' : '' }`} to="/" onClick={()=>{select('Home')}}>Home</Link>
           <Link className={`desktop-nav-link ${Selected === 'Explore' ? 'nav-selected' : '' }`} to="explore" onClick={()=>{select('Explore')}}>Explore</Link>
@@ -57,7 +70,7 @@ function Header()  {
           <Link className={`desktop-nav-link ${Selected === 'Create' ? 'nav-selected' : '' }`} to="create" onClick={()=>{select('Create')}}>Create</Link>)}
         </div>
         <div className="search-container">
-          <input type="text" placeholder="Search" className="main-input search-input" />
+          <input type="text" placeholder="Search" value={search} className="main-input search-input" onChange={handleSearch} onKeyDown={handleSearch}/>
         </div>
         <div className="header-user-container">
           {isLoggedIn ? (
@@ -69,9 +82,7 @@ function Header()  {
               </Link>
             </div>
           ) : (
-            <div>
-              <Link className="main-button" to='login' onClick={()=>{select('Login')}} >Login</Link>
-            </div>
+            <Button text='Login' to='login' onClick={()=>{select('Login')}} />
           )}
         </div>
       </div>
@@ -103,9 +114,7 @@ function Header()  {
               </Link>
             </>
             ) : (
-            <>
-              <Link className="main-button" to='login' onClick={()=>{select('Login')}} >Login</Link>
-            </>
+              <Button text='Login' to='login' onClick={()=>{select('Login')}} />
             )}
         </div>
       )}    

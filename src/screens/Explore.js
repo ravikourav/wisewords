@@ -4,6 +4,7 @@ import CardGrid from '../components/CardGrid.js';
 import { ReactComponent as BackImg } from '../assets/icon/arrow-back.svg';
 import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import './css/Explore.css';
+import Button from '../components/Button.js';
 
 import { useIsMobile } from '../utils/screenSize.js';
 
@@ -35,7 +36,7 @@ function Explore() {
       }
       <div className='card-layout'>
         {!selectedCard ? (
-          category.map((card, index) => (
+          category?.map((card, index) => (
             <ExploreCard
               key={index}
               name={card.name}
@@ -56,6 +57,10 @@ function Explore() {
           </div>
         )}
       </div>
+      <Button disabled={false} width={100} selected={false} text='hello' />
+      <Button disabled={true} width={100} selected={true} text='hello' />
+      <Button disabled={true} width={100} selected={false} text='hello' />
+      <Button disabled={true} width={100} selected={true} text='hello' />
     </div>
   );
 }

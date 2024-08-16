@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import './css/CardGrid.css';
 import Card from './Card.js';
-import DetailedCard from './DetailedCard';
+import DetailedCard from '../screens/DetailedCard.js';
+import { Masonry } from '@mui/lab';
 
 const CardGrid = ({ data }) => {
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cardData, setCardData] = useState(data);
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
@@ -15,25 +17,44 @@ const CardGrid = ({ data }) => {
     setSelectedCard(null);
   };
 
+  const handleUpdateCard = (updatedCard) => {
+    setCardData((prevData) =>
+      prevData.map((card) =>
+        card._id === updatedCard._id ? updatedCard : card
+      )
+    );
+  };
+
+  const breakpointCols = {
+    lg: 4,
+    md: 3,
+    sm: 2,
+    xs: 1,
+  };
+
   return (
     <>
       {!selectedCard ? (
-        <div className='card-layout'>
-          {data.map((card, index) => (
-            <Card
-              key={index}
-              size='medium'
-              margin={true}
-              content={card.content}
-              textColor={card.contentColor}
-              author={card.author}
-              background={card.background}
-              onClick={() => handleCardClick(card)}
-            />
-          ))}
-        </div>
+        data.length > 0 ? (
+          <Masonry columns={breakpointCols} spacing={2}>
+            {data.map((card) => (
+              <Card
+                key={card._id}
+                margin={true}
+                content={card.content}
+                textColor={card.contentColor}
+                author={card.author}
+                authorColor={card.authorColor}
+                background={card.backgroundImage}
+                onClick={() => handleCardClick(card)}
+              />
+            ))}
+          </Masonry>
+        ) : (
+          <p>No cards available</p>
+        )
       ) : (
-        <DetailedCard selectedCard={selectedCard} onClose={handleCloseModal} />
+        <DetailedCard selectedCard={selectedCard} onClose={handleCloseModal} onUpdateCard={handleUpdateCard} />
       )}
     </>
   );

@@ -12,7 +12,7 @@ function NotificationModel() {
             <p className='notification-title'>Updates</p>
         </div>
         <div className='notification-body'>
-            {notificationData.map((data)=>(
+            {notificationData?.map((data)=>(
               <NotificationTemplate data={data} />
             ))}
         </div>

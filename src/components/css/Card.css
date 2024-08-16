@@ -10,21 +10,6 @@
     margin: 15px 10px;
 }
 
-.small {
-    width: 200px;
-}
-
-.medium {
-    width: 250px;
-}
-
-.large {
-    width: 400px; 
-    height: 350px; 
-    border-radius: 0px;
-    margin: 0px;
-}
-
 .bg-img {
     display: block;
     max-width: 100%;

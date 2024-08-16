@@ -1,35 +1,52 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode'; // Ensure correct import
+import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const [isLoading, setLoading] = useState(true); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
+  // Function to handle authentication
+  const authenticate = async () => {
+    setLoading(true);
+    const token = Cookies.get('authToken'); 
+    console.log('Token from Cookies:', token);
+
     if (token) {
       try {
-        // Decode the token if it exists
-        const decodedUser = jwtDecode(token);
-        setIsLoggedIn(true);
-        setUser(decodedUser);
+        if (isTokenExpired(token)) {
+          console.warn('Token expired');
+          Cookies.remove('authToken');
+          setIsLoggedIn(false);
+          setUser(null);
+        } else {
+          const decodedUser = jwtDecode(token);
+          console.log('Decoded user:', decodedUser);
+          setIsLoggedIn(true);
+          setUser(decodedUser);
+        }
       } catch (error) {
         console.error('Invalid token:', error.message);
-        localStorage.removeItem('authToken'); // Clear invalid token
+        Cookies.remove('authToken');
         setIsLoggedIn(false);
         setUser(null);
       }
     } else {
-      // No token found
       setIsLoggedIn(false);
       setUser(null);
     }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    authenticate();
   }, []);
 
   const login = (token) => {
-    localStorage.setItem('authToken', token);
+    Cookies.set('authToken', token); // Use localStorage
     try {
       const decodedUser = jwtDecode(token);
       setIsLoggedIn(true);
@@ -41,18 +58,28 @@ const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    console.log('loged out');
-    localStorage.removeItem('authToken');
+    console.log('Logged out');
+    Cookies.remove('authToken'); // Use localStorage
     setIsLoggedIn(false);
     setUser(null);
-    console.log(user);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, isLoading, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Helper function to check if the token is expired
+const isTokenExpired = (token) => {
+  try {
+    const decodedToken = jwtDecode(token);
+    return decodedToken.exp * 1000 < Date.now();
+  } catch (error) {
+    console.error('Error decoding token:', error.message);
+    return true; // Consider token expired if there's an issue decoding
+  }
 };
 
 export default AuthProvider;

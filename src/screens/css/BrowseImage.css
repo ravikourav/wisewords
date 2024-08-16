@@ -1,0 +1,33 @@
+.browse-image-container {
+  margin-top: 20px;
+  width: 85vw;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgb(224,224,224);
+  border-radius: 40px;
+}
+
+.browse-suggestion {
+  margin-bottom: 10px;
+  color: #818181;
+}
+
+.browse-suggestion-2 {
+  margin-bottom: 20px;
+  color: #818181;
+}
+
+.card-image {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  display: block;
+}
+  
+@media (max-width: 768px){
+    .browse-image-container {
+        width: 80vw;
+    }
+}

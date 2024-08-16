@@ -4,8 +4,11 @@ import axios from 'axios';
 import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
 import  { AuthContext } from '../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import Button from '../components/Button';
 
 function Login() {
+  const [name , setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,22 +23,22 @@ function Login() {
     event.preventDefault();
     try {
       const endpoint = hasAccount ? '/api/user/login' : '/api/user/register';
-      const payload = hasAccount ? { username, password } : { username, email, password };
+      const payload = hasAccount ? { username, password } : { name ,username, email, password };
       const response = await axios.post(endpoint, payload);
 
       console.log('Response successful', response.data);
       
       // Check if the token is available in the response
-      const token = response.data.accssToken; // Use the correct key from the response
+      const token = response.data.accessToken; // Use the correct key from the response
 
       if (token) {
         // Store token and handle authentication
-        localStorage.setItem('authToken', token);
+        Cookies.set('authToken', token, { expires: 7, sameSite: 'None' });
         
         // Assuming you have a context or global state to manage authentication
         login(token); // Call the login function from AuthContext or similar
         // Redirect or update UI as needed
-        navigate('/');
+        navigate('/profile');
       } else {
         console.error('Token not found in response');
         setError('Failed to retrieve token.');
@@ -75,6 +78,20 @@ function Login() {
             <p className="login-model-slogan">"Spark Minds, Share Moments"</p>
           </div>
           <form onSubmit={handleSubmit}>
+            {!hasAccount && (
+              <div>
+                <label>Name</label>
+                <input
+                  className="main-input input-login"
+                  type="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full Name"
+                  name="name"
+                  required
+                />
+              </div>
+            )}
             <div>
               <label>Username</label>
               <input
@@ -121,9 +138,7 @@ function Login() {
                 </button>
               </div>
             }
-            <button className="main-button login-button" type="submit">
-              {hasAccount ? 'Log in' : 'Continue'}
-            </button>
+            <Button type='submit' text={hasAccount ? 'Log in' : 'Continue'} width={280} />
           </form>
           <button
             className="signup-button"

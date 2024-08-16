@@ -6,6 +6,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import axios from 'axios';
 import App from './App';
 import Error from './screens/Error.js';
 import Home from './screens/Home.js';

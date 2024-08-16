@@ -1,0 +1,39 @@
+.close {
+    position: fixed;
+    top: 75px;
+    left: 20px;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    color: black;
+    font-weight: bold;
+    border-radius: 50%;
+    z-index: 1000;
+}
+
+.close:hover,
+.close:focus {
+  background-color: #eeeeee;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (max-width: 768px){
+  .close {
+    top: 10px;
+    left: 10px;
+    height: 30px;
+    width: 30px;
+    background-color: #eeeeee;
+  }
+}
+
+@media (max-width: 418px){
+  .close {
+    top: 10px;
+    left: 5px;
+    height: 30px;
+    width: 30px;
+    background-color: #eeeeee;
+  }
+}

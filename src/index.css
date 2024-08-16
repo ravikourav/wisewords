@@ -16,18 +16,43 @@ code {
   --MainColor: #6495ed;
 }
 
-.main-button {
-  font-size: 18px;
-  font-weight: 500;
-  background-color: var(--MainColor);
-  color: #ffffff;
-  border-radius: 30px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
 .main-input {
   border: 1px solid #ccc;
   border-radius: 20px;
   font-size: 1rem;
+}
+
+.no-blinker{
+  user-select: none;
+}
+
+
+/* Base button styles */
+.button {
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 30px;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+/* Main button style */
+.main-button {
+  background-color: var(--MainColor);
+  color: #ffffff;
+}
+
+/* Selected button style */
+.button-selected {
+  background-color: #ffffff;
+  color: var(--MainColor);
+}
+
+/* Disabled button style */
+.button-disabled {
+  background-color: #e0e0e0;
+  color: #a0a0a0; 
+  cursor: not-allowed;
 }
