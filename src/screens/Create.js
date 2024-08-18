@@ -5,6 +5,7 @@ import BrowseImage from './BrowseImage';
 import Card from '../components/Card';
 import axios from 'axios';
 import Button from '../components/Button';
+import Loading from '../components/Loading';
 
 function Create() {
   const [loading , setLoading] = useState(false);
@@ -122,6 +123,7 @@ function Create() {
     setAuthorColor('rgba(255, 255, 255, 1)');
     setTintColor('rgba(0, 0, 0, 0.4)');
     setBackgroundImage(null);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -134,7 +136,8 @@ function Create() {
 
   return (
     <div className='page-root'>
-      {browseOnline ? (
+      {loading? <Loading/> : 
+      browseOnline ? (
         <BrowseImage onClose={() => setBrowseOnline(false)} onSelectImage={handleImageSelect} title={title} />
       ) : (
         <>

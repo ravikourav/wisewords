@@ -6,7 +6,6 @@ import { Masonry } from '@mui/lab';
 
 const CardGrid = ({ data }) => {
   const [selectedCard, setSelectedCard] = useState(null);
-  const [cardData, setCardData] = useState(data);
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
@@ -15,14 +14,6 @@ const CardGrid = ({ data }) => {
   const handleCloseModal = () => {
     speechSynthesis.cancel();
     setSelectedCard(null);
-  };
-
-  const handleUpdateCard = (updatedCard) => {
-    setCardData((prevData) =>
-      prevData.map((card) =>
-        card._id === updatedCard._id ? updatedCard : card
-      )
-    );
   };
 
   const breakpointCols = {
@@ -54,7 +45,7 @@ const CardGrid = ({ data }) => {
           <p>No cards available</p>
         )
       ) : (
-        <DetailedCard selectedCard={selectedCard} onClose={handleCloseModal} onUpdateCard={handleUpdateCard} />
+        <DetailedCard selectedCard={selectedCard} onClose={handleCloseModal} />
       )}
     </>
   );

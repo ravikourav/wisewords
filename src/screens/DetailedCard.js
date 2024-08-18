@@ -18,11 +18,10 @@ import BackButton from '../components/BackButton.js';
 import axios from 'axios';
 import { AuthContext } from '../hooks/AuthContext.js';
 
-function DetailedCard({ selectedCard , onClose ,onUpdateCard}) {
+function DetailedCard({ selectedCard , onClose}) {
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
   const [isOwner , setIsOwner] = useState(false);
-  const [likes, setLikes] = useState(selectedCard.likes.length);
   const [isFollowing , setIsFollowing] = useState(null);
   const [liked, setLiked] = useState(false);
 
@@ -40,13 +39,15 @@ function DetailedCard({ selectedCard , onClose ,onUpdateCard}) {
     const response = await axios.get(endpoint);
     setCardData(response.data);
     if(isLoggedIn){
-      fetchFollowStatus();
+      await fetchFollowStatus(response.data);
+    }else{
+      setLoading(false);
     }
   }
 
-  const fetchFollowStatus = async () => {
+  const fetchFollowStatus = async (data) => {
     const endpoint = `/api/user/${selectedCard.owner_id._id}/isfollowing`;
-    if(user.user._id === selectedCard.owner_id.id){
+    if(user.user.id === selectedCard.owner_id._id){
       setIsOwner(true);
     }
     else{
@@ -60,13 +61,58 @@ function DetailedCard({ selectedCard , onClose ,onUpdateCard}) {
         console.error('Error fetching follow status:', error);
       }
     }
-    setLoading(false);
+    await handleLikeCheck(data);
   };
 
+  const handleLikeCheck = async (data) => {
+    if(data.likes.includes(user.user.id)){
+      setLiked(true);
+    }
+    else{
+      setLiked(false);
+    }
+    setLoading(false);
+  }
 
   useEffect(() => {
     featchCardData();
   }, [isLoggedIn]);
+
+  const followUnfollowOwner = async () => {
+    const endpoint = isFollowing 
+      ? `/api/user/${selectedCard.owner_id._id}/unfollow` 
+      : `/api/user/${selectedCard.owner_id._id}/follow`;
+  
+    try {
+      const response = isFollowing 
+        ? await axios.post(endpoint, { withCredentials: true })
+        : await axios.post(endpoint, { withCredentials: true });
+      console.log(response);
+      if (response.status === 200) {
+        setIsFollowing(!isFollowing);
+        cardData.owner_id.followers = response.data.followers;
+      }
+    } catch (error) {
+      console.error('Error following/unfollowing user:', error);
+    }
+  };
+
+  const handleLike = async() => {
+    const endpoint = liked
+      ? `/api/post/${selectedCard._id}/unlike` 
+      : `/api/post/${selectedCard._id}/like`;
+    try {
+      const response = liked 
+        ? await axios.post(endpoint, { withCredentials: true })
+        : await axios.post(endpoint, { withCredentials: true });
+      if (response.status === 200) {
+        setLiked(!liked);
+        cardData.likes = response.data.likes;
+      }
+    } catch (error) {
+      console.error('Error likeing/unlikeing user:', error);
+    }
+  };
 
   const handleTextToSpeech = (text) => {
     if ('speechSynthesis' in window) {
@@ -102,17 +148,6 @@ function DetailedCard({ selectedCard , onClose ,onUpdateCard}) {
     } else {
       handleTextToSpeech(`${selectedCard.author} said, "${selectedCard.content}"`);
     }
-  };
-
-  const handleLike = () => {
-    if (liked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
-    setLiked(!liked);
-    // Update the parent component with the new like count
-    onUpdateCard({ ...selectedCard, likes: likes + (liked ? -1 : 1) });
   };
 
   const handleCopy = () => {
@@ -158,27 +193,6 @@ function DetailedCard({ selectedCard , onClose ,onUpdateCard}) {
     document.body.removeChild(textArea);
   };
 
-
-  const followUnfollowOwner = async () => {
-    const endpoint = isFollowing 
-      ? `/api/user/${selectedCard.owner_id._id}/unfollow` 
-      : `/api/user/${selectedCard.owner_id._id}/follow`;
-  
-    try {
-      const response = isFollowing 
-        ? await axios.delete(endpoint, { withCredentials: true })
-        : await axios.post(endpoint, { withCredentials: true });
-      console.log(response);
-      if (response.status === 200) {
-        setIsFollowing(!isFollowing);
-        // Notify parent component of follow/unfollow changes
-        onUpdateCard({ ...selectedCard, isFollowing: !isFollowing });
-      }
-    } catch (error) {
-      console.error('Error following/unfollowing user:', error);
-    }
-  };
-
   return (
     <div className="modal-wraper">
       {loading ? 
@@ -222,7 +236,7 @@ function DetailedCard({ selectedCard , onClose ,onUpdateCard}) {
             <div className='add-comment-container'>
               <img className='user-profile-image' src={TempImg} alt=''></img>
               <input className='main-input comment-input' placeholder='Comment' type='text' />
-              <SendIcon className='send-comment' />
+              <SendIcon className={`send-comment ${isLoggedIn ? '' : 'send-comment-disabled'}`} />
             </div>
           </div>
         </div>
@@ -234,9 +248,11 @@ function DetailedCard({ selectedCard , onClose ,onUpdateCard}) {
             }
             <p className='controle-lable'>speak</p>
           </div>
-          <div onClick={handleLike} className='control-wraper' >
-            <LikeIcon fill={liked ? 'red' : 'white'} stroke={liked ? 'red' : 'black'} strokeWidth='3' className='post-icon' />
-            <p className='controle-lable'>{formatNumber(likes)}</p>
+          <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
+            <LikeIcon 
+              fill={liked ? 'red' : 'white'}
+              stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='3' className='post-icon'/>
+            <p className='controle-lable'>{formatNumber(cardData.likes.length)}</p>
           </div>
           <div className='control-wraper' onClick={handleCopy}>
             <CopyIcon className='post-icon' />
