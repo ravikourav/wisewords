@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 85%;
+  max-width: 85%;
 }
   
 .content-wraper {
@@ -19,7 +19,6 @@
   flex-direction: column;
   background-color: #fefefe;
   flex: 1;
-  width: 100%;
 }
 
 
@@ -32,6 +31,7 @@
   flex-direction: row;
   height: 45px;
   margin: 20px;
+  max-height: 100px;
 }
 
 .post-owner-profile-image {
@@ -65,7 +65,7 @@
 
 .comment-container {
   flex: 1;
-  overflow-y: scroll;
+  overflow: auto;
 }
 
 .commnet-title-container {
@@ -79,14 +79,36 @@
   margin-bottom: 10px;
 }
 
+.flip {
+  transform: rotateX(180deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+.flipOut {
+  transform: rotateX(0deg);
+  transition: transform 0.3s ease-in-out;
+}
+
 /* comment input css */
+.replyingTo-container {
+  display: flex;
+  background-color: #eeeeee;
+  padding: 5px 0px;
+  width: 100%;
+  justify-content: center;
+}
+
+.replyingTo-text {
+  flex: 1;
+  color: #767676;
+}
 
 .add-comment-container {
   display: flex;
   flex-direction: row;
   padding: 25px;
   border-top: 1px solid rgb(224, 224, 224);
-  max-height: 50px;
+  max-height: 100px;
 }
 
 .user-profile-image {
@@ -152,7 +174,6 @@
   cursor: not-allowed;
 }
 
-
 .controle-lable {
   font-size: 0.8rem;
   color: #767676;
@@ -161,7 +182,7 @@
 .post-icon {
   width: 25px;
   height: 25px;
-
+  cursor: pointer;
 }
 
 /* Meida */

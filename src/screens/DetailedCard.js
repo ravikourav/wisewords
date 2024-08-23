@@ -4,6 +4,7 @@ import Card from '../components/Card.js';
 import { formatNumber } from '../utils/formatNumbers.js';
 import Button from '../components/Button.js';
 import Loading from '../components/Loading.js';
+import { useMediaQuery } from 'react-responsive';
 
 import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
 import { ReactComponent as DropDownIcon } from '../assets/icon/dropdown.svg';
@@ -11,27 +12,39 @@ import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
 import { ReactComponent as CopyIcon } from '../assets/icon/copy.svg';
 import { ReactComponent as PlayIcon } from '../assets/icon/play.svg';
 import { ReactComponent as PauseIcon } from '../assets/icon/pause.svg';
+import { ReactComponent as CloseIcon } from '../assets/icon/close.svg';
 
 import TempImg from '../assets/icon/profile.png';
 import Comment from '../components/Comment.js';
 import BackButton from '../components/BackButton.js';
 import axios from 'axios';
 import { AuthContext } from '../hooks/AuthContext.js';
+import IconButton from '../components/IconButton.js';
 
 function DetailedCard({ selectedCard , onClose}) {
+  const { isLoggedIn, user } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
   const [isOwner , setIsOwner] = useState(false);
   const [isFollowing , setIsFollowing] = useState(null);
   const [liked, setLiked] = useState(false);
 
-  const { isLoggedIn, user } = useContext(AuthContext);
+  const maxWidth = window.innerWidth * 0.9; 
+  const maxHeight = window.innerHeight * 0.9;
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const [cardWidth , setCardWidth] = useState('');
+  const [cardHeight , setCardHeight] = useState('');
+
+  const [comment, setComment] = useState('');
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyWithUsername , setReplyWithUsername] = useState(null);
+  const [hideComments , setHideComments] = useState(false);
 
   const [copied, setCopied] = useState(false);
-  const [hideComment , setHideComment] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const utteranceRef = useRef(null); // Ref to store the utterance instance
+  const utteranceRef = useRef(null);
+
 
   const featchCardData = async() =>{
     setLoading(true);
@@ -39,13 +52,13 @@ function DetailedCard({ selectedCard , onClose}) {
     const response = await axios.get(endpoint);
     setCardData(response.data);
     if(isLoggedIn){
-      await fetchFollowStatus(response.data);
+      await followStatus(response.data);
     }else{
       setLoading(false);
     }
   }
 
-  const fetchFollowStatus = async (data) => {
+  const followStatus = async (data) => {
     const endpoint = `/api/user/${selectedCard.owner_id._id}/isfollowing`;
     if(user.user.id === selectedCard.owner_id._id){
       setIsOwner(true);
@@ -61,10 +74,48 @@ function DetailedCard({ selectedCard , onClose}) {
         console.error('Error fetching follow status:', error);
       }
     }
-    await handleLikeCheck(data);
+    await likeStatus(data);
+    dimension(data);
   };
 
-  const handleLikeCheck = async (data) => {
+  const dimension = (data) => {
+    const aspectRatio = data.width / data.height;
+
+    if (aspectRatio > 1) {
+      const newWidth = Math.min(window.innerWidth * 0.6, data.width);
+      const newHeight = (newWidth / aspectRatio);
+      setCardWidth(newWidth + 'px');
+      setCardHeight(newHeight + 'px');
+    } else { // Vertical Image
+      const newHeight = Math.min(window.innerHeight * 0.9, data.height);
+      const newWidth = (newHeight * aspectRatio); 
+      setCardWidth(newWidth + 'px');
+      setCardHeight(newHeight + 'px');
+    }
+
+    console.log('widht : ' , cardWidth , 'height : ' ,cardHeight);
+  };
+  
+  useEffect(() => {
+    const handleResize = () => {
+        if (cardData) {
+            dimension(cardData);
+        }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Call the function initially to set dimensions
+    if (cardData) {
+        dimension(cardData);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+}, [cardData]);
+
+  const likeStatus = async (data) => {
     if(data.likes.includes(user.user.id)){
       setLiked(true);
     }
@@ -84,9 +135,7 @@ function DetailedCard({ selectedCard , onClose}) {
       : `/api/user/${selectedCard.owner_id._id}/follow`;
   
     try {
-      const response = isFollowing 
-        ? await axios.post(endpoint, { withCredentials: true })
-        : await axios.post(endpoint, { withCredentials: true });
+      const response = await axios.post(endpoint, { withCredentials: true });
       console.log(response);
       if (response.status === 200) {
         setIsFollowing(!isFollowing);
@@ -102,17 +151,45 @@ function DetailedCard({ selectedCard , onClose}) {
       ? `/api/post/${selectedCard._id}/unlike` 
       : `/api/post/${selectedCard._id}/like`;
     try {
-      const response = liked 
-        ? await axios.post(endpoint, { withCredentials: true })
-        : await axios.post(endpoint, { withCredentials: true });
+      const response = await axios.post(endpoint, { withCredentials: true });
       if (response.status === 200) {
         setLiked(!liked);
         cardData.likes = response.data.likes;
       }
     } catch (error) {
-      console.error('Error likeing/unlikeing user:', error);
+      console.error('Error liking/unliking user:', error);
     }
   };
+
+  const addComment = async() => {
+    const endpoint = replyingTo ? 
+      `api/post/${cardData._id}/comment/${replyingTo}/reply`:
+      `api/post/${cardData._id}/comment` ;
+    try {
+      const response = await axios.post(
+        endpoint,
+        { comment },
+        { withCredentials: true }
+      );
+      setComment('');
+      setReplyingTo(null);
+      console.log(response);
+    }catch(err) {
+      console.error('Error Adding Commnet/Reply user:', err);
+    }
+  }
+
+  const handleReplyingTo = (id , name) => {
+    setReplyingTo(id);
+    setReplyWithUsername(name);
+    setComment(`@${name} `);
+  }
+
+  const closeReplyingTo = () => {
+    setReplyingTo(null);
+    setReplyWithUsername(null);
+    setComment('');
+  }
 
   const handleTextToSpeech = (text) => {
     if ('speechSynthesis' in window) {
@@ -193,6 +270,7 @@ function DetailedCard({ selectedCard , onClose}) {
     document.body.removeChild(textArea);
   };
 
+
   return (
     <div className="modal-wraper">
       {loading ? 
@@ -203,6 +281,8 @@ function DetailedCard({ selectedCard , onClose}) {
         
         <div className='content-wraper'>
           <Card
+            sizeCustom={true}
+            width={isMobile ? '' : cardWidth}
             margin={false}
             content={selectedCard.content}
             textColor={selectedCard.contentColor}
@@ -211,7 +291,7 @@ function DetailedCard({ selectedCard , onClose}) {
             background={selectedCard.backgroundImage}
             tint={selectedCard.tintColor}
           />
-          <div className="modal-box">
+          <div style={{height:cardHeight}} className="modal-box">
             <div className='post-owner-container'>
               <div className='flex-row'>
                 <img className='post-owner-profile-image' src={TempImg} alt=''/>
@@ -223,20 +303,26 @@ function DetailedCard({ selectedCard , onClose}) {
               {!isOwner && <Button onClick={followUnfollowOwner} disabled={!isLoggedIn} text={isFollowing ? 'Following' : 'Follow'} selected={isFollowing ? true : false}/>}
             </div>
             <div className='comment-container'>
-              <div className='flex-row commnet-title-container' onClick={()=>{setHideComment(!hideComment)}}>
+              <div className='flex-row commnet-title-container'>
                 <p className='comment-header'>Comments</p>
-                <DropDownIcon className='icon'>V</DropDownIcon>
+                <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
               </div>
-              <div style={{marginBottom: '10px'}}>
-                {hideComment && selectedCard.comments.map((comment)=>(
-                  <Comment data={comment}/>
+              <div className='commnet-section' style={{marginBottom: '10px'}}>
+                {hideComments && selectedCard.comments.map((comment)=>(
+                  <Comment key={comment._id} data={comment} reply={handleReplyingTo} replyTo />
                 ))}
               </div>
             </div>
+            { replyingTo &&
+              <div className='replyingTo-container'>
+                <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
+                <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
+              </div>
+            }
             <div className='add-comment-container'>
               <img className='user-profile-image' src={TempImg} alt=''></img>
-              <input className='main-input comment-input' placeholder='Comment' type='text' />
-              <SendIcon className={`send-comment ${isLoggedIn ? '' : 'send-comment-disabled'}`} />
+              <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
+              <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
             </div>
           </div>
         </div>

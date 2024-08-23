@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import userImg from '../assets/icon/profile.png';
 import './css/Comment.css';
 import timeAgo from '../utils/timeAgo';
 import { ReactComponent as LikedIcon } from '../assets/icon/like.svg';
 
-function Comment(props) {
-
-
-  const [likes, setLikes] = useState(props.data.likes || 0);
+function Comment({data , reply}) {
+  const [likes, setLikes] = useState(data.likes || 0);
   const [liked, setLiked] = useState(false);
 
-  const [viewReply , setViewReply] = useState(false);
+  const [viewReply , setViewReply] = useState(true);
 
   const [replyLikes, setReplyLikes] = useState(
-    props.data.replies.map(reply => ({ id: reply.id, likes: reply.likes || 0, liked: false }))
+    data.replies.map(reply => ({ id: reply.id, likes: reply.likes || 0, liked: false }))
   );
 
   const handleLike = () => {
@@ -38,47 +36,57 @@ function Comment(props) {
     }));
   };
 
+  const handleReply = (id , name) => {
+    reply(id , name);
+  }
+  
+  const renderContent = (content) => {
+    const parts = content.split(/(\s*@\w+)/g); // Split content by usernames
+
+    return parts.map((part, index) => (
+      part.startsWith('@') ? <span key={index} className="username">{part}</span> : part
+    ));
+  };
+
   return (
     <div className='comment-warper'>
       <div className='main-comment'>
         <img className='comment-profile-picture' src={userImg} alt='' />
         <div className='comment-body'>
           <div className='row'>
-            <p className='comment-username'>{props.data.username}</p>
-            <p className='comment-time'>{timeAgo(props.data.date)}</p>
+            <p className='comment-username'>{data.username}</p>
+            <p className='comment-time'>{timeAgo(data.date)}</p>
           </div>
-          <p className='comment-content'>{props.data.comment}</p>
-          <p className='reply-button'>Reply</p>
+          <p className='comment-content'>{renderContent(data.comment)}</p>
+          <p className='reply-button' onClick={() => handleReply(data._id , data.username)}>Reply</p>
         </div>
         <div className='like-container' onClick={handleLike}>
           <LikedIcon fill={liked ? 'red' : 'white'} stroke={liked ? 'red' : 'gray'} className='like-comment-icon' />
-          <p className='commnet-like-cont'>{likes}</p>
+          <p className='commnet-like-count'>{likes}</p>
         </div>
       </div>
 
-      { !viewReply ? (
-        <p className='view-reply-button' onClick={()=>{setViewReply(true)}} >View {props.data.replies.length} more replies</p>
-      ):(
-        <>
-          {props.data.replies.map((reply, index) => (
-            <div className='reply-container' key={reply.id}>
-              <img className='reply-profile-picture' src={userImg} alt='' />
-              <div className='comment-reply-body'>
-                <div className='row'>
-                  <p className='comment-username'>{reply.username}</p>
-                  <p className='comment-time'>{timeAgo(reply.date)}</p>
-                </div>
-                <p className='comment-content'>{reply.reply}</p>
-                <p className='reply-button'>Reply</p>
-              </div>
-              <div className='like-container' onClick={() => handleReplyLike(reply.id)}>
-                <LikedIcon fill={replyLikes[index].liked ? 'red' : 'white'} stroke={replyLikes[index].liked ? 'red' : 'gray'} className='like-comment-icon' />
-                <p className='commnet-like-cont'>{replyLikes[index].likes}</p>
-              </div>
-            </div>
-          ))}
-        </>
+      {data.replies.length > 0 && viewReply && (
+        <p className='view-reply-button' onClick={() => setViewReply(false)}>View {data.replies.length} more replies</p>
       )}
+      
+      {!viewReply && data.replies.map((reply, index) => (
+        <div className='reply-container' key={reply._id}>
+          <img className='reply-profile-picture' src={userImg} alt='' />
+          <div className='comment-reply-body'>
+            <div className='row'>
+              <p className='comment-username'>{reply.username}</p>
+              <p className='comment-time'>{timeAgo(reply.date)}</p>
+            </div>
+            <p className='comment-content'>{renderContent(reply.reply)}</p>
+            <p className='reply-button' onClick={() => handleReply(data._id , reply.username)}>Reply</p>
+          </div>
+          <div className='like-container' onClick={() => handleReplyLike(reply._id)}>
+            <LikedIcon fill={replyLikes[index].liked ? 'red' : 'white'} stroke={replyLikes[index].liked ? 'red' : 'gray'} className='like-comment-icon' />
+            <p className='commnet-like-count'>{replyLikes[index].likes}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
