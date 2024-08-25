@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import './css/CardGrid.css';
 import Card from './Card.js';
-import DetailedCard from '../screens/DetailedCard.js';
 import { Masonry } from '@mui/lab';
+import { useNavigate } from 'react-router-dom';
 
 const CardGrid = ({ data }) => {
-  const [selectedCard, setSelectedCard] = useState(null);
+  const navigate = useNavigate();
+
 
   const handleCardClick = (card) => {
-    setSelectedCard(card);
+    navigate(`/post/${card._id}`);
   };
 
   const handleCloseModal = () => {
     speechSynthesis.cancel();
-    setSelectedCard(null);
   };
 
   const breakpointCols = {
@@ -24,9 +24,8 @@ const CardGrid = ({ data }) => {
   };
 
   return (
-    <>
-      {!selectedCard ? (
-        data.length > 0 ? (
+    <div className='card-layout'>
+        {data.length > 0 ? (
           <Masonry columns={breakpointCols} spacing={2}>
             {data.map((card) => (
               <Card
@@ -42,12 +41,9 @@ const CardGrid = ({ data }) => {
             ))}
           </Masonry>
         ) : (
-          <p>No cards available</p>
-        )
-      ) : (
-        <DetailedCard selectedCard={selectedCard} onClose={handleCloseModal} />
-      )}
-    </>
+          <p>The deck is empty, awaiting new stories.</p>
+        )}
+    </div>
   );
 };
 

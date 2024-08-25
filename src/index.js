@@ -6,7 +6,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import axios from 'axios';
 import App from './App';
 import Error from './screens/Error.js';
 import Home from './screens/Home.js';
@@ -17,6 +16,7 @@ import Login from './screens/Login.js';
 import AuthProvider from './hooks/AuthContext.js';
 import ProtectedRoute from './hooks/ProtectedRoute.js';
 import reportWebVitals from './reportWebVitals';
+import DetailedCard from './screens/DetailedCard.js';
 
 const router = createBrowserRouter([{
   path: '/',
@@ -32,16 +32,20 @@ const router = createBrowserRouter([{
       element: <Explore />
     },
     {
-      path: 'profile',
-      element: <ProtectedRoute element={<Profile />} /> 
-    },
-    {
       path: 'create',
       element: <ProtectedRoute element={<Create />} />
     },
     {
       path: 'login',
       element: <Login />
+    },
+    {
+      path: 'profile/:username',
+      element: <ProtectedRoute element={<Profile />} /> 
+    },
+    {
+      path: 'post/:id',
+      element: <DetailedCard />
     }
   ]
 }]);

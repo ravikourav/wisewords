@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './css/Profile.css';
+import { useParams } from 'react-router-dom';
 import userImg from '../assets/icon/profile.png';
 import CardGrid from '../components/CardGrid.js';
 import { AuthContext } from '../hooks/AuthContext.js';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
-import Cookies from 'js-cookie';
 
 function Profile() {
+    const { username } = useParams();
     const { logout, user } = useContext(AuthContext);
-    const [data, setData] = useState();
+    const [data, setData] = useState(null);
     const [postedData, setPostedData] = useState([]);
     const [saveCardData, setSaveCardData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,14 +19,10 @@ function Profile() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const token = Cookies.get('authToken'); // Use localStorage
-            const endPoint = `/api/user/${user.user.id}`; // Ensure the endpoint is correct
-            const response = await axios.get(endPoint, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            const endPoint = `/api/user/${username}`;
+            const response = await axios.get(endPoint);
             setData(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
@@ -34,15 +31,15 @@ function Profile() {
     };
 
     useEffect(() => {
-        if (user.user.id) {
+        if (username) {
             fetchData();
         }
-    }, [user.user.id]); // Fetch data when user ID changes
+    }, [username]);
 
     useEffect(() => {
         if (data) {
-            setPostedData(data.posts);
-            setSaveCardData(data.saved);
+            setPostedData(data.posts || []);
+            setSaveCardData(data.saved || []);
         }
     }, [data]);
 
@@ -56,7 +53,9 @@ function Profile() {
         <>
             {loading ? ( <Loading/> ) : (
             <div className='profile-container'>
-                <button onClick={logout}>Logout</button>
+                {user.user.id === data._id && (
+                    <button onClick={logout}>Logout</button>
+                )}
                 <img className='profile-img' src={userImg} alt='Profile' />
                 {data && (
                     <>

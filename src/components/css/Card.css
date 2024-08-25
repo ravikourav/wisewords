@@ -10,6 +10,13 @@
     margin: 15px 10px;
 }
 
+.small {
+    max-width: 350px;
+}
+.tagSelected {
+    width: 350px;
+}
+
 .bg-img {
     display: block;
     max-width: 100%;

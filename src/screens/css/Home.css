@@ -6,6 +6,7 @@
   justify-content: center;
 }
 
+
 @media (max-width: 768px){
   .home-page-layout {
     margin: 0px 0px 80px 0px;

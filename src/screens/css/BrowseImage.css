@@ -10,13 +10,20 @@
 }
 
 .browse-suggestion {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   color: #818181;
 }
 
 .browse-suggestion-2 {
-  margin-bottom: 20px;
   color: #818181;
+}
+.switch-container {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+  margin-bottom: 20px;
 }
 
 .card-image {

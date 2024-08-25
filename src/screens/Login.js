@@ -16,7 +16,7 @@ function Login() {
   const [hasAccount, setHasAccount] = useState(true);
   const navigate = useNavigate();
 
-  const {login} = useContext(AuthContext);
+  const {login , user} = useContext(AuthContext);
 
 
   const handleSubmit = async (event) => {
@@ -38,7 +38,8 @@ function Login() {
         // Assuming you have a context or global state to manage authentication
         login(token); // Call the login function from AuthContext or similar
         // Redirect or update UI as needed
-        navigate('/profile');
+        console.log(user);
+        navigate(`/profile/${user.user.username}`);
       } else {
         console.error('Token not found in response');
         setError('Failed to retrieve token.');
@@ -73,9 +74,9 @@ function Login() {
 
         <div className="body">
           <div className="login-appname-container">
-            <p className="login-model-welcome">Welcome To</p>
+            <p className="login-model-welcome">Step Into</p>
             <p className="login-model-name">Wise Men Said</p>
-            <p className="login-model-slogan">"Spark Minds, Share Moments"</p>
+            <p className="login-model-slogan">"Echoes of Insight, Shared in Light"</p>
           </div>
           <form onSubmit={handleSubmit}>
             {!hasAccount && (
@@ -134,7 +135,7 @@ function Login() {
             {hasAccount &&
               <div>
                 <button className="forgot-button" type="button">
-                  Forgot Your Password?
+                  Forgotten the way?
                 </button>
               </div>
             }
@@ -145,7 +146,7 @@ function Login() {
             type="button"
             onClick={hasAccount ? dontHaveAccount : alreadyHasAccount}
           >
-            {hasAccount ? 'Not on Wise Men Said yet? Sign up' : 'Already a member? Log in'}
+            {hasAccount ? 'Still a stranger to the wisdom? Sign up.' : 'Already a voice among us? Step back in.'}
           </button>
         </div>
       </div>

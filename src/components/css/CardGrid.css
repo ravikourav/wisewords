@@ -1,9 +1,7 @@
 .card-layout {
     margin: 0; 
     padding: 0;
-    width: 95vw;
+    width: 98vw;
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
 }
-

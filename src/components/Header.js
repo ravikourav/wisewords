@@ -20,7 +20,7 @@ function Header()  {
   const [searchParams , setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [Selected , setSelected] = useState(location);
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn , user } = useContext(AuthContext);
 
   const [notificationBgPage , setNotificationBgPage] = useState();
   const [notificationOpened , setNotificationOpened] = useState(false);
@@ -77,7 +77,7 @@ function Header()  {
             <div className='left-nav-links'>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='icon'
               onClick={handleNotification} />
-              <Link to='profile' onClick={()=>{select('Profile')}} >
+              <Link to={`/profile/${user.user.username}`} onClick={()=>{select('Profile')}} >
                 <img className= 'profile-picture' src={placeholder} alt="User" />
               </Link>
             </div>
@@ -109,7 +109,7 @@ function Header()  {
             <>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='nav-icon'
               onClick={handleNotification} />
-              <Link to='profile' onClick={()=>{select('Profile')}} >
+              <Link to={`profile/${user.user.username}`} onClick={()=>{select('Profile'); console.log('Navigating to profile:', user.user.username);}} >
                 <img className= 'nav-icon' src={placeholder} alt="User" />
               </Link>
             </>

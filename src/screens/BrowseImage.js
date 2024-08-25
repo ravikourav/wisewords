@@ -7,17 +7,20 @@ import Loading from '../components/Loading.js';
 import axios from 'axios';
 
 import { Masonry } from '@mui/lab';
+import Switch from '@mui/material/Switch';
+
 import Button from '../components/Button.js';
 
 function BrowseImage({ onClose, onSelectImage, title }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [masonryLoaded, setMasonryLoaded] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get('search') || '';
   const PIXABAY_API_KEY = process.env.REACT_APP_PIXABAY_API_KEY;
   const [page, setPage] = useState(1); // Current page for pagination
+
+  const [fullResolutionImage , setFullResolutionImage] = useState(false);
 
   const fetchImages = async () => {
     if (!search && title) {
@@ -74,15 +77,27 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     }
   };
 
+  const fetchUserSetting = () => {
+    let fullResolutionImg = localStorage.getItem('fullResolutionImage');
+    if (fullResolutionImg === null) {
+      // If it doesn't exist, set it to 'false'
+      localStorage.setItem('fullResolutionImage', 'false');
+      fullResolutionImg = 'false';
+    }else{
+      setFullResolutionImage(fullResolutionImg === 'true');
+    }
+  }
+
   useEffect(() => {
+    fetchUserSetting();
     setLoading(true);
     fetchImages();
   }, [search]);
 
   const breakpointCols = {
-    lg: 8,
-    md: 6,
-    sm: 4,
+    lg: 5,
+    md: 4,
+    sm: 3,
     xs: 2,
   };
 
@@ -95,8 +110,17 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     <div>
       <BackButton onClick={onClose} />
       <div className='browse-image-container'>
-      <p className='browse-suggestion'>If you seek a specific treasure, let the search guide your way.</p>
-      <p className='browse-suggestion-2'>Be aware, these are but glimpses in modest quality. Rest assured, the full splendor awaits in high resolution.</p>
+        <p className='browse-suggestion'>If you seek a specific treasure, let the search guide your way.</p>
+        <div className='switch-container'>
+          <p className='browse-suggestion-2'>
+            {fullResolutionImage 
+              ? "The full splendor is now within your grasp, unbound by modesty."
+              : "Be aware, these are but glimpses in modest quality. Rest assured, the full splendor awaits in high resolution."
+            }
+          </p>
+          <Switch checked={fullResolutionImage} onChange={(e)=>{setFullResolutionImage(e.target.checked)}} inputProps={{ 'aria-label': 'controlled' }} />
+        </div>
+        
         {images?.length > 0 ? (
           <>
             {loading ? <Loading /> :
@@ -104,7 +128,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
                 {images.map((image) => (
                   <OnlineImageCard
                   key={image.id}
-                  image={image.previewURL}
+                  image={fullResolutionImage? image.largeImageURL : image.previewURL}
                   onSelect={() => handleImageSelect(image.largeImageURL)}
                   />
                 ))}

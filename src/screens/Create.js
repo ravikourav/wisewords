@@ -6,6 +6,9 @@ import Card from '../components/Card';
 import axios from 'axios';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
+import { useSearchParams } from 'react-router-dom';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 
 function Create() {
   const [loading , setLoading] = useState(false);
@@ -13,11 +16,15 @@ function Create() {
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
   const [category, setCategory] = useState('Quote');
-  const [tags, setTags] = useState('test');
+  const [tags, setTags] = useState([]);
+  const [allTags, setAllTags] = useState([]);
   const [contentColor, setContentColor] = useState('rgba(255, 255, 255, 1)');
   const [authorColor, setAuthorColor] = useState('rgba(255, 255, 255, 1)');
   const [tintColor, setTintColor] = useState('rgba(0, 0, 0, 0.4)');
   const [backgroundImage, setBackgroundImage] = useState(null);
+  const [isAnonymous, setIsAnonymous] = useState(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Separate states for each color picker visibility
   const [showContentColorPicker, setShowContentColorPicker] = useState(false);
@@ -94,7 +101,7 @@ function Create() {
       formData.append('content', content);
       formData.append('author', author);
       formData.append('category', category);
-      formData.append('tags', tags.split(',').map(tag => tag.trim()).join(','));
+      formData.append('tags', tags);
       formData.append('contentColor', contentColor);
       formData.append('authorColor', authorColor);
       formData.append('tintColor', tintColor);
@@ -118,7 +125,7 @@ function Create() {
     setContent('');
     setAuthor('');
     setCategory('Quote');
-    setTags('');
+    setTags([]);
     setContentColor('rgba(255, 255, 255, 1)');
     setAuthorColor('rgba(255, 255, 255, 1)');
     setTintColor('rgba(0, 0, 0, 0.4)');
@@ -134,11 +141,42 @@ function Create() {
     };
   }, [backgroundImage]);
 
+  useEffect(()=>{
+    featchTags();
+  },[])
+
+  const featchTags = async () =>{
+    const endpoint = '/api/tag/name';
+    try{
+      const response = await axios.get(endpoint);
+      setAllTags(response.data.names);
+    }
+    catch{
+      console.log('Unable to teatch tags');
+    }
+  }
+
+  const closeOnlineImage = () =>{
+    setBrowseOnline(false);
+    setSearchParams();
+  }
+
+  const handleCheckBox = () => {
+    if(isAnonymous){
+      setAuthor('');
+    }
+    else{
+      setAuthor('Anonymous');
+    }
+
+    setIsAnonymous(!isAnonymous);
+  }
+
   return (
     <div className='page-root'>
-      {loading? <Loading/> : 
+      { loading ? <Loading/> : 
       browseOnline ? (
-        <BrowseImage onClose={() => setBrowseOnline(false)} onSelectImage={handleImageSelect} title={title} />
+        <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} title={title} />
       ) : (
         <>
           <p className='create-page-title'>Create Post</p>
@@ -160,44 +198,61 @@ function Create() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <input type='file' id='file-upload' className='file-input' onChange={handleImageChange} />
-                  <label htmlFor="file-upload" className="file-input-label">Upload Image</label>
-                  <p className='pixels-button' onClick={() => setBrowseOnline(true)}>Browse On Pixels</p>
+                  <label htmlFor="file-upload" className="file-input-label">Unveil Your Image</label>
+                  <p className='pixels-button' onClick={() => setBrowseOnline(true)}>Explore the Pixel Gallery</p>
                 </div>
               )}
             </div>
             <div className='content-container'>
               <label>
-                Title:
+                Title of Your Tale :
                 <input className='main-input input-create' type='text' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
               </label>
               <label>
-                Content:
+                The Essence of Your Creation :
                 <textarea className='main-input input-create-content' placeholder='Content' value={content} onChange={(e) => setContent(e.target.value)} />
-              </label>
-              <label>
-                Author:
-                <input className='main-input input-create' type='text' placeholder='Author' value={author} onChange={(e) => setAuthor(e.target.value)} />
               </label>
               <div className='category-tag-container'>
                 <label>
-                  Category:
-                  <select className='main-input category-input' value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value='poem'>Poem</option>
-                    <option value='quote'>Quote</option>
-                    <option value='thought'>Thought</option>
-                    <option value='haikyuu'>Haikyuu</option>
-                  </select>
+                  Crafted By :
+                  <input className='main-input input-author' type='text' placeholder='Author' value={author} onChange={(e) => setAuthor(e.target.value)} disabled={isAnonymous} />
                 </label>
-
                 <label>
-                  Tag:
-                  <input className='main-input category-input' value={tags} onChange={(e) => setTags(e.target.value)}>
-                  </input>
+                  Embrace Anonymity:
+                  <input className='checkbox' type='checkbox' checked={isAnonymous} onChange={handleCheckBox} />
                 </label>
               </div>
-              <div className='color-container'>
+              <div className='category-tag-container'>
                 <label>
-                  Tint Color:
+                  Whispers of the Essence :
+                  <Autocomplete
+                    className='autocomplete'
+                    multiple
+                    limitTags={2}
+                    id="multiple-limit-tags"
+                    options={allTags}
+                    value={tags}
+                    onChange={(event, newValue) => setTags(newValue)}
+                    renderInput={(params) => (
+                      <TextField {...params} placeholder="Tag" />
+                    )}
+                  />
+                </label>
+                <label>
+                  Realm of Creation :
+                  <select className='main-input category-input' value={category} onChange={(e) => setCategory(e.target.value)}>
+                    <option value='quote'>Quote</option>
+                    <option value='proverb'>Proverb</option>
+                    <option value='poetry'>Poetry</option>
+                    <option value='thought'>Thought</option>
+                    <option value='haiku'>Haiku</option>
+                    <option value='riddle'>Riddle</option>
+                  </select>
+                </label>
+              </div>
+              <div className='main-color-container'>
+                <label>
+                  Shade of the Veil :
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: tintColor }}></div>
                     <p onClick={() =>  handleColorPickerClick('tint')} className='main-button button'>{showTintColorPicker ? 'Apply' : 'Select'}</p>
@@ -209,7 +264,7 @@ function Create() {
                   )}
                 </label>
                 <label>
-                  Content Color:
+                  Hue of the Heart :
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: contentColor }}></div>
                     <p onClick={() => handleColorPickerClick('content')} className='main-button button'>{showContentColorPicker ? 'Apply' : 'Select'}</p>
@@ -221,7 +276,7 @@ function Create() {
                   )}
                 </label>
                 <label>
-                  Author Color:
+                  Tone of the Artisan :
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: authorColor }}></div>
                     <p onClick={() => handleColorPickerClick('author')} className='main-button button'>{showAuthorColorPicker ? 'Apply' : 'Select'}</p>
