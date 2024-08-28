@@ -5,3 +5,14 @@
     display: flex;
     justify-content: center;
 }
+@media (max-width: 768px) {
+    .card-layout {
+        width: 95vw;
+    }
+}
+
+@media (max-width: 512px) {
+    .card-layout {
+        width: 90vw;
+    }
+}

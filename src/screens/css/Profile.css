@@ -16,6 +16,14 @@
 
 .profile-img {
     width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px white;
+}
+.cover-img {
+    max-width: 600px;
+    border-radius: 20px;
 }
 
 p {
@@ -23,7 +31,9 @@ p {
     margin: 0;
     text-align: center;
 }
-
+.user-data-wraper{
+    width: 75px;
+}
 .user-data {
     font-size: 1.2rem;
     font-weight: bold;
@@ -39,6 +49,17 @@ p {
     color: rgb(122, 122, 122);
 }
 
+/* Profile */
+
+.profile-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 225px;
+    justify-content: space-between;
+}
+
+/* Posts */
 .post-container {
     margin: 15px;
     display: flex;

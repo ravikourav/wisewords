@@ -1,5 +1,5 @@
 import './css/Login.css';
-import React, { useState,useContext } from 'react';
+import React, { useState , useContext } from 'react';
 import axios from 'axios';
 import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
 import  { AuthContext } from '../hooks/AuthContext';
@@ -16,7 +16,7 @@ function Login() {
   const [hasAccount, setHasAccount] = useState(true);
   const navigate = useNavigate();
 
-  const {login , user} = useContext(AuthContext);
+  const {login} = useContext(AuthContext);
 
 
   const handleSubmit = async (event) => {
@@ -26,20 +26,12 @@ function Login() {
       const payload = hasAccount ? { username, password } : { name ,username, email, password };
       const response = await axios.post(endpoint, payload);
 
-      console.log('Response successful', response.data);
-      
-      // Check if the token is available in the response
-      const token = response.data.accessToken; // Use the correct key from the response
+      const token = response.data.accessToken;
 
       if (token) {
-        // Store token and handle authentication
         Cookies.set('authToken', token, { expires: 7, sameSite: 'None' });
-        
-        // Assuming you have a context or global state to manage authentication
-        login(token); // Call the login function from AuthContext or similar
-        // Redirect or update UI as needed
-        console.log(user);
-        navigate(`/profile/${user.user.username}`);
+        await login(token);
+        navigate('/');
       } else {
         console.error('Token not found in response');
         setError('Failed to retrieve token.');

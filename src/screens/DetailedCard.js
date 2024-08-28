@@ -7,6 +7,13 @@ import Loading from '../components/Loading.js';
 import { useMediaQuery } from 'react-responsive';
 import { Link, useParams , useNavigate } from 'react-router-dom';
 
+import Comment from '../components/Comment.js';
+import BackButton from '../components/BackButton.js';
+import axios from 'axios';
+import { AuthContext } from '../hooks/AuthContext.js';
+import IconButton from '../components/IconButton.js';
+
+//icons
 import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
 import { ReactComponent as DropDownIcon } from '../assets/icon/dropdown.svg';
 import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
@@ -14,13 +21,7 @@ import { ReactComponent as CopyIcon } from '../assets/icon/copy.svg';
 import { ReactComponent as PlayIcon } from '../assets/icon/play.svg';
 import { ReactComponent as PauseIcon } from '../assets/icon/pause.svg';
 import { ReactComponent as CloseIcon } from '../assets/icon/close.svg';
-
-import TempImg from '../assets/icon/profile.png';
-import Comment from '../components/Comment.js';
-import BackButton from '../components/BackButton.js';
-import axios from 'axios';
-import { AuthContext } from '../hooks/AuthContext.js';
-import IconButton from '../components/IconButton.js';
+import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 
 function DetailedCard() {
   const { id } = useParams();
@@ -83,12 +84,12 @@ function DetailedCard() {
     const aspectRatio = data.width / data.height;
 
     if (aspectRatio > 1) {
-      const newWidth = Math.min(window.innerWidth * 0.6, data.width);
+      const newWidth = Math.min(window.innerWidth * 0.56, data.width);
       const newHeight = (newWidth / aspectRatio);
       setCardWidth(newWidth + 'px');
       setCardHeight(newHeight + 'px');
     } else { // Vertical Image
-      const newHeight = Math.min(window.innerHeight * 0.9, data.height);
+      const newHeight = Math.min(window.innerHeight * 0.78, data.height);
       const newWidth = (newHeight * aspectRatio); 
       setCardWidth(newWidth + 'px');
       setCardHeight(newHeight + 'px');
@@ -298,7 +299,7 @@ function DetailedCard() {
               <div className='post-owner-container'>
                 <div className='flex-row'>
                   <Link to={`/profile/${cardData.owner_id.username}`} >
-                    <img className='post-owner-profile-image' src={TempImg} alt=''/>
+                    <ProfileIcon fill='#ccc' className='post-owner-profile-image' alt=''/>
                   </Link>
                   <div className='flex-column'>
                     <Link to={`/profile/${cardData.owner_id.username}`} className="custom-link" >
@@ -327,7 +328,7 @@ function DetailedCard() {
                 </div>
               }
               <div className='add-comment-container'>
-                <img className='user-profile-image' src={TempImg} alt=''></img>
+                <ProfileIcon fill='#ccc' className='user-profile-image'></ProfileIcon>
                 <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
                 <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
               </div>

@@ -1,19 +1,21 @@
 import React, { useState , useEffect, useContext} from 'react';
 import './css/Header.css';
-import placeholder from '../assets/icon/profile.png';
 import { Link , useLocation, useSearchParams } from 'react-router-dom';
 
 import { useMediaQuery } from 'react-responsive';
-
-import { ReactComponent as HomeIcon } from '../assets/icon/home.svg';
-import { ReactComponent as AddIcon} from '../assets/icon/add.svg';
-import { ReactComponent as CategoryIcon} from '../assets/icon/category.svg';
-import { ReactComponent as BellIcon} from '../assets/icon/bell.svg';
 
 import NotificationModel from './NotificationModel.js';
 
 import {  AuthContext } from '../hooks/AuthContext.js';
 import Button from './Button.js';
+
+//icons
+import { ReactComponent as HomeIcon } from '../assets/icon/home.svg';
+import { ReactComponent as AddIcon} from '../assets/icon/add.svg';
+import { ReactComponent as CategoryIcon} from '../assets/icon/category.svg';
+import { ReactComponent as BellIcon} from '../assets/icon/bell.svg';
+import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
+import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 
 function Header()  {
   const location = useLocation();
@@ -70,15 +72,18 @@ function Header()  {
           <Link className={`desktop-nav-link ${Selected === 'Create' ? 'nav-selected' : '' }`} to="create" onClick={()=>{select('Create')}}>Create</Link>)}
         </div>
         <div className="search-container">
-          <input type="text" placeholder="Search" value={search} className="main-input search-input" onChange={handleSearch} onKeyDown={handleSearch}/>
+            <div className='custom-search-box'>
+              <SearchIcon className='search-icon'/>
+              <input type="text" placeholder="Search" value={search}  className="mobile-search-input" onChange={handleSearch} onKeyDown={handleSearch}/>
+            </div>
         </div>
         <div className="header-user-container">
           {isLoggedIn ? (
             <div className='left-nav-links'>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='icon'
-              onClick={handleNotification} />
+              onClick={handleNotification} /> 
               <Link to={`/profile/${user.user.username}`} onClick={()=>{select('Profile')}} >
-                <img className= 'profile-picture' src={placeholder} alt="User" />
+                <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'profile-picture'/>
               </Link>
             </div>
           ) : (
@@ -109,12 +114,14 @@ function Header()  {
             <>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='nav-icon'
               onClick={handleNotification} />
-              <Link to={`profile/${user.user.username}`} onClick={()=>{select('Profile'); console.log('Navigating to profile:', user.user.username);}} >
-                <img className= 'nav-icon' src={placeholder} alt="User" />
+              <Link to={`profile/${user.user.username}`} onClick={()=>{select('Profile');}} >
+                <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'nav-icon' alt="User" />
               </Link>
             </>
             ) : (
-              <Button text='Login' to='login' onClick={()=>{select('Login')}} />
+              <Link to='login' onClick={()=>{select('Login')}} >
+                <ProfileIcon fill={Selected === 'Login' ? 'black' : '#ccc'} className= 'nav-icon' />
+              </Link>
             )}
         </div>
       )}    

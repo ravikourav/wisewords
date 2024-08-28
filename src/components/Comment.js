@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './css/Comment.css';
 import axios from 'axios';
 import timeAgo from '../utils/timeAgo';
-import userImg from '../assets/icon/profile.png';
+
+//icons
 import { ReactComponent as LikedIcon } from '../assets/icon/like.svg';
+import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 
 function Comment({data , userId ,postId , reply}) {
   const [likes, setLikes] = useState(data.likes.length || 0);
@@ -81,7 +83,7 @@ function Comment({data , userId ,postId , reply}) {
   return (
     <div className='comment-warper'>
       <div className='main-comment'>
-        <img className='comment-profile-picture' src={userImg} alt='' />
+        <ProfileIcon className='comment-profile-picture' />
         <div className='comment-body'>
           <div className='row'>
             <p className='comment-username'>{data.username}</p>
@@ -102,7 +104,7 @@ function Comment({data , userId ,postId , reply}) {
       
       {!viewReply && data.replies.map((reply, index) => (
         <div className='reply-container' key={reply._id}>
-          <img className='reply-profile-picture' src={userImg} alt='' />
+          <ProfileIcon className='reply-profile-picture' />
           <div className='comment-reply-body'>
             <div className='row'>
               <p className='comment-username'>{reply.username}</p>

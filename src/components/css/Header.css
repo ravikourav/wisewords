@@ -1,6 +1,6 @@
 .header-root {
   margin: 0;
-  padding: 0;
+  padding: 0px;
 }
 
 .header-container {
@@ -61,7 +61,6 @@
 
 .search-input {
   padding: 0px 12px;
-  width: 100%;
   height: 40px;
   margin: 0px 5px;
 }
@@ -72,7 +71,7 @@
 
 @media (max-width: 768px) {
   .header-container {
-    bottom: -10px;
+    bottom: 0px;
     justify-content: space-around;
     flex: 1;
     box-shadow: rgba(0, 0, 0, 0.1) 10px 0px 8px 4px;

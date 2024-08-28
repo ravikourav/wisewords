@@ -24,7 +24,7 @@
     flex-wrap: wrap;
     margin: 0px 25px;
     padding: 25px;
-    border-radius: 50px;
+    border-radius: 20px;
     border: 1px solid rgb(224,224,224);
 }
 
@@ -49,15 +49,17 @@
 
 .file-input-label {
     padding: 150px 80px;
-    background-color: rgb(231, 231, 231);
-    border: 1px solid #ccc;
-    border-radius: 40px;
+    border-radius: 20px;
     cursor: pointer;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: center;
 }
 
 .pixels-button {
     padding: 10px;
+    margin: 5px;
     width: 200px;
     border-radius: 20px;
     background-color: aquamarine;
@@ -115,7 +117,6 @@
 }
 
 .preview-color {
-    margin:5px 10px 5px 0px;
     width: 50px;
 }
 
@@ -212,6 +213,7 @@
     .img-container{
         margin: 0;
         padding: 0;
+        width: 100%;
     }
 
     .input-create , .input-create-content {

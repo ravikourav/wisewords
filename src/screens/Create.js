@@ -106,7 +106,7 @@ function Create() {
       formData.append('authorColor', authorColor);
       formData.append('tintColor', tintColor);
       formData.append('backgroundImage', backgroundImage);
-
+      console.log('backgroudnImg' , backgroundImage);
       await axios.post(endpoint, formData ,{
         headers: {
           'Content-Type': 'multipart/form-data'
