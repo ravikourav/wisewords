@@ -146,7 +146,7 @@ function Create() {
   },[])
 
   const featchTags = async () =>{
-    const endpoint = '/api/tag/name';
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/name`;
     try{
       const response = await axios.get(endpoint);
       setAllTags(response.data.names);
@@ -178,7 +178,7 @@ function Create() {
       browseOnline ? (
         <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} title={title} />
       ) : (
-        <>
+        <div className='create-page'>
           <p className='create-page-title'>Create Post</p>
           <form onSubmit={handleSubmit} className='form-group'>
             <div className='img-container'>
@@ -199,32 +199,32 @@ function Create() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <input type='file' id='file-upload' className='file-input' onChange={handleImageChange} />
                   <label htmlFor="file-upload" className="file-input-label">Unveil Your Image</label>
-                  <p className='pixels-button' onClick={() => setBrowseOnline(true)}>Explore the Pixel Gallery</p>
+                  <p className='pixels-button' onClick={() => setBrowseOnline(true)}>Explore Gallery</p>
                 </div>
               )}
             </div>
             <div className='content-container'>
               <label>
-                Title of Your Tale :
-                <input className='main-input input-create' type='text' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
+                Title of Your Tale
+                <input className='main-input input-title' type='text' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
               </label>
               <label>
-                The Essence of Your Creation :
+                The Essence of Your Creation
                 <textarea className='main-input input-create-content' placeholder='Content' value={content} onChange={(e) => setContent(e.target.value)} />
               </label>
-              <div className='category-tag-container'>
+              <div className='multi-input-container'>
                 <label>
-                  Crafted By :
+                  Crafted By
                   <input className='main-input input-author' type='text' placeholder='Author' value={author} onChange={(e) => setAuthor(e.target.value)} disabled={isAnonymous} />
                 </label>
                 <label>
-                  Embrace Anonymity:
+                  Embrace Anonymity
                   <input className='checkbox' type='checkbox' checked={isAnonymous} onChange={handleCheckBox} />
                 </label>
               </div>
-              <div className='category-tag-container'>
+              <div className='multi-input-container'>
                 <label>
-                  Whispers of the Essence :
+                  Whispers of the Essence
                   <Autocomplete
                     className='autocomplete'
                     multiple
@@ -239,7 +239,7 @@ function Create() {
                   />
                 </label>
                 <label>
-                  Realm of Creation :
+                  Realm of Creation
                   <select className='main-input category-input' value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value='quote'>Quote</option>
                     <option value='proverb'>Proverb</option>
@@ -250,12 +250,12 @@ function Create() {
                   </select>
                 </label>
               </div>
-              <div className='main-color-container'>
+              <div className='multi-input-container'>
                 <label>
-                  Shade of the Veil :
+                  Shade of the Veil
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: tintColor }}></div>
-                    <p onClick={() =>  handleColorPickerClick('tint')} className='main-button button'>{showTintColorPicker ? 'Apply' : 'Select'}</p>
+                    <Button onClick={() =>  handleColorPickerClick('tint')} text={showTintColorPicker ? 'Apply' : 'Select'} selected={showTintColorPicker ? true : false} type="button"/>
                   </div>
                   {showTintColorPicker && (
                     <div ref={tintColorPickerRef}>
@@ -264,10 +264,10 @@ function Create() {
                   )}
                 </label>
                 <label>
-                  Hue of the Heart :
+                  Hue of the Heart
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: contentColor }}></div>
-                    <p onClick={() => handleColorPickerClick('content')} className='main-button button'>{showContentColorPicker ? 'Apply' : 'Select'}</p>
+                    <Button onClick={() => handleColorPickerClick('content')} text={showContentColorPicker ? 'Apply' : 'Select'} selected={showContentColorPicker? true : false } type='button'/>
                   </div>
                   {showContentColorPicker && (
                     <div ref={contentColorPickerRef}>
@@ -276,10 +276,10 @@ function Create() {
                   )}
                 </label>
                 <label>
-                  Tone of the Artisan :
+                  Tone of the Artisan
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: authorColor }}></div>
-                    <p onClick={() => handleColorPickerClick('author')} className='main-button button'>{showAuthorColorPicker ? 'Apply' : 'Select'}</p>
+                    <Button onClick={() => handleColorPickerClick('author')} text={showAuthorColorPicker ? 'Apply' : 'Select'} selected={showAuthorColorPicker ? true : false } type="button" />
                   </div>
                   {showAuthorColorPicker && (
                     <div ref={authorColorPickerRef}>
@@ -291,7 +291,7 @@ function Create() {
               <Button type='submit' width={250} text='Create' align='center' />
             </div>
           </form>
-        </>
+        </div>
       )}
     </div>
   );

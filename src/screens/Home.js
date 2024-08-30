@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import CardGrid from '../components/CardGrid';
 import Loading from '../components/Loading';
 import axios from 'axios';
-import Button from '../components/Button';
 
 function Home() {
   const [data, setData] = useState([]);
@@ -12,7 +11,7 @@ function Home() {
   const fetchData = async () => {
     try {
         setLoading(true);
-        const endPoint = 'api/post/all';
+        const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/all`;
         const response = await axios.get(endPoint);
         setData(response.data);
     } catch (error) {

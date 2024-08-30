@@ -32,8 +32,8 @@ function Comment({data , userId ,postId , reply}) {
 
   const handleLike = async () => {
     const endpoint = liked
-      ? `/api/post/${postId}/comment/${data._id}/unlike` 
-      : `/api/post/${postId}/comment/${data._id}/like`;
+      ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/unlike` 
+      : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/like`;
     try {
       const response = await axios.post(endpoint, { withCredentials: true });
       if (response.status === 200) {
@@ -49,8 +49,8 @@ function Comment({data , userId ,postId , reply}) {
   const handleReplyLike = async (replyId, index) => {
     const replyLiked = replyLikes[index].liked;
     const endpoint = replyLiked
-      ? `/api/post/${postId}/comment/${data._id}/reply/${replyId}/unlike`
-      : `/api/post/${postId}/comment/${data._id}/reply/${replyId}/like`;
+      ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/reply/${replyId}/unlike`
+      : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/reply/${replyId}/like`;
     try {
       const response = await axios.post(endpoint, {}, { withCredentials: true });
       if (response.status === 200) {

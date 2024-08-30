@@ -6,7 +6,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import App from './App';
+import App from './App.js';
 import Error from './screens/Error.js';
 import Home from './screens/Home.js';
 import Explore from './screens/Explore.js';
@@ -15,8 +15,9 @@ import Create from './screens/Create.js';
 import Login from './screens/Login.js';
 import AuthProvider from './hooks/AuthContext.js';
 import ProtectedRoute from './hooks/ProtectedRoute.js';
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from './reportWebVitals.js';
 import DetailedCard from './screens/DetailedCard.js';
+import ProfileSetting from './screens/ProfielSetting.js';
 
 const router = createBrowserRouter([{
   path: '/',
@@ -40,8 +41,12 @@ const router = createBrowserRouter([{
       element: <Login />
     },
     {
-      path: 'profile/:username',
+      path: 'user/:username',
       element: <Profile /> 
+    },
+    {
+      path : 'editUser',
+      element: <ProfileSetting />
     },
     {
       path: 'post/:id',

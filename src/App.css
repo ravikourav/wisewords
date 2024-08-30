@@ -4,6 +4,15 @@ body{
   scrollbar-gutter: stable;
 }
 
+.page-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top:75px;
+  margin-bottom: 20px;
+}
+
 :root {
   --MainColor: #6495ed;
 }
@@ -12,12 +21,25 @@ body{
   border: 1px solid #ccc;
   border-radius: 15px;
   font-size: 1rem;
+  display: block;
+  margin: 5px 0;
+  color: rgb(97, 97, 97);
+  padding:0px 20px;
+  height: 50px;
 }
 
 .no-blinker{
   user-select: none;
 }
 
+p {
+  margin: 0;
+  text-align: center;
+}
+
+.suggestion{
+  color: #818181;
+}
 
 /* Base button styles */
 .button {
@@ -48,4 +70,16 @@ body{
   background-color: #e0e0e0;
   color: #a0a0a0; 
   cursor: not-allowed;
+}
+
+.close-button {
+  position: absolute;
+  background-color: #f1f1f1;
+}
+
+@media (max-width: 768px) {
+  .page-root {
+    margin-top:0px;
+    margin-bottom: 80px;
+  }
 }

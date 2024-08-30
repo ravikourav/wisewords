@@ -50,7 +50,7 @@ function DetailedCard() {
 
   const featchCardData = async() =>{
     setLoading(true);
-    const endpoint = `/api/post/${id}`;
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
     const response = await axios.get(endpoint);
     setCardData(response.data);
     if(isLoggedIn){
@@ -61,7 +61,7 @@ function DetailedCard() {
   }
 
   const followStatus = async (data) => {
-    const endpoint = `/api/user/${data.owner_id._id}/isfollowing`;
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data.owner_id._id}/isfollowing`;
     if(user.user.id === data.owner_id._id){
       setIsOwner(true);
     }
@@ -131,8 +131,8 @@ function DetailedCard() {
 
   const followUnfollowOwner = async () => {
     const endpoint = isFollowing 
-      ? `/api/user/${cardData.owner_id._id}/unfollow` 
-      : `/api/user/${cardData.owner_id._id}/follow`;
+      ? `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${cardData.owner_id._id}/unfollow` 
+      : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${cardData.owner_id._id}/follow`;
   
     try {
       const response = await axios.post(endpoint, { withCredentials: true });
@@ -148,8 +148,8 @@ function DetailedCard() {
 
   const handleLike = async() => {
     const endpoint = liked
-      ? `/api/post/${id}/unlike` 
-      : `/api/post/${id}/like`;
+      ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/unlike` 
+      : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/like`;
     try {
       const response = await axios.post(endpoint, { withCredentials: true });
       if (response.status === 200) {
@@ -163,8 +163,8 @@ function DetailedCard() {
 
   const addComment = async() => {
     const endpoint = replyingTo ? 
-      `api/post/${cardData._id}/comment/${replyingTo}/reply`:
-      `api/post/${cardData._id}/comment` ;
+      `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${replyingTo}/reply`:
+      `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment` ;
     try {
       const response = await axios.post(
         endpoint,
@@ -275,85 +275,87 @@ function DetailedCard() {
   };
 
   return (
-    <div className='card-layout'>
-      <div className="modal-wraper">
-        {loading ? 
-        <Loading /> 
-        : 
-        <>
-          <BackButton onClick={handleClose}/>
-          
-          <div className='content-wraper'>
-            <Card
-              sizeCustom={true}
-              width={isMobile ? '' : cardWidth}
-              margin={false}
-              content={cardData.content}
-              textColor={cardData.contentColor}
-              author={cardData.author}
-              authorColor={cardData.authorColor}
-              background={cardData.backgroundImage}
-              tint={cardData.tintColor}
-            />
-            <div style={{height:cardHeight}} className="modal-box">
-              <div className='post-owner-container'>
-                <div className='flex-row'>
-                  <Link to={`/profile/${cardData.owner_id.username}`} >
-                    <ProfileIcon fill='#ccc' className='post-owner-profile-image' alt=''/>
-                  </Link>
-                  <div className='flex-column'>
-                    <Link to={`/profile/${cardData.owner_id.username}`} className="custom-link" >
-                    <p className='post-owner-name'>{cardData.owner_id.username}</p>
+    <div className='detailed-page-layout'>
+      <div className='card-layout'>
+        <div className="modal-wraper">
+          {loading ? 
+          <Loading /> 
+          : 
+          <>
+            <BackButton onClick={handleClose}/>
+            
+            <div className='content-wraper'>
+              <Card
+                sizeCustom={true}
+                width={isMobile ? '' : cardWidth}
+                margin={false}
+                content={cardData.content}
+                textColor={cardData.contentColor}
+                author={cardData.author}
+                authorColor={cardData.authorColor}
+                background={cardData.backgroundImage}
+                tint={cardData.tintColor}
+              />
+              <div style={{height:cardHeight}} className="modal-box">
+                <div className='post-owner-container'>
+                  <div className='flex-row'>
+                    <Link to={`/user/${cardData.owner_id.username}`} >
+                      <ProfileIcon fill='#ccc' className='post-owner-profile-image' alt=''/>
                     </Link>
-                    <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
+                    <div className='flex-column'>
+                      <Link to={`/user/${cardData.owner_id.username}`} className="custom-link" >
+                      <p className='post-owner-name'>{cardData.owner_id.username}</p>
+                      </Link>
+                      <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
+                    </div>
+                  </div>
+                  {!isOwner && <Button onClick={followUnfollowOwner} disabled= {!isLoggedIn} text={isFollowing ? 'Following' : 'Follow'} selected={isFollowing ? true : false}/>}
+                </div>
+                <div className='comment-container'>
+                  <div className='flex-row commnet-title-container'>
+                    <p className='comment-header'>Comments</p>
+                    <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
+                  </div>
+                  <div className='commnet-section' style={{marginBottom: '10px'}}>
+                    {hideComments && cardData.comments.map((comment)=>(
+                      <Comment key={comment._id} data={comment} userId={user.user.id} postId={id} reply={handleReplyingTo} replyTo />
+                    ))}
                   </div>
                 </div>
-                {!isOwner && <Button onClick={followUnfollowOwner} disabled= {!isLoggedIn} text={isFollowing ? 'Following' : 'Follow'} selected={isFollowing ? true : false}/>}
-              </div>
-              <div className='comment-container'>
-                <div className='flex-row commnet-title-container'>
-                  <p className='comment-header'>Comments</p>
-                  <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
+                { replyingTo &&
+                  <div className='replyingTo-container'>
+                    <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
+                    <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
+                  </div>
+                }
+                <div className='add-comment-container'>
+                  <ProfileIcon fill='#ccc' className='user-profile-image'></ProfileIcon>
+                  <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
+                  <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
                 </div>
-                <div className='commnet-section' style={{marginBottom: '10px'}}>
-                  {hideComments && cardData.comments.map((comment)=>(
-                    <Comment key={comment._id} data={comment} userId={user.user.id} postId={id} reply={handleReplyingTo} replyTo />
-                  ))}
-                </div>
-              </div>
-              { replyingTo &&
-                <div className='replyingTo-container'>
-                  <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
-                  <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
-                </div>
-              }
-              <div className='add-comment-container'>
-                <ProfileIcon fill='#ccc' className='user-profile-image'></ProfileIcon>
-                <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
-                <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
               </div>
             </div>
-          </div>
-          <div className='post-controle'>
-            <div className='control-wraper' onClick={handleSpeak} >
-              {!isPlaying ? 
-              <PlayIcon className='post-icon' /> : 
-              <PauseIcon className='post-icon' />
-              }
-              <p className='controle-lable'>speak</p>
+            <div className='post-controle'>
+              <div className='control-wraper' onClick={handleSpeak} >
+                {!isPlaying ? 
+                <PlayIcon className='post-icon' /> : 
+                <PauseIcon className='post-icon' />
+                }
+                <p className='controle-lable'>speak</p>
+              </div>
+              <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
+                <LikeIcon 
+                  fill={liked ? 'red' : 'white'}
+                  stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='3' className='post-icon'/>
+                <p className='controle-lable'>{formatNumber(cardData.likes.length)}</p>
+              </div>
+              <div className='control-wraper' onClick={handleCopy}>
+                <CopyIcon className='post-icon' />
+                <p className='controle-lable'>{!copied ? 'Copy' : 'Copied'}</p>
+              </div>
             </div>
-            <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
-              <LikeIcon 
-                fill={liked ? 'red' : 'white'}
-                stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='3' className='post-icon'/>
-              <p className='controle-lable'>{formatNumber(cardData.likes.length)}</p>
-            </div>
-            <div className='control-wraper' onClick={handleCopy}>
-              <CopyIcon className='post-icon' />
-              <p className='controle-lable'>{!copied ? 'Copy' : 'Copied'}</p>
-            </div>
-          </div>
-        </>}
+          </>}
+        </div>
       </div>
     </div>
   );

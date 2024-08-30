@@ -41,6 +41,8 @@
 .content {
     text-align: center;
     width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .author {

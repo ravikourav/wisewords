@@ -1,11 +1,13 @@
 import './css/Login.css';
 import React, { useState , useContext } from 'react';
 import axios from 'axios';
-import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
 import  { AuthContext } from '../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import Button from '../components/Button';
+
+//Profile Icon
+import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
 
 function Login() {
   const [name , setName] = useState('');
@@ -22,7 +24,7 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const endpoint = hasAccount ? '/api/user/login' : '/api/user/register';
+      const endpoint = hasAccount ? `${process.env.REACT_APP_BACKEND_API_URL}/api/user/login` : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/register`;
       const payload = hasAccount ? { username, password } : { name ,username, email, password };
       const response = await axios.post(endpoint, payload);
 

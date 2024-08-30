@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Button({ selected, disabled, width, text, onClick, to  , align}) {
+function Button({ selected, disabled, width, text, onClick, to  , align , type}) {
     
     const buttonClass = `button ${selected ? 'button-selected' : 'main-button'} ${disabled ? 'button-disabled' : ''}`;
 
@@ -25,6 +25,7 @@ function Button({ selected, disabled, width, text, onClick, to  , align}) {
         disabled={disabled} 
         style={{ width: `${width}px` , alignSelf : `${align}` }}
         onClick={disabled ? null : onClick}
+        type={type}
     >
         {text}
     </button>

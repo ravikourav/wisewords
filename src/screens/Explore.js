@@ -5,7 +5,7 @@ import { ReactComponent as BackImg } from '../assets/icon/arrow-back.svg';
 import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import './css/Explore.css';
 import { Masonry } from '@mui/lab';
-
+import { getCurrentSize } from '../utils/resposiveSize.js';
 import { useIsMobile } from '../utils/screenSize.js';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
@@ -18,6 +18,7 @@ function Explore() {
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedTagPosts, setSelectedTagPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [ currectSize, setCurrentSize] = useState(getCurrentSize());
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -25,7 +26,7 @@ function Explore() {
   }, []);
 
   const fetchAllTags = async () => {
-    const endpoint = '/api/tag/all';
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/all`;
     try {
       setLoading(true);
       const response = await axios.get(endpoint);
@@ -37,8 +38,21 @@ function Explore() {
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setCurrentSize(getCurrentSize());
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   const handleCardClick = async (card) => {
-    const endPoint = `/api/tag/${card._id}/posts`;
+    const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/${card._id}/posts`;
     try {
       setLoading(true);
       const response = await axios.get(endPoint);
@@ -57,10 +71,17 @@ function Explore() {
   };
 
   const breakpointCols = {
+    xl: 6,
     lg: 5,
     md: 4,
     sm: 3,
     xs: 2,
+    xxs: 1
+  };
+
+  const spacing = {
+    sm: 2,
+    xs: 1,
   };
 
   return (
@@ -76,7 +97,7 @@ function Explore() {
       {loading ? <Loading /> : (
         !selectedTag ? (
           <div className='card-layout'>
-            <Masonry columns={breakpointCols} spacing={2}>
+            <Masonry columns={breakpointCols[currectSize]} spacing={spacing}>
               {tags.map((card, index) => (
                 <ExploreCard
                   key={index}

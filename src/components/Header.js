@@ -82,7 +82,7 @@ function Header()  {
             <div className='left-nav-links'>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='icon'
               onClick={handleNotification} /> 
-              <Link to={`/profile/${user.user.username}`} onClick={()=>{select('Profile')}} >
+              <Link to={`user/${user.user.username}`} onClick={()=>{select('Profile')}} >
                 <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'profile-picture'/>
               </Link>
             </div>
@@ -114,7 +114,7 @@ function Header()  {
             <>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='nav-icon'
               onClick={handleNotification} />
-              <Link to={`profile/${user.user.username}`} onClick={()=>{select('Profile');}} >
+              <Link to={`user/${user.user.username}`} onClick={()=>{select('Profile');}} >
                 <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'nav-icon' alt="User" />
               </Link>
             </>

@@ -21,8 +21,9 @@
 }
 
 .dropdown-item {
-  padding: 8px 16px;
+  padding: 12px;
   cursor: pointer;
+  text-align: center;
   transition: background-color 0.2s;
 }
   

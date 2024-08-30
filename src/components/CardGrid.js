@@ -7,33 +7,34 @@ import { getCurrentSize } from '../utils/resposiveSize.js';
 
 const CardGrid = ({ data }) => {
   const navigate = useNavigate();
-  const [ currectSize, setCurrentSize] = useState(getCurrentSize());
+  const [numOfColumns , setNumOfColumns] = useState(1);
 
   const handleCardClick = (card) => {
     navigate(`/post/${card._id}`);
   };
 
-  const breakpointCols = {
+  const breakpoint = {
     xl: 6,
     lg: 5,
     md: 4,
     sm: 3,
     xs: 2,
-    xxs: 1
+    xxs: 1,
   };
 
   const spacing = {
-    lg: 2,
-    md: 2,
     sm: 2,
     xs: 1,
   };
 
   useEffect(() => {
     const handleResize = () => {
-      setCurrentSize(getCurrentSize());
+      const newSize = getCurrentSize();
+      const columns = breakpoint[newSize] || 1;
+      setNumOfColumns(columns);
     };
 
+    handleResize();
     window.addEventListener('resize', handleResize);
 
     // Cleanup the event listener on component unmount
@@ -45,7 +46,7 @@ const CardGrid = ({ data }) => {
   return (
     <div className='card-layout'>
         {data.length > 0 ? (
-          <Masonry columns={breakpointCols[currectSize]} spacing={spacing}>
+          <Masonry columns={numOfColumns} spacing={spacing}>
             {data.map((card) => (
               <Card
                 key={card._id}
