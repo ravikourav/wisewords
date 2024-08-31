@@ -31,7 +31,7 @@ function Login() {
       const token = response.data.accessToken;
 
       if (token) {
-        Cookies.set('authToken', token, { expires: 7, sameSite: 'None' });
+        Cookies.set('authToken', token, { expires: 7, sameSite: 'None' ,secure: true});
         await login(token);
         navigate('/');
       } else {
