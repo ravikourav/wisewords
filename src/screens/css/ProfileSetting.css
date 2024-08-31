@@ -22,6 +22,10 @@
     border: 1px solid rgb(224,224,224);
 }
 
+.cover-container {
+    position: relative;
+}
+
 .cover-input-label {
     border-radius: 35px;
     width: 650px;
@@ -32,7 +36,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: rgb(122, 122, 122);
 }
 
 .edit-profile-img-container {
@@ -40,7 +46,11 @@
     bottom: 0px;
     display: flex;
     justify-content: center;
-    align-items: center;
+}
+
+.img-template{
+    cursor: pointer;
+    color: #a3a3a3;
 }
 
 .remove-cover-button {
@@ -51,6 +61,13 @@
 .remove-avatar-button {
     top: -80px;
     right: -15px;
+}
+
+.img-upload-dropdown {
+    position: absolute;
+    top: 30%;
+    right: 50%;
+    z-index: 100;
 }
 
 @media (max-width: 768px) {

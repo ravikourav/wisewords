@@ -13,6 +13,8 @@ import axios from 'axios';
 import { AuthContext } from '../hooks/AuthContext.js';
 import IconButton from '../components/IconButton.js';
 
+import { calculateAspectRatio } from '../utils/calculateDimensions.js';
+
 //icons
 import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
 import { ReactComponent as DropDownIcon } from '../assets/icon/dropdown.svg';
@@ -36,6 +38,7 @@ function DetailedCard() {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [cardWidth , setCardWidth] = useState('');
   const [cardHeight , setCardHeight] = useState('');
+  const [aspectRatio, setAspectRatio] = useState('');
 
   const [comment, setComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
@@ -81,16 +84,16 @@ function DetailedCard() {
   };
 
   const dimension = (data) => {
-    const aspectRatio = data.width / data.height;
-
-    if (aspectRatio > 1) {
+    const ratio = calculateAspectRatio(data.width , data.height);
+    const [aspectWidth, aspectHeight] = ratio.split(':').map(Number);
+    if (aspectWidth > aspectHeight) {
       const newWidth = Math.min(window.innerWidth * 0.56, data.width);
-      const newHeight = (newWidth / aspectRatio);
+      const newHeight = newWidth / (aspectWidth / aspectHeight);
       setCardWidth(newWidth + 'px');
       setCardHeight(newHeight + 'px');
-    } else { // Vertical Image
+    } else {
       const newHeight = Math.min(window.innerHeight * 0.78, data.height);
-      const newWidth = (newHeight * aspectRatio); 
+      const newWidth = newHeight * (aspectWidth / aspectHeight);
       setCardWidth(newWidth + 'px');
       setCardHeight(newHeight + 'px');
     }
@@ -135,11 +138,11 @@ function DetailedCard() {
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${cardData.owner_id._id}/follow`;
   
     try {
-      const response = await axios.post(endpoint, { withCredentials: true });
-      console.log(response);
+      const response = await axios.post(endpoint,{}, { withCredentials: true });
       if (response.status === 200) {
         setIsFollowing(!isFollowing);
         cardData.owner_id.followers = response.data.followers;
+        console.log(isFollowing ? 'user unfollowed succesfully' : 'user followed succesfully');
       }
     } catch (error) {
       console.error('Error following/unfollowing user:', error);
@@ -151,10 +154,11 @@ function DetailedCard() {
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/unlike` 
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/like`;
     try {
-      const response = await axios.post(endpoint, { withCredentials: true });
+      const response = await axios.post(endpoint, {},{ withCredentials: true });
       if (response.status === 200) {
         setLiked(!liked);
         cardData.likes = response.data.likes;
+        console.log(liked ? 'post unliked succesfully' : 'post liked succesfully');
       }
     } catch (error) {
       console.error('Error liking/unliking user:', error);

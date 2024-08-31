@@ -1,11 +1,10 @@
-export function getImageDimensions(screenWidth, screenHeight, imageWidth, imageHeight) {
-    const maxScreenWidth = screenWidth * 0.9;
-    const maxScreenHeight = screenHeight * 0.9;
+const gcd = (a, b) => {
+    return b === 0 ? a : gcd(b, a % b);
+};
 
-    return calculateAspectRatioFit(imageWidth, imageHeight, maxScreenWidth, maxScreenHeight);
-}
-
-function calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
-    const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-    return { width: srcWidth * ratio, height: srcHeight * ratio };
-}
+export const calculateAspectRatio = (width, height) => {
+    const divisor = gcd(width, height);
+    const aspectWidth = width / divisor;
+    const aspectHeight = height / divisor;
+    return(`${aspectWidth}:${aspectHeight}`);
+};

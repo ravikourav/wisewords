@@ -155,18 +155,42 @@ const removeCoverImage = () => {
           <p className='update-page-title'>Edit Profile</p>
           <form className='form-group-profile' onSubmit={handleSubmit}>
             <div className='profile-img-container'>
-              {data?.coverImg || newCoverImage ? 
-                <>
-                  <img className='cover-img' src={newCoverImage ? URL.createObjectURL(newCoverImage) : data?.coverImg} alt='' />
-                  <IconButton className='close-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} type='button'/>
-                </>
-                :
-                <>
-                  <label htmlFor="cover-image-upload"  className="cover-input-label">Unveil Your Cover</label>
-                  <input type='file' accept="image/*" id='cover-image-upload' className='file-input' onChange={()=>{setShowCoverDropdown(true)}} />
-                  <Dropdown options={[{ label : 'Upload' , onClick : () => handleCoverImageChange},{label : 'Browse On Pixel', onClick : ()=>{setBrowseOnline(true); setBrowseAvatar(false)}}]} showIcon={false} handleMenu={onclick} />
-                </>
-              }
+              <div className='cover-container'>
+                {data?.coverImg || newCoverImage ? 
+                  <>
+                    <img className='cover-img' src={newCoverImage ? URL.createObjectURL(newCoverImage) : data?.coverImg} alt='' />
+                    <IconButton className='close-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} type='button'/>
+                  </>
+                  :
+                  <>
+                    <label className="cover-input-label" style={{backgroundColor: `${!showCoverDropdown? '#f1f1f1' : '#a3a3a3' }`}} onClick={()=>setShowCoverDropdown(!showCoverDropdown)}>Unveil Your Cover</label>
+                    <input type='file' accept="image/*" id='cover-image-upload' className='file-input' onChange={handleCoverImageChange} />
+                    <div className='img-upload-dropdown'>
+                      <Dropdown 
+                        options={[
+                          { 
+                            label: 'Upload', 
+                            onClick: () => {
+                              setShowCoverDropdown(false);
+                              document.getElementById('cover-image-upload').click(); // Trigger the file input
+                            }
+                          },
+                          { 
+                            label: 'Browse On Pixel', 
+                            onClick: () => {
+                              setBrowseOnline(true);
+                              setBrowseAvatar(false);
+                              setShowCoverDropdown(false);
+                            }
+                          }
+                        ]} 
+                        showIcon={false} 
+                        handleMenu={showCoverDropdown} 
+                      />
+                    </div>
+                  </>
+                }
+              </div>
               <div className='edit-profile-img-container'>
                 {data?.avatar || newAvatar  ?
                   <>
@@ -175,11 +199,29 @@ const removeCoverImage = () => {
                   </>
                   :
                   <div className='edit-profile-img-container'>
-                    <label htmlFor="avatar-image-upload">
-                      <ProfileIcon htmlFor="avatar-image-upload" fill='#ccc' className='profile-img' />
-                    </label>
-                    <input type='file' id='avatar-image-upload' className='file-input' onChange={()=>{setShowAvatarDropdown(true)}} />
-                    <Dropdown options={[{ label : 'Upload' , onClick : () => handleAvatarChange },{label : 'Browse On Pixel', onClick : () => {setBrowseOnline(true); setBrowseAvatar(true)}}]} showIcon={false} handleMenu={onclick} />
+                    <ProfileIcon fill={`${!showAvatarDropdown? '#ccc' : '#a3a3a3'}`} className='profile-img img-template' onClick={()=>setShowAvatarDropdown(!showAvatarDropdown)} />
+                    <input type='file' id='avatar-image-upload' className='file-input' onChange={handleAvatarChange} />
+                    <Dropdown 
+                      showIcon={false} 
+                      options={[
+                        { 
+                          label: 'Upload', 
+                          onClick: () => {
+                            setShowAvatarDropdown(false);
+                            document.getElementById('avatar-image-upload').click(); // Trigger the file input
+                          }
+                        },
+                        { 
+                          label: 'Browse On Pixel', 
+                          onClick: () => {
+                            setBrowseOnline(true);
+                            setBrowseAvatar(true);
+                            setShowAvatarDropdown(false);
+                          }
+                        }
+                      ]} 
+                      handleMenu={showAvatarDropdown} 
+                    />
                   </div>
                 }
               </div>

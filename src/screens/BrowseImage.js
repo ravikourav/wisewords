@@ -102,7 +102,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   };
 
   const handleImageSelect = (image) => {
-    onSelectImage(image); // Notify the parent component of the selected image
+    onSelectImage(image.largeImageURL , image.imageWidth , image.imageHeight); 
     onClose(); // Close the browse image modal
   };
 
@@ -129,7 +129,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
                   <OnlineImageCard
                   key={image.id}
                   image={fullResolutionImage? image.largeImageURL : image.previewURL}
-                  onSelect={() => handleImageSelect(image.largeImageURL)}
+                  onSelect={() => handleImageSelect(image)}
                   />
                 ))}
               </Masonry>

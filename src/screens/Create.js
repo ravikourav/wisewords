@@ -9,6 +9,7 @@ import Loading from '../components/Loading';
 import { useSearchParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import { calculateAspectRatio } from '../utils/calculateDimensions';
 
 function Create() {
   const [loading , setLoading] = useState(false);
@@ -23,25 +24,28 @@ function Create() {
   const [tintColor, setTintColor] = useState('rgba(0, 0, 0, 0.4)');
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState('');
 
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Separate states for each color picker visibility
-  const [showContentColorPicker, setShowContentColorPicker] = useState(false);
-  const [showAuthorColorPicker, setShowAuthorColorPicker] = useState(false);
-  const [showTintColorPicker, setShowTintColorPicker] = useState(false);
+  const [activePicker, setActivePicker] = useState(null);
 
   const [browseOnline, setBrowseOnline] = useState(false);
-
-  // Refs for color pickers
-  const contentColorPickerRef = useRef(null);
-  const authorColorPickerRef = useRef(null);
-  const tintColorPickerRef = useRef(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.type.startsWith('image/')) {
+        const img = new Image();
+        img.onload = () => {
+        const width = img.width;
+        const height = img.height;
+        const ratio = calculateAspectRatio(width,height);
+
+        setAspectRatio(ratio);
+        };
+        img.src = URL.createObjectURL(file);
         setBackgroundImage(file);
       } else {
         alert('Please select a valid image file');
@@ -55,31 +59,15 @@ function Create() {
   };
 
   const handleColorPickerClick = (picker) => {
-    switch (picker) {
-      case 'content':
-        setShowContentColorPicker(!showContentColorPicker); 
-        setShowAuthorColorPicker(false);
-        setShowTintColorPicker(false);
-        break;
-      case 'author':
-        setShowAuthorColorPicker(!showAuthorColorPicker);
-        setShowContentColorPicker(false);
-        setShowTintColorPicker(false);
-        break;
-      case 'tint':
-        setShowTintColorPicker(!showTintColorPicker);
-        setShowContentColorPicker(false);
-        setShowAuthorColorPicker(false);
-        break;
-      default:
-        break;
-    }
+    setActivePicker(activePicker === picker ? null : picker);
   };
 
-  const handleImageSelect = async (imageUrl) => {
+  const handleImageSelect = async (imageUrl , width , height) => {
     try {
       const response = await axios.get(imageUrl, { responseType: 'blob' });
       const file = new File([response.data], 'background.jpg', { type: response.data.type });
+      const ratio = calculateAspectRatio(width , height);
+      setAspectRatio(ratio);
       setBackgroundImage(file);
     } catch (error) {
       console.error('Failed to download image', error);
@@ -193,6 +181,7 @@ function Create() {
                     background={URL.createObjectURL(backgroundImage)}
                     tint={tintColor}
                   />
+                  <p className='suggestion'>Ratio : {aspectRatio}</p>
                   <Button onClick={() =>{setBackgroundImage(null)}} width={150} text='Remove' />
                 </div>
               ) : (
@@ -255,10 +244,10 @@ function Create() {
                   Shade of the Veil
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: tintColor }}></div>
-                    <Button onClick={() =>  handleColorPickerClick('tint')} text={showTintColorPicker ? 'Apply' : 'Select'} selected={showTintColorPicker ? true : false} type="button"/>
+                    <Button onClick={() =>  handleColorPickerClick('tint')} text={activePicker==='tint' ? 'Apply' : 'Select'} selected={activePicker==='tint' ? true : false} type="button"/>
                   </div>
-                  {showTintColorPicker && (
-                    <div ref={tintColorPickerRef}>
+                  {activePicker==='tint' && (
+                    <div >
                       <SketchPicker className='color-picker' color={tintColor} onChange={(color) => handleColorChange(color, setTintColor)} />
                     </div>
                   )}
@@ -267,10 +256,10 @@ function Create() {
                   Hue of the Heart
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: contentColor }}></div>
-                    <Button onClick={() => handleColorPickerClick('content')} text={showContentColorPicker ? 'Apply' : 'Select'} selected={showContentColorPicker? true : false } type='button'/>
+                    <Button onClick={() => handleColorPickerClick('content')} text={activePicker==='content' ? 'Apply' : 'Select'} selected={activePicker==='content' ? true : false } type='button'/>
                   </div>
-                  {showContentColorPicker && (
-                    <div ref={contentColorPickerRef}>
+                  {activePicker==='content' && (
+                    <div>
                       <SketchPicker className='color-picker' color={contentColor} onChange={(color) => handleColorChange(color, setContentColor)} />
                     </div>
                   )}
@@ -279,10 +268,10 @@ function Create() {
                   Tone of the Artisan
                   <div className='color-container'>
                     <div className='main-input preview-color' style={{ backgroundColor: authorColor }}></div>
-                    <Button onClick={() => handleColorPickerClick('author')} text={showAuthorColorPicker ? 'Apply' : 'Select'} selected={showAuthorColorPicker ? true : false } type="button" />
+                    <Button onClick={() => handleColorPickerClick('author')} text={activePicker==='author' ? 'Apply' : 'Select'} selected={activePicker==='author' ? true : false } type="button" />
                   </div>
-                  {showAuthorColorPicker && (
-                    <div ref={authorColorPickerRef}>
+                  {activePicker==='author' && (
+                    <div>
                       <SketchPicker className='color-picker' color={authorColor} onChange={(color) => handleColorChange(color, setAuthorColor)} />
                     </div>
                   )}

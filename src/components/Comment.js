@@ -35,11 +35,12 @@ function Comment({data , userId ,postId , reply}) {
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/unlike` 
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/like`;
     try {
-      const response = await axios.post(endpoint, { withCredentials: true });
+      const response = await axios.post(endpoint, {},{ withCredentials: true });
       if (response.status === 200) {
         setLikes(liked ? likes - 1 : likes + 1);
         data.likes = response.data.likes;
         setLiked(!liked);
+        console.log(liked ? 'comment unliked succesfully' : 'comment liked succesfully');
       }
     } catch (error) {
       console.error('Error liking/unliking user:', error);
@@ -52,7 +53,7 @@ function Comment({data , userId ,postId , reply}) {
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/reply/${replyId}/unlike`
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/reply/${replyId}/like`;
     try {
-      const response = await axios.post(endpoint, {}, { withCredentials: true });
+      const response = await axios.post(endpoint,{}, { withCredentials: true });
       if (response.status === 200) {
         setReplyLikes((prevLikes) =>
           prevLikes.map((replyLike, i) =>
@@ -62,6 +63,7 @@ function Comment({data , userId ,postId , reply}) {
           )
         );
         data.replies[index].likes = response.data.likes;
+        console.log(liked ? 'reply unliked succesfully' : 'reply liked succesfully');
       }
     } catch (error) {
       console.error('Error liking/unliking reply:', error);

@@ -152,13 +152,13 @@ function Profile() {
                         <div className='profile-control'>
                             <IconButton icon={ShareIcon} onClick={()=>handleShare(data.username)} size='25px'/>
                             <Button text='Logout' selected={true} onClick={logout} />
-                            <Dropdown options={[{ label : 'Edit Profile' , onClick : () => navigate('/editUser') }]} />
+                            <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => navigate('/editUser') }]} />
                         </div> 
                         :
                         <div className='profile-control'>
                             <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
                             <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} />    
-                            <Dropdown options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
+                            <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
                         </div>
                     }
                     <div className='post-selector-container'>
