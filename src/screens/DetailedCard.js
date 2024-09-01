@@ -328,9 +328,12 @@ function DetailedCard() {
                   <div className='commnet-section' style={{ marginBottom: '10px' }}>
                   {hideComments ? (
                     cardData.comments.length > 0 ? (
-                      cardData.comments.map((comment) => (
-                        <Comment key={comment._id} data={comment} userId={user.user.id} postId={id} reply={handleReplyingTo} replyTo />
-                      ))
+                      <>
+                        {cardData.comments.map((comment) => (
+                          <Comment key={comment._id} data={comment} userId={user.user.id} postId={id} reply={handleReplyingTo} replyTo />
+                        ))}
+                        <p style={{fontSize:'2rem'}}>.</p>
+                      </>
                     ) : (
                       <p className='message'>No echoes to share.</p>
                     )

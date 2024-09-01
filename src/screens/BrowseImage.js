@@ -16,6 +16,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   const [loading, setLoading] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchInput , setSearchInput] = useState('new');
   const search = searchParams.get('search') || '';
   const PIXABAY_API_KEY = process.env.REACT_APP_PIXABAY_API_KEY;
   const [page, setPage] = useState(1); // Current page for pagination
@@ -23,17 +24,12 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   const [fullResolutionImage , setFullResolutionImage] = useState(false);
 
   const fetchImages = async () => {
-    if (!search && title) {
-      setSearchParams({ search: title });
-      return;
-    }
-    else if(!search && !title) {
-      setSearchParams({ search: 'popular' });
-      return;
+    if (title) {
+      setSearchInput(title);
     }
 
     try {
-      const encodedQuery = encodeURIComponent(search.trim());
+      const encodedQuery = encodeURIComponent(searchInput);
       const response = await axios.get('https://pixabay.com/api/', {
         params: {
           key: PIXABAY_API_KEY,
@@ -95,10 +91,10 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   }, [search]);
 
   const breakpointCols = {
-    lg: 5,
-    md: 4,
-    sm: 3,
-    xs: 2,
+    lg: 4,
+    md: 3,
+    sm: 2,
+    xs: 1,
   };
 
   const handleImageSelect = (image) => {

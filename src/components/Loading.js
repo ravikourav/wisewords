@@ -1,10 +1,12 @@
 import React from 'react';
-import laodingGif from '../assets/gif/loading.gif';
+import { PuffLoader } from "react-spinners";
 
 function Loading() {
   return (
-    <div style={{display: 'flex', alignContent: 'center' , justifyItems: 'center' , alignItems: 'center' ,height: '50vh' , width: '100vw', justifyContent: 'center'}}>
-        <img src={laodingGif} alt=''/>
+    <div style={{display: 'flex', alignContent: 'center' , justifyItems: 'center' , alignItems: 'center' ,height: '100vh' , width: '100vw', justifyContent: 'center'}}>
+        <PuffLoader
+          size={50}
+        />
     </div>
   )
 }

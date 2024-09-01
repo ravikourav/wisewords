@@ -1,12 +1,8 @@
-import React, { useState , useEffect, useContext , useCallback} from 'react';
+import React, { useState , useEffect, useContext } from 'react';
 import './css/Header.css';
 import { Link , useLocation, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
-
 import { useMediaQuery } from 'react-responsive';
-
-import NotificationModel from './NotificationModel.js';
-
+import NotificationModel from '../screens/NotificationModel.js';
 import {  AuthContext } from '../hooks/AuthContext.js';
 import Button from './Button.js';
 

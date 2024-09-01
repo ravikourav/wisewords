@@ -18,6 +18,7 @@ import ProtectedRoute from './hooks/ProtectedRoute.js';
 import reportWebVitals from './reportWebVitals.js';
 import DetailedCard from './screens/DetailedCard.js';
 import ProfileSetting from './screens/ProfielSetting.js';
+import Loading from './components/Loading.js';
 
 const router = createBrowserRouter([{
   path: '/',

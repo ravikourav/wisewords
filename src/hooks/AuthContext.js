@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
         setProfilePicture(response.data.profilePicture);
       }
     } catch (error) {
-      console.error('Error fetching profile picture for header', error);
+      console.error('Error fetching profile picture', error);
     }
   };
 
