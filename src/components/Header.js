@@ -1,6 +1,7 @@
-import React, { useState , useEffect, useContext} from 'react';
+import React, { useState , useEffect, useContext , useCallback} from 'react';
 import './css/Header.css';
 import { Link , useLocation, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 
 import { useMediaQuery } from 'react-responsive';
 
@@ -22,7 +23,7 @@ function Header()  {
   const [searchParams , setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [Selected , setSelected] = useState(location);
-  const { isLoggedIn , user } = useContext(AuthContext);
+  const { isLoggedIn, user, profilePicture} = useContext(AuthContext);
 
   const [notificationBgPage , setNotificationBgPage] = useState();
   const [notificationOpened , setNotificationOpened] = useState(false);
@@ -83,7 +84,11 @@ function Header()  {
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='icon'
               onClick={handleNotification} /> 
               <Link to={`user/${user.user.username}`} onClick={()=>{select('Profile')}} >
-                <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'profile-picture'/>
+                { profilePicture ?
+                  <img src={profilePicture} alt='' className='profile-picture' />
+                :
+                  <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'profile-picture'/>
+                }
               </Link>
             </div>
           ) : (
@@ -115,7 +120,11 @@ function Header()  {
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='nav-icon'
               onClick={handleNotification} />
               <Link to={`user/${user.user.username}`} onClick={()=>{select('Profile');}} >
-                <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'nav-icon' alt="User" />
+                { profilePicture ?
+                  <img src={profilePicture} alt='' className='nav-icon' />
+                :
+                  <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'nav-icon' alt="User"/>
+                }
               </Link>
             </>
             ) : (

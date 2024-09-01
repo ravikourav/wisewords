@@ -41,6 +41,11 @@ p {
   color: #818181;
 }
 
+.message{
+  color: #818181;
+  font-weight: 500;
+}
+
 /* Base button styles */
 .button {
   font-size: 18px;

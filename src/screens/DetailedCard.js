@@ -28,7 +28,7 @@ import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 function DetailedCard() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isLoggedIn, user } = useContext(AuthContext);
+  const { isLoggedIn, user, profilePicture} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
   const [isOwner , setIsOwner] = useState(false);
@@ -43,7 +43,7 @@ function DetailedCard() {
   const [comment, setComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyWithUsername , setReplyWithUsername] = useState(null);
-  const [hideComments , setHideComments] = useState(false);
+  const [hideComments , setHideComments] = useState(true);
 
   const [copied, setCopied] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -56,6 +56,7 @@ function DetailedCard() {
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
     const response = await axios.get(endpoint);
     setCardData(response.data);
+    console.log('card data : ',response.data)
     if(isLoggedIn){
       await followStatus(response.data);
     }else{
@@ -304,7 +305,11 @@ function DetailedCard() {
                 <div className='post-owner-container'>
                   <div className='flex-row'>
                     <Link to={`/user/${cardData.owner_id.username}`} >
-                      <ProfileIcon fill='#ccc' className='post-owner-profile-image' alt=''/>
+                      {cardData.owner_id.avatar ?
+                        <img src={cardData.owner_id.avatar} alt='' className='post-owner-profile-image' />
+                      :
+                        <ProfileIcon fill='#ccc' className='post-owner-profile-image' />
+                      }
                     </Link>
                     <div className='flex-column'>
                       <Link to={`/user/${cardData.owner_id.username}`} className="custom-link" >
@@ -320,10 +325,16 @@ function DetailedCard() {
                     <p className='comment-header'>Comments</p>
                     <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
                   </div>
-                  <div className='commnet-section' style={{marginBottom: '10px'}}>
-                    {hideComments && cardData.comments.map((comment)=>(
-                      <Comment key={comment._id} data={comment} userId={user.user.id} postId={id} reply={handleReplyingTo} replyTo />
-                    ))}
+                  <div className='commnet-section' style={{ marginBottom: '10px' }}>
+                  {hideComments ? (
+                    cardData.comments.length > 0 ? (
+                      cardData.comments.map((comment) => (
+                        <Comment key={comment._id} data={comment} userId={user.user.id} postId={id} reply={handleReplyingTo} replyTo />
+                      ))
+                    ) : (
+                      <p className='message'>No echoes to share.</p>
+                    )
+                  ) : null}
                   </div>
                 </div>
                 { replyingTo &&
@@ -333,7 +344,11 @@ function DetailedCard() {
                   </div>
                 }
                 <div className='add-comment-container'>
-                  <ProfileIcon fill='#ccc' className='user-profile-image'></ProfileIcon>
+                  {cardData.owner_id.avatar ?
+                    <img src={profilePicture} alt='' className='user-profile-image' />
+                  :
+                    <ProfileIcon fill='#ccc' className='user-profile-image' />
+                  }
                   <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
                   <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
                 </div>

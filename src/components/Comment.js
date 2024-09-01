@@ -17,6 +17,12 @@ function Comment({data , userId ,postId , reply}) {
     data.replies.map(reply => ({ id: reply.id, likes: reply.likes.length || 0, liked: reply.likes.includes(userId) }))
   );
 
+  const [commentProfilePicture, setCommentProfilePicture] = useState('');
+  const [replyProfilePictures, setReplyProfilePictures] = useState(
+    data.replies.reduce((acc, reply) => ({ ...acc, [reply._id]: '' }), {})
+  );
+
+
   useEffect(() => {
     // Initialize the liked state based on the user's like status
     setLiked(data.likes.includes(userId));
@@ -28,7 +34,29 @@ function Comment({data , userId ,postId , reply}) {
       liked: reply.likes.includes(userId),
     }));
     setReplyLikes(initialReplyLikes);
+
+    fetchProfilePicture(data.username, 'comment');
+
+    data.replies.forEach(reply => {
+      fetchProfilePicture(reply.username, 'reply', reply._id);
+    });
+
   }, [data, userId]);
+
+  const fetchProfilePicture = async (username, type, replyId = null) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}/getProfilePicture`);
+      if (response.status === 200) {
+        if (type === 'comment') {
+          setCommentProfilePicture(response.data.profilePicture);
+        } else if (type === 'reply' && replyId) {
+          setReplyProfilePictures(prev => ({ ...prev, [replyId]: response.data.profilePicture }));
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching profile picture for ${type}:`, error);
+    }
+  };
 
   const handleLike = async () => {
     const endpoint = liked
@@ -85,7 +113,11 @@ function Comment({data , userId ,postId , reply}) {
   return (
     <div className='comment-warper'>
       <div className='main-comment'>
-        <ProfileIcon className='comment-profile-picture' />
+        {commentProfilePicture ?
+          <img src={commentProfilePicture} alt='' className='comment-profile-picture' />
+        :
+          <ProfileIcon fill='#ccc' className='comment-profile-picture' />
+        }
         <div className='comment-body'>
           <div className='row'>
             <p className='comment-username'>{data.username}</p>
@@ -106,7 +138,7 @@ function Comment({data , userId ,postId , reply}) {
       
       {!viewReply && data.replies.map((reply, index) => (
         <div className='reply-container' key={reply._id}>
-          <ProfileIcon className='reply-profile-picture' />
+          <img src={replyProfilePictures[reply._id] || ProfileIcon} alt='' className='reply-profile-picture' />
           <div className='comment-reply-body'>
             <div className='row'>
               <p className='comment-username'>{reply.username}</p>
