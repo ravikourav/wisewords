@@ -72,8 +72,11 @@ function DetailedCard() {
     else{
       setIsOwner(false);
       try {
-        const response = await axios.get(endpoint , {
+        const response = await axios.get(endpoint ,{} ,{ 
           withCredentials: true,
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          } 
         });
         setIsFollowing(response.data.isfollowing);
       } catch (error) {
@@ -103,7 +106,7 @@ function DetailedCard() {
   useEffect(() => {
     const handleResize = () => {
         if (cardData) {
-            dimension(cardData);
+          dimension(cardData);
         }
     };
 
@@ -139,7 +142,12 @@ function DetailedCard() {
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${cardData.owner_id._id}/follow`;
   
     try {
-      const response = await axios.post(endpoint,{}, { withCredentials: true });
+      const response = await axios.post(endpoint,{}, { 
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        } 
+      });
       if (response.status === 200) {
         setIsFollowing(!isFollowing);
         cardData.owner_id.followers = response.data.followers;
@@ -155,7 +163,12 @@ function DetailedCard() {
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/unlike` 
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/like`;
     try {
-      const response = await axios.post(endpoint, {},{ withCredentials: true });
+      const response = await axios.post(endpoint, {},{ 
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        } 
+      });
       if (response.status === 200) {
         setLiked(!liked);
         cardData.likes = response.data.likes;
@@ -171,10 +184,13 @@ function DetailedCard() {
       `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${replyingTo}/reply`:
       `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment` ;
     try {
-      const response = await axios.post(
-        endpoint,
-        { comment },
-        { withCredentials: true }
+      const response = await axios.post( endpoint,  { comment },
+        { 
+          withCredentials: true,
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          } 
+        }
       );
       setComment('');
       setReplyingTo(null);
@@ -330,7 +346,7 @@ function DetailedCard() {
                     cardData.comments.length > 0 ? (
                       <>
                         {cardData.comments.map((comment) => (
-                          <Comment key={comment._id} data={comment} userId={user.user.id} postId={id} reply={handleReplyingTo} replyTo />
+                          <Comment key={comment._id} data={comment} userId={user?.user.id} postId={id} reply={handleReplyingTo} replyTo />
                         ))}
                         <p style={{fontSize:'2rem'}}>.</p>
                       </>
