@@ -163,7 +163,9 @@ function DetailedCard() {
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/unlike` 
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/like`;
     try {
-      const response = await axios.post(endpoint);
+      const response = await axios.post(endpoint, {},{ 
+        withCredentials: true
+      });
       if (response.status === 200) {
         setLiked(!liked);
         cardData.likes = response.data.likes;
