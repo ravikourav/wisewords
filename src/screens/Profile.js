@@ -3,6 +3,7 @@ import './css/Profile.css';
 import { useParams } from 'react-router-dom';
 import CardGrid from '../components/CardGrid.js';
 import { AuthContext } from '../hooks/AuthContext.js';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
 import { useNavigate } from 'react-router-dom';
@@ -60,6 +61,7 @@ function Profile() {
     }
 
     const followUnfollowOwner = async () => {
+        const token = Cookies.get('authToken');
         const endpoint = isFollowing 
           ? `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/unfollow` 
           : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/follow`;
@@ -68,8 +70,9 @@ function Profile() {
             const response = await axios.post(endpoint, { 
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                },
-                withCredentials: true 
+                    'Authorization': `Bearer ${token}`
+
+                }
             });
             if (response.status === 200) {
                 setIsFollowing(!isFollowing);

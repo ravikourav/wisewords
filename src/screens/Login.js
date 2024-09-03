@@ -32,7 +32,6 @@ function Login() {
 
       if (token) {
         Cookies.set('authToken', token, { expires: 7, sameSite: 'None' ,secure: true});
-        console.log('Cookie set:', Cookies.get('authToken'));
         await login(token);
         navigate('/');
       } else {

@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import NotificationTemplate from '../components/NotificationTemplate.js';
 import './css/Notification.css';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 function NotificationModel() {
   
   const [notificationData , setNotificationData] = useState();
 
   const fetchNotificaiton = async () => {
+    const token = Cookies.get('authToken');
     try {
       const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/notifications`;
-      const response = await axios.get(endpoint ,{ withCredentials: true } );
+      const response = await axios.get(endpoint ,{headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }  } );
       if (response.status === 200) {
         console.log(response.data);
         setNotificationData(response.data);

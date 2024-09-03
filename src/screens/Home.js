@@ -12,7 +12,6 @@ function Home() {
     try {
         setLoading(true);
         const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/all`;
-        console.log("endpoint : ", endPoint);
         const response = await axios.get(endPoint);
         setData(response.data);
     } catch (error) {

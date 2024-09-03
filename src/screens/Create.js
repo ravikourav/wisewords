@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SketchPicker } from 'react-color';
 import './css/Create.css';
 import BrowseImage from './BrowseImage';
 import Card from '../components/Card';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
 import { useSearchParams } from 'react-router-dom';
@@ -83,6 +84,7 @@ function Create() {
     }
     setLoading(true);
     try {
+      const token = Cookies.get('authToken');
       const endpoint = 'api/post/create';
       const formData = new FormData();
       formData.append('title', title);
@@ -97,6 +99,7 @@ function Create() {
       console.log('backgroudnImg' , backgroundImage);
       await axios.post(endpoint, formData ,{
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         },
         withCredentials: true

@@ -6,6 +6,7 @@ import Button from '../components/Button.js';
 import Loading from '../components/Loading.js';
 import { useMediaQuery } from 'react-responsive';
 import { Link, useParams , useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import Comment from '../components/Comment.js';
 import BackButton from '../components/BackButton.js';
@@ -65,6 +66,7 @@ function DetailedCard() {
   }
 
   const followStatus = async (data) => {
+    const token = Cookies.get('authToken');
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data.owner_id._id}/isfollowing`;
     if(user.user.id === data.owner_id._id){
       setIsOwner(true);
@@ -73,9 +75,9 @@ function DetailedCard() {
       setIsOwner(false);
       try {
         const response = await axios.get(endpoint ,{} ,{ 
-          withCredentials: true,
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           } 
         });
         setIsFollowing(response.data.isfollowing);
@@ -137,15 +139,16 @@ function DetailedCard() {
   }, [isLoggedIn]);
 
   const followUnfollowOwner = async () => {
+    const token = Cookies.get('authToken');
     const endpoint = isFollowing 
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${cardData.owner_id._id}/unfollow` 
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${cardData.owner_id._id}/follow`;
   
     try {
       const response = await axios.post(endpoint,{}, { 
-        withCredentials: true,
         headers: {
-          'Access-Control-Allow-Origin': '*'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         } 
       });
       if (response.status === 200) {
@@ -159,12 +162,16 @@ function DetailedCard() {
   };
 
   const handleLike = async() => {
+    const token = Cookies.get('authToken');
     const endpoint = liked
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/unlike` 
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}/like`;
     try {
       const response = await axios.post(endpoint, {},{ 
-        withCredentials: true
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        } 
       });
       if (response.status === 200) {
         setLiked(!liked);
@@ -177,15 +184,16 @@ function DetailedCard() {
   };
 
   const addComment = async() => {
+    const token = Cookies.get('authToken');
     const endpoint = replyingTo ? 
       `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${replyingTo}/reply`:
       `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment` ;
     try {
       const response = await axios.post( endpoint,  { comment },
         { 
-          withCredentials: true,
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           } 
         }
       );
@@ -193,7 +201,7 @@ function DetailedCard() {
       setReplyingTo(null);
       console.log(response);
     }catch(err) {
-      console.error('Error Adding Commnet/Reply user:', err);
+      console.error('Error Adding Comment/Reply user:', err);
     }
   }
 

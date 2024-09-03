@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './css/Comment.css';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import timeAgo from '../utils/timeAgo';
 
 //icons
@@ -59,11 +60,15 @@ function Comment({data , userId ,postId , reply}) {
   };
 
   const handleLike = async () => {
+    const token = Cookies.get('authToken');
     const endpoint = liked
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/unlike` 
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/like`;
     try {
-      const response = await axios.post(endpoint, {},{ withCredentials: true });
+      const response = await axios.post(endpoint, {},{ headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }  });
       if (response.status === 200) {
         setLikes(liked ? likes - 1 : likes + 1);
         data.likes = response.data.likes;
@@ -76,12 +81,16 @@ function Comment({data , userId ,postId , reply}) {
   };
 
   const handleReplyLike = async (replyId, index) => {
+    const token = Cookies.get('authToken');
     const replyLiked = replyLikes[index].liked;
     const endpoint = replyLiked
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/reply/${replyId}/unlike`
       : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/comment/${data._id}/reply/${replyId}/like`;
     try {
-      const response = await axios.post(endpoint,{}, { withCredentials: true });
+      const response = await axios.post(endpoint,{}, { headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      } });
       if (response.status === 200) {
         setReplyLikes((prevLikes) =>
           prevLikes.map((replyLike, i) =>

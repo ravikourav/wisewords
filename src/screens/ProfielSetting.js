@@ -7,6 +7,7 @@ import Loading from '../components/Loading.js';
 import { AuthContext } from '../hooks/AuthContext.js';
 import IconButton from '../components/IconButton.js';
 import Dropdown from '../components/Dropdown.js';
+import Cookies from 'js-cookie';
 
 //Profile Icon
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
@@ -80,6 +81,7 @@ function ProfileSetting() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const token = Cookies.get('authToken');
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${user.user.id}/update`;
     try { 
       const formData = new FormData();
@@ -101,6 +103,8 @@ function ProfileSetting() {
       await axios.put(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+
         },
         withCredentials: true,
       }); 
