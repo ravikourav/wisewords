@@ -44,6 +44,7 @@ function Profile() {
     };
 
     const checkOwner = async (id) => {
+        const token = Cookies.get('authToken');
         const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${id}/isfollowing`;
         if(user?.user.id === id){
             setIsOwner(true);
@@ -51,7 +52,10 @@ function Profile() {
             setIsOwner(false);
             try {
                 const response = await axios.get(endpoint , {
-                  withCredentials: true,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 setIsFollowing(response.data.isfollowing);
               } catch (error) {
@@ -67,11 +71,10 @@ function Profile() {
           : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/follow`;
       
         try {
-            const response = await axios.post(endpoint, { 
+            const response = await axios.post(endpoint,{}, { 
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
-
                 }
             });
             if (response.status === 200) {

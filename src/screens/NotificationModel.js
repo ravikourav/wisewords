@@ -17,13 +17,31 @@ function NotificationModel() {
         'Authorization': `Bearer ${token}`
       }  } );
       if (response.status === 200) {
-        console.log(response.data);
+        console.log('notification data : ' ,response.data);
         setNotificationData(response.data);
       }
     } catch (error) {
       console.error('Error fetching Notification', error);
     }
   };
+
+  const markAsRead = async(id) =>{
+    const token = Cookies.get('authToken');
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/notifications/${id}/read`;
+      const response = await axios.post(endpoint, {} ,{
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      } );
+      if (response.status === 200) {
+        console.log('marked as read : ' ,response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching Notification', error);
+    }
+  }
 
   useEffect(()=>{
     fetchNotificaiton();
@@ -36,7 +54,7 @@ function NotificationModel() {
         </div>
         <div className='notification-body'>
             {notificationData?.map((data)=>(
-              <NotificationTemplate key={data._id} data={data} />
+              <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />
             ))}
         </div>
     </div>

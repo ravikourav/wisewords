@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './css/Comment.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -7,22 +7,18 @@ import timeAgo from '../utils/timeAgo';
 //icons
 import { ReactComponent as LikedIcon } from '../assets/icon/like.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+import { AuthContext } from '../hooks/AuthContext';
 
 function Comment({data , userId ,postId , reply}) {
+  const { isLoggedIn } = useContext(AuthContext);
   const [likes, setLikes] = useState(data.likes.length || 0);
   const [liked, setLiked] = useState(false);
 
   const [viewReply , setViewReply] = useState(true);
 
   const [replyLikes, setReplyLikes] = useState(
-    data.replies.map(reply => ({ id: reply.id, likes: reply.likes.length || 0, liked: reply.likes.includes(userId) }))
+    data.replies.map(reply => ({ id: reply.id, likes: reply?.likes.length || 0, liked: reply.likes.includes(userId) }))
   );
-
-  const [commentProfilePicture, setCommentProfilePicture] = useState('');
-  const [replyProfilePictures, setReplyProfilePictures] = useState(
-    data.replies.reduce((acc, reply) => ({ ...acc, [reply._id]: '' }), {})
-  );
-
 
   useEffect(() => {
     // Initialize the liked state based on the user's like status
@@ -35,29 +31,8 @@ function Comment({data , userId ,postId , reply}) {
       liked: reply.likes.includes(userId),
     }));
     setReplyLikes(initialReplyLikes);
-
-    fetchProfilePicture(data.username, 'comment');
-
-    data.replies.forEach(reply => {
-      fetchProfilePicture(reply.username, 'reply', reply._id);
-    });
-
   }, [data, userId]);
 
-  const fetchProfilePicture = async (username, type, replyId = null) => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}/getProfilePicture`);
-      if (response.status === 200) {
-        if (type === 'comment') {
-          setCommentProfilePicture(response.data.profilePicture);
-        } else if (type === 'reply' && replyId) {
-          setReplyProfilePictures(prev => ({ ...prev, [replyId]: response.data.profilePicture }));
-        }
-      }
-    } catch (error) {
-      console.error(`Error fetching profile picture for ${type}:`, error);
-    }
-  };
 
   const handleLike = async () => {
     const token = Cookies.get('authToken');
@@ -69,9 +44,12 @@ function Comment({data , userId ,postId , reply}) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }  });
-      if (response.status === 200) {
+      if (response.status === 200 && response.data.likes) {
+        console.log('like res : ',response.data);
         setLikes(liked ? likes - 1 : likes + 1);
-        data.likes = response.data.likes;
+        if(data){
+          data.likes = response.data.likes;
+        }
         setLiked(!liked);
         console.log(liked ? 'comment unliked succesfully' : 'comment liked succesfully');
       }
@@ -91,7 +69,7 @@ function Comment({data , userId ,postId , reply}) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       } });
-      if (response.status === 200) {
+      if (response.status === 200 && response.data.likes) {
         setReplyLikes((prevLikes) =>
           prevLikes.map((replyLike, i) =>
             i === index
@@ -122,20 +100,20 @@ function Comment({data , userId ,postId , reply}) {
   return (
     <div className='comment-warper'>
       <div className='main-comment'>
-        {commentProfilePicture ?
-          <img src={commentProfilePicture} alt='' className='comment-profile-picture' />
+        {data.comment_author.avatar ?
+          <img src={data.comment_author.avatar} alt='' className='comment-profile-picture' />
         :
           <ProfileIcon fill='#ccc' className='comment-profile-picture' />
         }
         <div className='comment-body'>
           <div className='row'>
-            <p className='comment-username'>{data.username}</p>
+            <p className='comment-username'>{data.comment_author.username}</p>
             <p className='comment-time'>{timeAgo(data.date)}</p>
           </div>
           <p className='comment-content'>{renderContent(data.comment)}</p>
-          <p className='reply-button' onClick={() => handleReply(data._id , data.username)}>Reply</p>
+          <p className='reply-button' onClick={() => handleReply(data._id , data.comment_author.username)}>Reply</p>
         </div>
-        <div className='like-container' onClick={handleLike}>
+        <div className='like-container' onClick={isLoggedIn ? handleLike : null}>
           <LikedIcon fill={liked ? 'red' : 'white'} stroke={liked ? 'red' : 'gray'} className='like-comment-icon' />
           <p className='commnet-like-count'>{likes}</p>
         </div>
@@ -147,16 +125,16 @@ function Comment({data , userId ,postId , reply}) {
       
       {!viewReply && data.replies.map((reply, index) => (
         <div className='reply-container' key={reply._id}>
-          <img src={replyProfilePictures[reply._id] || ProfileIcon} alt='' className='reply-profile-picture' />
+          <img src={reply.reply_author.avatar || ProfileIcon} alt='' className='reply-profile-picture' />
           <div className='comment-reply-body'>
             <div className='row'>
-              <p className='comment-username'>{reply.username}</p>
+              <p className='comment-username'>{reply.reply_author.username}</p>
               <p className='comment-time'>{timeAgo(reply.date)}</p>
             </div>
             <p className='comment-content'>{renderContent(reply.reply)}</p>
-            <p className='reply-button' onClick={() => handleReply(data._id , reply.username)}>Reply</p>
+            <p className='reply-button' onClick={() => handleReply(data._id , reply.reply_author.username)}>Reply</p>
           </div>
-          <div className='like-container' onClick={() => handleReplyLike(reply._id , index)}>
+          <div className='like-container' onClick={isLoggedIn? () => handleReplyLike(reply._id , index): null}>
             <LikedIcon fill={replyLikes[index].liked ? 'red' : 'white'} stroke={replyLikes[index].liked ? 'red' : 'gray'} className='like-comment-icon' />
             <p className='commnet-like-count'>{replyLikes[index].likes}</p>
           </div>

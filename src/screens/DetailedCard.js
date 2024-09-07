@@ -35,11 +35,11 @@ function DetailedCard() {
   const [isOwner , setIsOwner] = useState(false);
   const [isFollowing , setIsFollowing] = useState(null);
   const [liked, setLiked] = useState(false);
+  const [likes, setLikes] = useState(0)
 
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [cardWidth , setCardWidth] = useState('');
   const [cardHeight , setCardHeight] = useState('');
-  const [aspectRatio, setAspectRatio] = useState('');
 
   const [comment, setComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
@@ -57,7 +57,8 @@ function DetailedCard() {
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
     const response = await axios.get(endpoint);
     setCardData(response.data);
-    console.log('card data : ',response.data)
+    console.log('data : ' ,response.data)
+    setLikes(response.data.likes.length);
     if(isLoggedIn){
       await followStatus(response.data);
     }else{
@@ -74,11 +75,11 @@ function DetailedCard() {
     else{
       setIsOwner(false);
       try {
-        const response = await axios.get(endpoint ,{} ,{ 
+        const response = await axios.get(endpoint ,{ 
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-          } 
+          }
         });
         setIsFollowing(response.data.isfollowing);
       } catch (error) {
@@ -174,6 +175,7 @@ function DetailedCard() {
         } 
       });
       if (response.status === 200) {
+        setLikes(liked ? likes - 1 : likes + 1);
         setLiked(!liked);
         cardData.likes = response.data.likes;
         console.log(liked ? 'post unliked succesfully' : 'post liked succesfully');
@@ -197,9 +199,29 @@ function DetailedCard() {
           } 
         }
       );
-      setComment('');
-      setReplyingTo(null);
-      console.log(response);
+      if(response.status === 201){
+        if(replyingTo){
+
+        }
+        else {
+          const commnetFromServer = response.data.comment;
+          const newCommnet = {
+            ...commnetFromServer, 
+            comment_author: {
+              username : user.user.username,
+              avatar: profilePicture,
+              _id: user.user.id,
+            }
+          }
+          console.log('new commnet : ' , newCommnet);
+          setCardData(prevCardData => ({
+            ...prevCardData,
+            comments: [...prevCardData.comments, newCommnet]
+          }));
+          setComment('');
+          setReplyingTo(null);
+        }
+      }
     }catch(err) {
       console.error('Error Adding Comment/Reply user:', err);
     }
@@ -336,7 +358,7 @@ function DetailedCard() {
                       <Link to={`/user/${cardData.owner_id.username}`} className="custom-link" >
                       <p className='post-owner-name'>{cardData.owner_id.username}</p>
                       </Link>
-                      <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
+                      <p className='post-owner-followers'>{} followers</p>
                     </div>
                   </div>
                   {!isOwner && <Button onClick={followUnfollowOwner} disabled= {!isLoggedIn} text={isFollowing ? 'Following' : 'Follow'} selected={isFollowing ? true : false}/>}
@@ -390,7 +412,7 @@ function DetailedCard() {
                 <LikeIcon 
                   fill={liked ? 'red' : 'white'}
                   stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='3' className='post-icon'/>
-                <p className='controle-lable'>{formatNumber(cardData.likes.length)}</p>
+                <p className='controle-lable'>{formatNumber(likes)}</p>
               </div>
               <div className='control-wraper' onClick={handleCopy}>
                 <CopyIcon className='post-icon' />

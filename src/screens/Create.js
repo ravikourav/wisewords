@@ -85,7 +85,7 @@ function Create() {
     setLoading(true);
     try {
       const token = Cookies.get('authToken');
-      const endpoint = 'api/post/create';
+      const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/create`;
       const formData = new FormData();
       formData.append('title', title);
       formData.append('content', content);
@@ -101,11 +101,11 @@ function Create() {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
-        },
-        withCredentials: true
+        }
       });
       defaultCreateValues();
     } catch (error) {
+      setLoading(false);
       console.error('Operation failed', error);
       alert('Failed to create post. Please try again.');
     }
