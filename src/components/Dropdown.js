@@ -3,7 +3,7 @@ import './css/Dropdown.css';
 import IconButton from './IconButton';
 import { ReactComponent as DotmenuIcon } from '../assets/icon/dot-menu.svg';
 
-const Dropdown = ({ options, showIcon, handleMenu }) => {
+const Dropdown = ({ options,iconColor, showIcon, handleMenu , size}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -14,11 +14,10 @@ const Dropdown = ({ options, showIcon, handleMenu }) => {
     if (option.onClick) {
       option.onClick();
     }
-    setIsOpen(false); // Close dropdown after selecting an option
+    setIsOpen(false); 
   };
 
   useEffect(() => {
-    // Sync isOpen with handleMenu state when showIcon is false
     if (!showIcon) {
       setIsOpen(handleMenu);
     }
@@ -27,7 +26,7 @@ const Dropdown = ({ options, showIcon, handleMenu }) => {
   return (
     <div className="dropdown">
       {showIcon && (
-        <IconButton icon={DotmenuIcon} size="30px" onClick={toggleDropdown} />
+        <IconButton icon={DotmenuIcon} fill={iconColor} size={size} onClick={toggleDropdown} />
       )}
       {isOpen && (
         <ul className="dropdown-menu">

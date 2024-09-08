@@ -3,13 +3,15 @@ import './css/Comment.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import timeAgo from '../utils/timeAgo';
+import { AuthContext } from '../hooks/AuthContext';
+import IconButton from './IconButton';
+import Dropdown from '../components/Dropdown.js';
 
 //icons
 import { ReactComponent as LikedIcon } from '../assets/icon/like.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
-import { AuthContext } from '../hooks/AuthContext';
 
-function Comment({data , userId ,postId , reply}) {
+function Comment({data , userId , postId , postOwnerId , deleteComment , deleteReply , reply}) {
   const { isLoggedIn } = useContext(AuthContext);
   const [likes, setLikes] = useState(data.likes.length || 0);
   const [liked, setLiked] = useState(false);
@@ -57,6 +59,45 @@ function Comment({data , userId ,postId , reply}) {
       console.error('Error liking/unliking user:', error);
     }
   };
+
+  const handelDropdownOptions = (item_author_id , isReply = false , replyId = null ) => {
+    if(userId === postOwnerId){
+      return [ 
+        { 
+          label : 'Report' ,
+          onClick : () => console.log('Reported')
+        },
+        { 
+          label : 'Block' ,
+          onClick : () => console.log('Blocked')
+        },
+        { 
+          label : 'Delete' ,
+          onClick : () => isReply ? deleteReply(data._id , replyId) : deleteComment(data._id)
+        },
+      ]
+    }
+    else if(userId === item_author_id){
+      return [
+        { 
+          label : 'Delete' ,
+          onClick : () => isReply ? deleteReply( data._id , replyId) : deleteComment(data._id)
+        },
+      ]
+    }
+    else {
+      return [ 
+        { 
+          label : 'Report' ,
+          onClick : () => console.log('Reported')
+        },
+        { 
+          label : 'Block' ,
+          onClick : () => console.log('Blocked')
+        }
+      ]
+    }
+  }
 
   const handleReplyLike = async (replyId, index) => {
     const token = Cookies.get('authToken');
@@ -111,7 +152,10 @@ function Comment({data , userId ,postId , reply}) {
             <p className='comment-time'>{timeAgo(data.date)}</p>
           </div>
           <p className='comment-content'>{renderContent(data.comment)}</p>
-          <p className='reply-button' onClick={() => handleReply(data._id , data.comment_author.username)}>Reply</p>
+          <div className='row'>
+            <p className='reply-button' onClick={() => handleReply(data._id , data.comment_author.username)}>Reply</p>
+            <Dropdown showIcon={true} options={handelDropdownOptions(data.comment_author._id)} iconColor='#767676'  size='20px'/>
+          </div>
         </div>
         <div className='like-container' onClick={isLoggedIn ? handleLike : null}>
           <LikedIcon fill={liked ? 'red' : 'white'} stroke={liked ? 'red' : 'gray'} className='like-comment-icon' />
@@ -132,7 +176,10 @@ function Comment({data , userId ,postId , reply}) {
               <p className='comment-time'>{timeAgo(reply.date)}</p>
             </div>
             <p className='comment-content'>{renderContent(reply.reply)}</p>
-            <p className='reply-button' onClick={() => handleReply(data._id , reply.reply_author.username)}>Reply</p>
+            <div className='row'>
+              <p className='reply-button' onClick={() => handleReply(data._id , reply.reply_author.username)}>Reply</p>
+            <Dropdown showIcon={true} options={handelDropdownOptions(reply.reply_author._id , true , reply._id)} iconColor='#767676'  size='20px'/>
+          </div>
           </div>
           <div className='like-container' onClick={isLoggedIn? () => handleReplyLike(reply._id , index): null}>
             <LikedIcon fill={replyLikes[index].liked ? 'red' : 'white'} stroke={replyLikes[index].liked ? 'red' : 'gray'} className='like-comment-icon' />

@@ -1,7 +1,7 @@
 import React from 'react';
 import './css/IconButton.css';
 
-function IconButton({ className , icon: Icon, onClick , disabled, size}) {
+function IconButton({ className , fill ,icon: Icon, onClick , disabled, size}) {
 
     const buttonStyle = {
         width: size || '40px',
@@ -14,6 +14,7 @@ function IconButton({ className , icon: Icon, onClick , disabled, size}) {
         <Icon 
             className={combinedClassName} 
             style={buttonStyle}
+            fill={fill? fill : '#000000'}
             onClick={!disabled ? onClick : undefined} 
         />
     );

@@ -89,6 +89,16 @@ function DetailedCard() {
     await likeStatus(data);
     dimension(data);
   };
+  
+  const likeStatus = async (data) => {
+    if(data.likes.includes(user.user.id)){
+      setLiked(true);
+    }
+    else{
+      setLiked(false);
+    }
+    setLoading(false);
+  }
 
   const dimension = (data) => {
     const ratio = calculateAspectRatio(data.width , data.height);
@@ -124,16 +134,6 @@ function DetailedCard() {
       window.removeEventListener('resize', handleResize);
     };
 }, [cardData]);
-
-  const likeStatus = async (data) => {
-    if(data.likes.includes(user.user.id)){
-      setLiked(true);
-    }
-    else{
-      setLiked(false);
-    }
-    setLoading(false);
-  }
 
   useEffect(() => {
     featchCardData();
@@ -201,31 +201,77 @@ function DetailedCard() {
       );
       if(response.status === 201){
         if(replyingTo){
-
-        }
-        else {
-          const commnetFromServer = response.data.comment;
-          const newCommnet = {
-            ...commnetFromServer, 
-            comment_author: {
-              username : user.user.username,
-              avatar: profilePicture,
-              _id: user.user.id,
-            }
-          }
-          console.log('new commnet : ' , newCommnet);
           setCardData(prevCardData => ({
             ...prevCardData,
-            comments: [...prevCardData.comments, newCommnet]
+            comments: prevCardData.comments.map(comment => 
+              comment._id === replyingTo
+                ? { ...comment, replies: [...comment.replies, response.data.reply] }
+                : comment
+            )
           }));
-          setComment('');
-          setReplyingTo(null);
         }
+        else {
+          setCardData(prevCardData => ({
+            ...prevCardData,
+            comments: [response.data.comment , ...prevCardData.comments]
+          }));
+        }
+        setComment('');
+        setReplyingTo(null);
       }
     }catch(err) {
       console.error('Error Adding Comment/Reply user:', err);
     }
   }
+
+  const handleDeleteCommnet = async(commentId)=>{
+    const token = Cookies.get('authToken');
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${commentId}` ;
+    try {
+      const response = await axios.delete( endpoint,
+        { 
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          } 
+        }
+      );
+      if(response.status === 200){
+        setCardData(prevCardData => ({
+          ...prevCardData,
+          comments: prevCardData.comments.filter(comment => comment._id !== commentId)
+        }));
+      }
+    }catch(err) {
+      console.error('Error Deleting Comment ', err);
+    }
+  }
+
+  const handleDeleteReply = async (commentId , replyId) => {
+    const token = Cookies.get('authToken');
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${commentId}/reply/${replyId}`;
+    try {
+      const response = await axios.delete(endpoint, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.status === 200) {
+        setCardData(prevCardData => ({
+          ...prevCardData,
+          comments: prevCardData.comments.map(comment =>
+            commentId === comment._id
+              ? { ...comment, replies: comment.replies.filter(reply => reply._id !== replyId) }
+              : comment
+          )
+        }));
+      }
+    } catch (error) {
+      console.error('Error deleting reply:', error);
+    }
+  };
+  
 
   const handleReplyingTo = (id , name) => {
     setReplyingTo(id);
@@ -373,7 +419,7 @@ function DetailedCard() {
                     cardData.comments.length > 0 ? (
                       <>
                         {cardData.comments.map((comment) => (
-                          <Comment key={comment._id} data={comment} userId={user?.user.id} postId={id} reply={handleReplyingTo} replyTo />
+                          <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={user?.user.id} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
                         ))}
                         <p style={{fontSize:'2rem'}}>.</p>
                       </>
