@@ -18,7 +18,7 @@ import Dropdown from '../components/Dropdown.js';
 function Profile() {
     const navigate = useNavigate();
     const { username } = useParams();
-    const { logout, user, isLoggedIn } = useContext(AuthContext);
+    const { logout, user, isLoggedIn} = useContext(AuthContext);
     const [data, setData] = useState(null);
     const [postedData, setPostedData] = useState([]);
     const [saveCardData, setSaveCardData] = useState([]);
@@ -43,24 +43,12 @@ function Profile() {
         }
     };
 
-    const checkOwner = async (id) => {
-        const token = Cookies.get('authToken');
-        const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${id}/isfollowing`;
-        if(user?.user.id === id){
+    const checkOwner = (id) => {
+        if(user?._id === id){
             setIsOwner(true);
         }else{
             setIsOwner(false);
-            try {
-                const response = await axios.get(endpoint , {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                setIsFollowing(response.data.isfollowing);
-              } catch (error) {
-                console.error('Error fetching follow status:', error);
-              }
+            setIsFollowing(user?.following.includes(id));
         }
     }
 
@@ -156,15 +144,27 @@ function Profile() {
                     )}
                     {isOwner ? 
                         <div className='profile-control'>
-                            <IconButton icon={ShareIcon} onClick={()=>handleShare(data.username)} size='25px'/>
-                            <Button text='Logout' selected={true} onClick={logout} />
-                            <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => navigate('/editUser') }]} />
+                            <div className='control-button'>
+                                <IconButton icon={ShareIcon} onClick={()=>handleShare(data.username)} size='25px'/>
+                            </div>
+                            <div className='control-button'>
+                                <Button text='Logout' selected={true} onClick={logout} />
+                            </div>
+                            <div className='control-button'>
+                                <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => navigate('/editUser') }]} />
+                            </div>
                         </div> 
                         :
                         <div className='profile-control'>
-                            <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
-                            <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} />    
-                            <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
+                            <div className='control-button'>
+                                <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
+                            </div>
+                            <div className='control-button'>
+                                <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} /> 
+                            </div>   
+                            <div className='control-button'>
+                                <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
+                            </div>
                         </div>
                     }
                     <div className='post-selector-container'>

@@ -1,0 +1,42 @@
+.simple-card-info-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.simple-card-user-wraper {
+    display: flex;
+    align-items: center;
+}
+
+.simple-card-profile-picture {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.simple-card-text {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    font-weight: 500;
+    color: #818181;
+    text-align: left;
+}
+
+.simple-card-icon {
+    display: flex;
+    align-items: center;
+}
+
+.simple-card-likes-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.simple-card-like-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

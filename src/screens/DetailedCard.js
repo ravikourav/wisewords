@@ -29,7 +29,7 @@ import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 function DetailedCard() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isLoggedIn, user, profilePicture} = useContext(AuthContext);
+  const { isLoggedIn, user, setUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
   const [isOwner , setIsOwner] = useState(false);
@@ -67,31 +67,19 @@ function DetailedCard() {
   }
 
   const followStatus = async (data) => {
-    const token = Cookies.get('authToken');
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data.owner_id._id}/isfollowing`;
-    if(user.user.id === data.owner_id._id){
+    if(user._id === data.owner_id._id){
       setIsOwner(true);
     }
     else{
       setIsOwner(false);
-      try {
-        const response = await axios.get(endpoint ,{ 
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        setIsFollowing(response.data.isfollowing);
-      } catch (error) {
-        console.error('Error fetching follow status:', error);
-      }
+      setIsFollowing(user.following.includes(data.owner_id._id));
     }
     await likeStatus(data);
     dimension(data);
   };
   
   const likeStatus = async (data) => {
-    if(data.likes.includes(user.user.id)){
+    if(data.likes.includes(user._id)){
       setLiked(true);
     }
     else{
@@ -155,7 +143,21 @@ function DetailedCard() {
       if (response.status === 200) {
         setIsFollowing(!isFollowing);
         cardData.owner_id.followers = response.data.followers;
-        console.log(isFollowing ? 'user unfollowed succesfully' : 'user followed succesfully');
+        if (isFollowing) {
+          // Remove the owner ID from the following array
+          setUser((prevUser) => ({
+            ...prevUser,
+            following: prevUser.following.filter(id => id !== cardData.owner_id._id),
+          }));
+          console.log('User unfollowed successfully');
+        } else {
+          // Add the owner ID to the following array
+          setUser((prevUser) => ({
+            ...prevUser,
+            following: [...prevUser.following, cardData.owner_id._id],
+          }));
+          console.log('User followed successfully');
+        }
       }
     } catch (error) {
       console.error('Error following/unfollowing user:', error);
@@ -404,7 +406,7 @@ function DetailedCard() {
                       <Link to={`/user/${cardData.owner_id.username}`} className="custom-link" >
                       <p className='post-owner-name'>{cardData.owner_id.username}</p>
                       </Link>
-                      <p className='post-owner-followers'>{} followers</p>
+                      <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
                     </div>
                   </div>
                   {!isOwner && <Button onClick={followUnfollowOwner} disabled= {!isLoggedIn} text={isFollowing ? 'Following' : 'Follow'} selected={isFollowing ? true : false}/>}
@@ -419,7 +421,7 @@ function DetailedCard() {
                     cardData.comments.length > 0 ? (
                       <>
                         {cardData.comments.map((comment) => (
-                          <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={user?.user.id} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
+                          <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={isLoggedIn ? user._id : null} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
                         ))}
                         <p style={{fontSize:'2rem'}}>.</p>
                       </>
@@ -436,8 +438,8 @@ function DetailedCard() {
                   </div>
                 }
                 <div className='add-comment-container'>
-                  {cardData.owner_id.avatar ?
-                    <img src={profilePicture} alt='' className='user-profile-image' />
+                  {user?.avatar ?
+                    <img src={user.avatar} alt='' className='user-profile-image' />
                   :
                     <ProfileIcon fill='#ccc' className='user-profile-image' />
                   }

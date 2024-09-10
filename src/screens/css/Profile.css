@@ -83,9 +83,15 @@
 .profile-control {
     display: flex;
     align-items: center;
+    justify-content: space-evenly;
+    width: 300px;
+}
+
+.control-button {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    width: 225px;
-    justify-content: space-between;
+    width: 100px;
 }
 
 /* Posts */

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './css/BrowseImage.css';
 import BackButton from '../components/BackButton';
 import OnlineImageCard from '../components/OnlineImageCard';
-import { useSearchParams } from 'react-router-dom';
 import Loading from '../components/Loading.js';
 import axios from 'axios';
 
@@ -11,25 +10,23 @@ import Switch from '@mui/material/Switch';
 
 import Button from '../components/Button.js';
 
+import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
+
+
 function BrowseImage({ onClose, onSelectImage, title }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchInput , setSearchInput] = useState('new');
-  const search = searchParams.get('search') || '';
+  const [searchInput, setSearchInput] = useState(title || 'new');
+  const [searchQuery, setSearchQuery] = useState('new');
   const PIXABAY_API_KEY = process.env.REACT_APP_PIXABAY_API_KEY;
   const [page, setPage] = useState(1); // Current page for pagination
 
   const [fullResolutionImage , setFullResolutionImage] = useState(false);
 
   const fetchImages = async () => {
-    if (title) {
-      setSearchInput(title);
-    }
-
     try {
-      const encodedQuery = encodeURIComponent(searchInput);
+      const encodedQuery = encodeURIComponent(searchQuery);
       const response = await axios.get('https://pixabay.com/api/', {
         params: {
           key: PIXABAY_API_KEY,
@@ -47,12 +44,17 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     }
   };
 
+  const handleSearch = () => {
+    setSearchQuery(searchInput); // Trigger search when clicking the button
+    setPage(1); // Reset page for new search
+    setImages([]); // Clear previous images
+    setLoading(true);
+  };
+
   const fetchMore = async () => {
     setLoading(true);
-    setPage(page + 1);
     try {
-      const encodedQuery = encodeURIComponent(search.trim());
-      console.log('Encoded Query:', encodedQuery); // Debug logging
+      const encodedQuery = encodeURIComponent(searchQuery.trim());
       const response = await axios.get('https://pixabay.com/api/', {
         params: {
           key: PIXABAY_API_KEY,
@@ -61,10 +63,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
           page: page,
         },
       });
-      setImages((prevImages) => [
-        ...prevImages,
-        ...response.data.hits,
-      ]);
+      setImages((prevImages) => [...prevImages, ...response.data.hits]);
       setPage(prevPage => prevPage + 1);
     } catch (error) {
       console.error('Error fetching images:', error);
@@ -84,11 +83,17 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     }
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   useEffect(() => {
     fetchUserSetting();
     setLoading(true);
     fetchImages();
-  }, [search]);
+  }, [searchQuery])
 
   const breakpointCols = {
     lg: 4,
@@ -104,8 +109,12 @@ function BrowseImage({ onClose, onSelectImage, title }) {
 
   return (
     <div>
-      <BackButton onClick={onClose} />
       <div className='browse-image-container'>
+        <BackButton onClick={onClose} />
+        <div className='custom-search-box'>
+          <SearchIcon className='search-icon'/>
+          <input type="text" value={searchInput} onKeyDown={handleKeyDown} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search" className="mobile-search-input " />
+        </div>
         <p className='browse-suggestion'>If you seek a specific treasure, let the search guide your way.</p>
         <div className='switch-container'>
           <p className='browse-suggestion-2'>

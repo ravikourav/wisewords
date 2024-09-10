@@ -3,7 +3,6 @@ import React, { useState , useContext } from 'react';
 import axios from 'axios';
 import  { AuthContext } from '../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import Button from '../components/Button';
 
 //Profile Icon
@@ -31,7 +30,6 @@ function Login() {
       const token = response.data.accessToken;
 
       if (token) {
-        Cookies.set('authToken', token, { expires: 7, sameSite: 'None' ,secure: true});
         await login(token);
         navigate('/');
       } else {
@@ -72,7 +70,7 @@ function Login() {
             <p className="login-model-name">Wise Men Said</p>
             <p className="login-model-slogan">"Echoes of Insight, Shared in Light"</p>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className='login-from'>
             {!hasAccount && (
               <div>
                 <label>Name</label>

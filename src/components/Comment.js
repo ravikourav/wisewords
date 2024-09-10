@@ -4,7 +4,6 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import timeAgo from '../utils/timeAgo';
 import { AuthContext } from '../hooks/AuthContext';
-import IconButton from './IconButton';
 import Dropdown from '../components/Dropdown.js';
 
 //icons

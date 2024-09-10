@@ -3,7 +3,7 @@ import './css/Dropdown.css';
 import IconButton from './IconButton';
 import { ReactComponent as DotmenuIcon } from '../assets/icon/dot-menu.svg';
 
-const Dropdown = ({ options,iconColor, showIcon, handleMenu , size}) => {
+const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrientation}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -26,7 +26,7 @@ const Dropdown = ({ options,iconColor, showIcon, handleMenu , size}) => {
   return (
     <div className="dropdown">
       {showIcon && (
-        <IconButton icon={DotmenuIcon} fill={iconColor} size={size} onClick={toggleDropdown} />
+        <IconButton icon={DotmenuIcon} fill={iconColor} size={size} onClick={toggleDropdown} className={iconOrientation === 'vertical' ? 'rotate-icon' : ''}/>
       )}
       {isOpen && (
         <ul className="dropdown-menu">

@@ -19,7 +19,7 @@ function Header()  {
   const [searchParams , setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [Selected , setSelected] = useState(location);
-  const { isLoggedIn, user, profilePicture} = useContext(AuthContext);
+  const { isLoggedIn, user} = useContext(AuthContext);
 
   const [notificationBgPage , setNotificationBgPage] = useState();
   const [notificationOpened , setNotificationOpened] = useState(false);
@@ -79,9 +79,9 @@ function Header()  {
             <div className='left-nav-links'>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='icon'
               onClick={handleNotification} /> 
-              <Link to={`user/${user.user.username}`} onClick={()=>{select('Profile')}} >
-                { profilePicture ?
-                  <img src={profilePicture} alt='' className='profile-picture' />
+              <Link to={`user/${user.username}`} onClick={()=>{select('Profile')}} >
+                { user.avatar ?
+                  <img src={user.avatar} alt='' className='profile-picture' />
                 :
                   <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'profile-picture'/>
                 }
@@ -115,9 +115,9 @@ function Header()  {
             <>
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='nav-icon'
               onClick={handleNotification} />
-              <Link to={`user/${user.user.username}`} onClick={()=>{select('Profile');}} >
-                { profilePicture ?
-                  <img src={profilePicture} alt='' className='nav-icon' />
+              <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
+                { user.avatar ?
+                  <img src={user.avatar} alt='' className='nav-icon' />
                 :
                   <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'nav-icon' alt="User"/>
                 }

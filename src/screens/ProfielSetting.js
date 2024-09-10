@@ -32,7 +32,7 @@ function ProfileSetting() {
   
   const fetchData = async() => {
     setLoading(true);
-    const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${user.user.username}`;
+    const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${user.username}`;
     try{
       const response = await axios.get(endPoint);
       setData(response.data);
@@ -82,7 +82,7 @@ function ProfileSetting() {
     e.preventDefault();
     setLoading(true);
     const token = Cookies.get('authToken');
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${user.user.id}/update`;
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${user._id}/update`;
     try { 
       const formData = new FormData();
       formData.append('name' , name);

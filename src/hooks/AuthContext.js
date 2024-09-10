@@ -1,14 +1,13 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isLoading, setLoading] = useState(true); 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [profilePicture , setProfilePicture] = useState();
 
   // Function to handle authentication
   const authenticate = async () => {
@@ -25,9 +24,7 @@ const AuthProvider = ({ children }) => {
         } else {
           const decodedUser = jwtDecode(token);
           console.log('Decoded user:', decodedUser);
-          setIsLoggedIn(true);
-          setUser(decodedUser);
-          fetchProfilePicture(decodedUser.user.username);
+          await fetchLatestUser(decodedUser.user.username);
         }
       } catch (error) {
         console.error('Invalid token:', error.message);
@@ -46,39 +43,39 @@ const AuthProvider = ({ children }) => {
     authenticate();
   }, []);
 
-  const fetchProfilePicture = async (username) => {
+  const fetchLatestUser = async (username) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}/getProfilePicture`);
-      if (response.status === 200) {
-        setProfilePicture(response.data.profilePicture);
-      }
+      setLoading(true);
+      const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}`;
+      const response = await axios.get(endPoint);
+      setUser(response.data);
+      setIsLoggedIn(true);
     } catch (error) {
-      console.error('Error fetching profile picture', error);
+      console.error('Error fetching data:', error);
     }
-  };
+};
 
-  const login = (token) => {
-    Cookies.set('authToken', token); // Use localStorage
+  const login = async(token) => {
+    Cookies.set('authToken', token, { expires: 7, sameSite: 'None', secure: true });
     try {
       const decodedUser = jwtDecode(token);
-      setIsLoggedIn(true);
-      setUser(decodedUser);
-      fetchProfilePicture(decodedUser.user.username);
+      await fetchLatestUser(decodedUser.user.username);
     } catch (error) {
       console.error('Invalid token:', error.message);
-      logout(); // Clear authentication state on invalid token
+      logout();
     }
+    setLoading(false);
   };
 
   const logout = () => {
     console.log('Logged out');
-    Cookies.remove('authToken'); // Use localStorage
+    Cookies.remove('authToken');
     setIsLoggedIn(false);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, isLoading, user, login, logout,profilePicture}}>
+    <AuthContext.Provider value={{ isLoggedIn, isLoading, user, setUser, login, logout}}>
       {children}
     </AuthContext.Provider>
   );
