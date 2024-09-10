@@ -37,6 +37,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
       });
       setImages(response.data.hits);
       setPage(prevPage => prevPage + 1);
+      console.log(response);
     } catch (error) {
       console.error('Error fetching images:', error);
     } finally {
@@ -111,11 +112,11 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     <div>
       <div className='browse-image-container'>
         <BackButton onClick={onClose} />
+        <p className='browse-suggestion'>If you seek a specific treasure, let the search guide your way.</p>
         <div className='custom-search-box'>
           <SearchIcon className='search-icon'/>
           <input type="text" value={searchInput} onKeyDown={handleKeyDown} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search" className="mobile-search-input " />
         </div>
-        <p className='browse-suggestion'>If you seek a specific treasure, let the search guide your way.</p>
         <div className='switch-container'>
           <p className='browse-suggestion-2'>
             {fullResolutionImage 

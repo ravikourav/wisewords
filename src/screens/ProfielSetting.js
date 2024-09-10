@@ -161,7 +161,7 @@ const removeCoverImage = () => {
                 {data?.coverImg || newCoverImage ? 
                   <>
                     <img className='cover-img' src={newCoverImage ? URL.createObjectURL(newCoverImage) : data?.coverImg} alt='' />
-                    <IconButton className='close-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} type='button'/>
+                    <IconButton className='close-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} size={30} type='button'/>
                   </>
                   :
                   <>
