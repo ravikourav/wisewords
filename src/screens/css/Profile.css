@@ -62,6 +62,7 @@
 
 .follow-container {
     display: flex;
+    justify-content: center;
 }
 
 .user-data-wraper{

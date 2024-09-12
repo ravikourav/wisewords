@@ -372,6 +372,20 @@ function DetailedCard() {
     navigate(-1); // Navigate back to the previous page
   };
 
+  const deletePost = async() => {
+    const token = Cookies.get('authToken');
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
+    try {
+      const response = await axios.delete(endpoint,{
+        headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }});
+    }catch {
+      console.log('error deleting this post')
+    }
+  }
+
   return (
     <div className='detailed-page-layout'>
       <div className='card-layout'>
@@ -412,11 +426,18 @@ function DetailedCard() {
                     </div>
                   </div>
                   {isOwner ? (
-                    <Button 
-                      onClick={editPost} 
-                      text="Edit" 
-                      selected={true}
-                    />
+                    <div>
+                      <Button 
+                        onClick={editPost} 
+                        text="Edit" 
+                        selected={false}
+                      />
+                      <Button 
+                        onClick={deletePost} 
+                        text="delete" 
+                        selected={true}
+                      />
+                    </div>
                   ) : (
                     <Button 
                       onClick={followUnfollowOwner} 

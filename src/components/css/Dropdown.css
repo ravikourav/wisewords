@@ -32,4 +32,5 @@
 }
 
 .rotate-icon {
+  transform: rotateZ(90deg)
 }
