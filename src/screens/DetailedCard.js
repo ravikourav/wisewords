@@ -57,7 +57,6 @@ function DetailedCard() {
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
     const response = await axios.get(endpoint);
     setCardData(response.data);
-    console.log('data : ' ,response.data)
     setLikes(response.data.likes.length);
     if(isLoggedIn){
       await followStatus(response.data);
@@ -274,7 +273,6 @@ function DetailedCard() {
     }
   };
   
-
   const handleReplyingTo = (id , name) => {
     setReplyingTo(id);
     setReplyWithUsername(name);
@@ -366,6 +364,10 @@ function DetailedCard() {
     document.body.removeChild(textArea);
   };
 
+  const editPost = () => {
+    navigate(`/updatePost/${id}`);
+  }
+
   const handleClose = () => {
     navigate(-1); // Navigate back to the previous page
   };
@@ -409,7 +411,20 @@ function DetailedCard() {
                       <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
                     </div>
                   </div>
-                  {!isOwner && <Button onClick={followUnfollowOwner} disabled= {!isLoggedIn} text={isFollowing ? 'Following' : 'Follow'} selected={isFollowing ? true : false}/>}
+                  {isOwner ? (
+                    <Button 
+                      onClick={editPost} 
+                      text="Edit" 
+                      selected={true}
+                    />
+                  ) : (
+                    <Button 
+                      onClick={followUnfollowOwner} 
+                      disabled={!isLoggedIn} 
+                      text={isFollowing ? 'Following' : 'Follow'} 
+                      selected={isFollowing} 
+                    />
+                  )}
                 </div>
                 <div className='comment-container'>
                   <div className='flex-row commnet-title-container'>

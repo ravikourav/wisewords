@@ -7,13 +7,17 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
-import { useSearchParams } from 'react-router-dom';
+import Dropdown from '../components/Dropdown';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { calculateAspectRatio } from '../utils/calculateDimensions';
 
-function Create() {
-  const [loading , setLoading] = useState(false);
+function UpdatePost() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
@@ -24,15 +28,39 @@ function Create() {
   const [authorColor, setAuthorColor] = useState('rgba(255, 255, 255, 1)');
   const [tintColor, setTintColor] = useState('rgba(0, 0, 0, 0.4)');
   const [backgroundImage, setBackgroundImage] = useState(null);
+  const [existingImage, setExistingImage] = useState(null);
+  const [showUploadDropdown, setShowUploadDropdown] = useState(false);
+
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [aspectRatio, setAspectRatio] = useState('');
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Separate states for each color picker visibility
   const [activePicker, setActivePicker] = useState(null);
-
   const [browseOnline, setBrowseOnline] = useState(false);
+
+  useEffect(() => {
+    fetchPostData();
+    fetchTags();
+  }, []);
+
+  const fetchPostData = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`);
+      const post = response.data;
+      setTitle(post.title);
+      setContent(post.content);
+      setAuthor(post.author);
+      setCategory(post.category);
+      setTags(post.tags);
+      setContentColor(post.contentColor || 'rgba(255, 255, 255, 1)');
+      setAuthorColor(post.authorColor || 'rgba(255, 255, 255, 1)');
+      setTintColor(post.tintColor || 'rgba(0, 0, 0, 0.4)');
+      setExistingImage(post.backgroundImage);
+      setIsAnonymous(post.isAnonymous);
+      setAspectRatio(post.aspectRatio);
+    } catch (error) {
+      console.error('Failed to fetch post data', error);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -40,11 +68,10 @@ function Create() {
       if (file.type.startsWith('image/')) {
         const img = new Image();
         img.onload = () => {
-        const width = img.width;
-        const height = img.height;
-        const ratio = calculateAspectRatio(width,height);
-
-        setAspectRatio(ratio);
+          const width = img.width;
+          const height = img.height;
+          const ratio = calculateAspectRatio(width, height);
+          setAspectRatio(ratio);
         };
         img.src = URL.createObjectURL(file);
         setBackgroundImage(file);
@@ -63,11 +90,11 @@ function Create() {
     setActivePicker(activePicker === picker ? null : picker);
   };
 
-  const handleImageSelect = async (imageUrl , width , height) => {
+  const handleImageSelect = async (imageUrl, width, height) => {
     try {
       const response = await axios.get(imageUrl, { responseType: 'blob' });
       const file = new File([response.data], 'background.jpg', { type: response.data.type });
-      const ratio = calculateAspectRatio(width , height);
+      const ratio = calculateAspectRatio(width, height);
       setAspectRatio(ratio);
       setBackgroundImage(file);
     } catch (error) {
@@ -78,14 +105,14 @@ function Create() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!title || !content || !author || !category || !tags.length || !backgroundImage) {
+    if (!title || !content || !author || !category || !tags.length || (!backgroundImage && !existingImage)) {
       alert('Please fill in all fields.');
       return;
     }
     setLoading(true);
     try {
       const token = Cookies.get('authToken');
-      const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/create`;
+      const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
       const formData = new FormData();
       formData.append('title', title);
       formData.append('content', content);
@@ -95,122 +122,105 @@ function Create() {
       formData.append('contentColor', contentColor);
       formData.append('authorColor', authorColor);
       formData.append('tintColor', tintColor);
-      formData.append('backgroundImage', backgroundImage);
-      console.log('backgroudnImg' , backgroundImage);
-      await axios.post(endpoint, formData ,{
+      if (backgroundImage) {
+        formData.append('backgroundImage', backgroundImage);
+      }
+
+      await axios.put(endpoint, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      defaultCreateValues();
+      setLoading(false);
+      alert('Post updated successfully');
     } catch (error) {
       setLoading(false);
       console.error('Operation failed', error);
-      alert('Failed to create post. Please try again.');
+      alert('Failed to update post. Please try again.');
     }
   };
 
-  const defaultCreateValues = () => {
-    setTitle('');
-    setContent('');
-    setAuthor('');
-    setCategory('Quote');
-    setTags([]);
-    setContentColor('rgba(255, 255, 255, 1)');
-    setAuthorColor('rgba(255, 255, 255, 1)');
-    setTintColor('rgba(0, 0, 0, 0.4)');
-    setBackgroundImage(null);
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    return () => {
-      if (backgroundImage) {
-        URL.revokeObjectURL(backgroundImage);
-      }
-    };
-  }, [backgroundImage]);
-
-  useEffect(()=>{
-    featchTags();
-  },[])
-
-  const featchTags = async () =>{
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/name`;
-    try{
-      const response = await axios.get(endpoint);
+  const fetchTags = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_API_URL}/api/tag/name`);
       setAllTags(response.data.names);
+    } catch (error) {
+      console.error('Failed to fetch tags', error);
     }
-    catch{
-      console.log('Unable to teatch tags');
-    }
-  }
-
-  const closeOnlineImage = () =>{
-    setBrowseOnline(false);
-    setSearchParams();
-  }
+  };
 
   const handleCheckBox = () => {
-    if(isAnonymous){
+    if (isAnonymous) {
       setAuthor('');
-    }
-    else{
+    } else {
       setAuthor('Anonymous');
     }
-
     setIsAnonymous(!isAnonymous);
-  }
+  };
 
   return (
     <div className='page-root'>
-      { loading ? <Loading/> : 
-      browseOnline ? (
-        <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} title={title} />
+      {loading ? (
+        <Loading />
+      ) : browseOnline ? (
+        <BrowseImage onClose={() => setBrowseOnline(false)} onSelectImage={handleImageSelect} title={title} />
       ) : (
         <div className='create-page'>
-          <p className='create-page-title'>Create Post</p>
+          <p className='create-page-title'>Update Post</p>
           <form onSubmit={handleSubmit} className='form-group'>
             <div className='img-container'>
-              {backgroundImage ? (
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' , alignItems: 'center'}}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                   <Card
                     margin={true}
                     content={content}
                     textColor={contentColor}
                     author={author}
                     authorColor={authorColor}
-                    background={URL.createObjectURL(backgroundImage)}
+                    background={backgroundImage ? URL.createObjectURL(backgroundImage) : existingImage}
                     tint={tintColor}
                   />
-                  <Button type='button' onClick={() =>{setBackgroundImage(null)}} width={150} text='Remove' />
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <input type='file' id='file-upload' className='file-input' onChange={handleImageChange} />
-                  <label htmlFor="file-upload" className="file-input-label">Unveil Your Image</label>
-                  <p className='pixels-button' onClick={() => setBrowseOnline(true)}>Explore Gallery</p>
+                  <Dropdown 
+                    options={[
+                      { 
+                        label: 'Upload', 
+                        onClick: () => {
+                          setShowUploadDropdown(false);
+                          document.getElementById('file-upload').click();
+                        }
+                      },
+                      { 
+                        label: 'Browse On Pixel', 
+                        onClick: () => {
+                          setBrowseOnline(true);
+                          setShowUploadDropdown(false);
+                        }
+                      }
+                    ]} 
+                    showIcon={false} 
+                    handleMenu={showUploadDropdown} 
+                  />
+                  <Button type='button' onClick={() =>{ setShowUploadDropdown(true) }} width={250} text='Update Image'/>
                 </div>
-              )}
             </div>
             <div className='content-container'>
               <label>
                 Title of Your Tale
-                <input className='main-input input-title' type='text' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input className='main-input input-title' type='text' placeholder='Title' value={title || ''} onChange={(e) => setTitle(e.target.value)} />
               </label>
               <label>
                 The Essence of Your Creation
-                <textarea className='main-input input-create-content' placeholder='Content' value={content} onChange={(e) => setContent(e.target.value)} />
+                <textarea className='main-input input-create-content' placeholder='Content' value={content || ''} onChange={(e) => setContent(e.target.value)} />
               </label>
               <div className='multi-input-container'>
                 <label>
                   Crafted By
-                  <input className='main-input input-author' type='text' placeholder='Author' value={author} onChange={(e) => setAuthor(e.target.value)} disabled={isAnonymous} />
+                  <input className='main-input input-author' type='text' placeholder='Author' value={author || ''} onChange={(e) => setAuthor(e.target.value)} disabled={isAnonymous} />
                 </label>
                 <label>
                   Embrace Anonymity
-                  <input className='checkbox' type='checkbox' checked={isAnonymous} onChange={handleCheckBox} />
+                  <input className='checkbox' type='checkbox' checked={isAnonymous || ''} onChange={handleCheckBox} />
                 </label>
               </div>
               <div className='multi-input-container'>
@@ -222,7 +232,7 @@ function Create() {
                     limitTags={2}
                     id="multiple-limit-tags"
                     options={allTags}
-                    value={tags}
+                    value={tags || []}
                     onChange={(event, newValue) => setTags(newValue)}
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Tag" />
@@ -279,7 +289,7 @@ function Create() {
                   )}
                 </label>
               </div>
-              <Button type='submit' width={250} text='Create' align='center' />
+              <Button type='submit' width={250} text='Update Post' align='center' />
             </div>
           </form>
         </div>
@@ -288,4 +298,4 @@ function Create() {
   );
 }
 
-export default Create;
+export default UpdatePost;

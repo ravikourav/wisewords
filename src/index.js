@@ -12,6 +12,7 @@ import Home from './screens/Home.js';
 import Explore from './screens/Explore.js';
 import Profile from './screens/Profile.js';
 import Create from './screens/Create.js';
+import UpdatePost from './screens/UpdatePost.js';
 import Login from './screens/Login.js';
 import AuthProvider from './hooks/AuthContext.js';
 import ProtectedRoute from './hooks/ProtectedRoute.js';
@@ -51,6 +52,10 @@ const router = createBrowserRouter([{
     {
       path: 'post/:id',
       element: <DetailedCard />
+    },
+    {
+      path: 'updatePost/:id',
+      element: <ProtectedRoute element={<UpdatePost />} />
     }
   ]
 }]);
