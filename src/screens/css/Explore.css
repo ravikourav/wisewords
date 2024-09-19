@@ -1,17 +1,26 @@
-.explore-page-layout {
-    margin-top: 75px;
-    padding: 0;
+.explore-tag-layout{
     display: flex;
-    flex: 1;
+    margin-top: 75px;
     justify-content: center;
+}
+
+.explore-tag-selected-layout{
+    display: flex;
+    margin-top: 75px;
     flex-direction: column;
     align-items: center;
 }
 
-.tag-card-layout {
+.tag-post-container{
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin-top: 10px;
+}
+
+.explore-card-grid{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 /* custom serach */
@@ -56,8 +65,13 @@
     outline: none;
 }
 
+
 @media (max-width: 768px){
-    .explore-page-layout {
-      margin: 80px 0px;
+    .explore-page {
+        padding-bottom: 60px;
+    }
+
+    .explore-tag-selected-layout{
+        margin-top: 25px;
     }
 }

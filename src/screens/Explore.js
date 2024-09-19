@@ -71,21 +71,14 @@ function Explore() {
   };
 
   const breakpointCols = {
-    xl: 6,
-    lg: 5,
-    md: 4,
-    sm: 3,
-    xs: 2,
-    xxs: 1
-  };
-
-  const spacing = {
+    lg: 4,
+    md: 3,
     sm: 2,
     xs: 1,
   };
 
   return (
-    <div className='explore-page-layout'>
+    <div className='explore-page'>
       {isMobile && !selectedTag && (
         <div className="explore-search-header">
           <div className='custom-search-box'>
@@ -93,11 +86,11 @@ function Explore() {
             <input type="text" placeholder="Search" className="mobile-search-input " />
           </div>
         </div>
-      )}
-      {loading ? <Loading /> : (
-        !selectedTag ? (
-          <div className='card-layout'>
-            <Masonry columns={breakpointCols[currectSize]} spacing={spacing}>
+        )}
+        {loading ? <Loading /> : (
+         !selectedTag ? (
+          <div className='explore-tag-layout'>
+            <div className='explore-card-grid'>
               {tags.map((card, index) => (
                 <ExploreCard
                   key={index}
@@ -107,10 +100,10 @@ function Explore() {
                   onClick={() => handleCardClick(card)}
                 />
               ))}
-            </Masonry>
+            </div>
           </div>
         ) : (
-          <div className='tag-card-layout'>
+          <div className='explore-tag-selected-layout'>
             <BackImg className='close' onClick={closeSelectedTag} />
             <ExploreCard
               className='tagSelected'
@@ -118,15 +111,17 @@ function Explore() {
               background={selectedTag.imageURL}
               slogan={selectedTag.tagLine}
             />
-            {selectedTagPosts.length > 0 ? (
-              <CardGrid data={selectedTagPosts} />
-            ) : (
-              <p>The silence of this tag remains unbroken</p>
-            )}
+            <div className='tag-post-container'>
+              {selectedTagPosts.length > 0 ? (
+                <CardGrid data={selectedTagPosts} />
+              ) : (
+                <p className='suggestion'>The silence of this tag remains unbroken</p>
+              )}
+            </div>
           </div>
         )
       )}
-    </div>
+    </div>    
   );
 }
 
