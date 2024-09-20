@@ -2,12 +2,9 @@
   position: relative;
   display: inline-block;
 }
-
+/* Default position (bottom) */
 .dropdown-menu {
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -19,6 +16,40 @@
   border-radius: 15px;
   overflow: hidden;
 }
+
+/* Dropdown positions with the 'dropdown-menu' class prefix */
+.dropdown-menu.bottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dropdown-menu.top {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dropdown-menu.bottom-left {
+  top: 100%;
+  left: 0;
+}
+
+.dropdown-menu.bottom-right {
+  top: 100%;
+  right: 0;
+}
+
+.dropdown-menu.top-left {
+  bottom: 100%;
+  left: 0;
+}
+
+.dropdown-menu.top-right {
+  bottom: 100%;
+  right: 0;
+}
+
 
 .dropdown-item {
   padding: 12px;

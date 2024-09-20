@@ -151,7 +151,7 @@ function Profile() {
                                 <Button text='Logout' selected={true} onClick={logout} />
                             </div>
                             <div className='control-button'>
-                                <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => navigate('/editUser') }]} />
+                                <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => navigate('/editUser') }]} menuPosition='top-right'/>
                             </div>
                         </div> 
                         :

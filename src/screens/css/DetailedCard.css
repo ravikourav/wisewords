@@ -148,19 +148,6 @@ a.custom-link {
   height: 34px;
   padding: 3px;
 }
-.send-comment-disabled {
-  opacity: 0.5; /* Make it look disabled */
-  pointer-events: none; /* Prevent any interaction */
-  cursor: not-allowed; /* Change the cursor to indicate it's disabled */
-}
-
-.send-comment:hover,
-.send-comment:focus {
-  border-radius: 50%;
-  background-color: #eeeeee;
-  text-decoration: none;
-  cursor: pointer;
-}
 
 /* post controle */
 

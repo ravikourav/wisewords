@@ -1,5 +1,5 @@
 .notification-model {
-    position: absolute;
+    position: fixed;
     top: 75px;
     right: 50px;
     height: 80vh;

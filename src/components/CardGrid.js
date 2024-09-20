@@ -60,7 +60,6 @@ const CardGrid = ({ data }) => {
   };
 
   useEffect(() => {
-    console.log('card data : ' ,data);
     const handleResize = () => {
       const newSize = getCurrentSize();
       const columns = breakpoint[newSize] || 1;

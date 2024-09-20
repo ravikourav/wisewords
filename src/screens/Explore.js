@@ -70,13 +70,6 @@ function Explore() {
     setSelectedTag(null);
   };
 
-  const breakpointCols = {
-    lg: 4,
-    md: 3,
-    sm: 2,
-    xs: 1,
-  };
-
   return (
     <div className='explore-page'>
       {isMobile && !selectedTag && (

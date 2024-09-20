@@ -188,6 +188,7 @@ const removeCoverImage = () => {
                         ]} 
                         showIcon={false} 
                         handleMenu={showCoverDropdown} 
+                        menuPosition='bottom'
                       />
                     </div>
                   </>
@@ -223,6 +224,7 @@ const removeCoverImage = () => {
                         }
                       ]} 
                       handleMenu={showAvatarDropdown} 
+                      menuPosition='bottom'
                     />
                   </div>
                 }

@@ -25,6 +25,7 @@ import { ReactComponent as PlayIcon } from '../assets/icon/play.svg';
 import { ReactComponent as PauseIcon } from '../assets/icon/pause.svg';
 import { ReactComponent as CloseIcon } from '../assets/icon/close.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+import Dropdown from '../components/Dropdown.js';
 
 function DetailedCard() {
   const { id } = useParams();
@@ -426,18 +427,9 @@ function DetailedCard() {
                     </div>
                   </div>
                   {isOwner ? (
-                    <div>
-                      <Button 
-                        onClick={editPost} 
-                        text="Edit" 
-                        selected={false}
-                      />
-                      <Button 
-                        onClick={deletePost} 
-                        text="delete" 
-                        selected={true}
-                      />
-                    </div>
+                    <Dropdown showIcon={true} options={[
+                      { label : 'Edit' , onClick : editPost },
+                      { label : 'Delete' , onClick : deletePost }]} menuPosition='bottom-right' />
                   ) : (
                     <Button 
                       onClick={followUnfollowOwner} 

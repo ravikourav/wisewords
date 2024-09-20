@@ -96,7 +96,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
                       label : 'Report' ,
                       onClick : () => console.log('Reported')
                     }]
-                } iconOrientation='vertical' showIcon={true} size='22'/>
+                } iconOrientation='vertical' menuPosition='top-right' showIcon={true} size='22'/>
             </div>
         </div>
     </div>
