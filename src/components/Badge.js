@@ -6,6 +6,7 @@ function Badge({ badge , size }) {
     blue: '#007bff',  
     green: '#28a745',
     gold: '#ffaa00',
+    red: '#dc3545',
     none: 'transparent'
   };
 
