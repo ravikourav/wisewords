@@ -88,7 +88,7 @@ function Explore() {
                 <ExploreCard
                   key={index}
                   name={card.tag}
-                  background={card.imageURL}
+                  background={card.backgroundImage}
                   slogan={card.tagLine}
                   onClick={() => handleCardClick(card)}
                 />

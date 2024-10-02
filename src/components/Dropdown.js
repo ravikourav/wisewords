@@ -26,7 +26,7 @@ const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrient
   return (
     <div className="dropdown">
       {showIcon && (
-        <IconButton icon={DotmenuIcon} fill={iconColor} size={size} onClick={toggleDropdown} className={iconOrientation === 'vertical' ? 'rotate-icon' : ''}/>
+        <IconButton icon={DotmenuIcon} fill={iconColor} size={size} onClick={toggleDropdown} className={`${iconOrientation === 'vertical' ? 'rotate-icon' : ''} ${isOpen ? 'icon-button-selected ' : 'icon-button-not-selected '}`} />
       )}
       {isOpen && (
         <ul className={`dropdown-menu ${menuPosition}`}>

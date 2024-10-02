@@ -17,6 +17,15 @@
   overflow: hidden;
 }
 
+.icon-button-not-selected {
+  background-color: transparent; /* Default background */
+}
+
+/* Change background color when the dropdown is open */
+.icon-button-selected  {
+  background-color: #eeeeee;
+}
+
 /* Dropdown positions with the 'dropdown-menu' class prefix */
 .dropdown-menu.bottom {
   top: 100%;
@@ -28,6 +37,18 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.dropdown-menu.left {
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+}
+
+.dropdown-menu.right {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
 }
 
 .dropdown-menu.bottom-left {

@@ -1,0 +1,40 @@
+.custom-alert {
+    position: absolute; /* Positioning to be absolute */
+    top: 20px; /* Distance from the top */
+    right: 20px; /* Distance from the right */
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    transition: opacity 0.3s ease-in-out; /* Smooth fade out */
+  }
+  
+  .custom-alert--info {
+    background-color: #2196F3; /* Blue */
+  }
+  
+  .custom-alert--success {
+    background-color: #4CAF50; /* Green */
+  }
+  
+  .custom-alert--warning {
+    background-color: #FF9800; /* Orange */
+  }
+  
+  .custom-alert--error {
+    background-color: #F44336; /* Red */
+  }
+  
+  .custom-alert__close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  

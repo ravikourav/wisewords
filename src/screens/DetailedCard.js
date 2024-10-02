@@ -15,6 +15,7 @@ import { AuthContext } from '../hooks/AuthContext.js';
 import IconButton from '../components/IconButton.js';
 
 import { calculateAspectRatio } from '../utils/calculateDimensions.js';
+import Badge from '../components/Badge.js';
 
 //icons
 import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
@@ -420,14 +421,12 @@ function DetailedCard() {
                       }
                     </Link>
                     <div className='flex-column'>
-                      <Link to={`/user/${cardData.owner_id.username}`} className="custom-link" >
-                      <p className='post-owner-name'>{cardData.owner_id.username}</p>
-                      </Link>
+                      <p onClick={()=>{navigate(`/user/${cardData.owner_id.username}`)}} className='post-owner-name'>{cardData.owner_id.name} <Badge badge={cardData.owner_id.badge} size={16}/></p>
                       <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
                     </div>
                   </div>
                   {isOwner ? (
-                    <Dropdown showIcon={true} options={[
+                    <Dropdown size={25} showIcon={true} options={[
                       { label : 'Edit' , onClick : editPost },
                       { label : 'Delete' , onClick : deletePost }]} menuPosition='bottom-right' />
                   ) : (

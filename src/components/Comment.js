@@ -9,6 +9,7 @@ import Dropdown from '../components/Dropdown.js';
 //icons
 import { ReactComponent as LikedIcon } from '../assets/icon/like.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+import Badge from './Badge.js';
 
 function Comment({data , userId , postId , postOwnerId , deleteComment , deleteReply , reply}) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -147,13 +148,13 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
         }
         <div className='comment-body'>
           <div className='row'>
-            <p className='comment-username'>{data.comment_author.username}</p>
+            <p className='comment-name'>{data.comment_author.name} <Badge badge={data.comment_author.badge} size={12}/></p>
             <p className='comment-time'>{timeAgo(data.date)}</p>
           </div>
           <p className='comment-content'>{renderContent(data.comment)}</p>
           <div className='row'>
             <p className='reply-button' onClick={() => handleReply(data._id , data.comment_author.username)}>Reply</p>
-            <Dropdown showIcon={true} options={handelDropdownOptions(data.comment_author._id)} iconColor='#767676'  size='20px'/>
+            <Dropdown menuPosition='right' showIcon={true} options={handelDropdownOptions(data.comment_author._id)} iconColor='#767676'  size='20px'/>
           </div>
         </div>
         <div className='like-container' onClick={isLoggedIn ? handleLike : null}>
@@ -171,13 +172,13 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
           <img src={reply.reply_author.avatar || ProfileIcon} alt='' className='reply-profile-picture' />
           <div className='comment-reply-body'>
             <div className='row'>
-              <p className='comment-username'>{reply.reply_author.username}</p>
+              <p className='comment-name'>{reply.reply_author.name}</p>
               <p className='comment-time'>{timeAgo(reply.date)}</p>
             </div>
             <p className='comment-content'>{renderContent(reply.reply)}</p>
             <div className='row'>
               <p className='reply-button' onClick={() => handleReply(data._id , reply.reply_author.username)}>Reply</p>
-            <Dropdown showIcon={true} options={handelDropdownOptions(reply.reply_author._id , true , reply._id)} iconColor='#767676'  size='20px'/>
+            <Dropdown menuPosition='right' showIcon={true} options={handelDropdownOptions(reply.reply_author._id , true , reply._id)} iconColor='#767676'  size='20px'/>
           </div>
           </div>
           <div className='like-container' onClick={isLoggedIn? () => handleReplyLike(reply._id , index): null}>

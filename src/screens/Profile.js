@@ -9,6 +9,7 @@ import Loading from '../components/Loading.js';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button.js';
 import IconButton from '../components/IconButton.js';
+import Badge from '../components/Badge.js';
 
 //icons
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
@@ -113,7 +114,7 @@ function Profile() {
             {loading ? ( <Loading/> ) : (
                 <div className='profile-page'>
                     <div className='profile-img-container'>
-                        {data.coverImg && <img className='cover-img' src={data.coverImg} />
+                        {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
                         }
                         {data.avatar ?
                             <img src={data.avatar} alt='' className='profile-img' />
@@ -123,7 +124,7 @@ function Profile() {
                     </div>
                     {data && (
                         <div className='user-profile-info'>
-                            <p className='user-name'>{data.name}</p>
+                            <p className='user-name'>{data.name} <Badge badge={data.badge} size={26}/></p>
                             <p className='user-bio'>{data.bio}</p>
                             <p className='user-id'>@{data.username}</p>
                             <div className='follow-container'>

@@ -6,6 +6,7 @@ import Card from './Card.js';
 import timeAgo from '../utils/timeAgo.js'
 import IconButton from './IconButton.js';
 import Dropdown from './Dropdown.js';
+import Badge from './Badge.js';
 
 //icons 
 import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
@@ -57,13 +58,13 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
     return (
     <div>
         <Card
-            margin={true}
-            content={card.content}
-            textColor={card.contentColor}
-            author={card.author}
-            authorColor={card.authorColor}
-            background={card.backgroundImage}
-            onClick={() => cardClick(card._id)}
+          margin={true}
+          content={card.content}
+          textColor={card.contentColor}
+          author={card.author}
+          authorColor={card.authorColor}
+          background={card.backgroundImage}
+          onClick={() => cardClick(card._id)}
         />
         <div className='simple-card-info-container'>
             <div className='simple-card-user-wraper' onClick={()=>profileClick(card.owner_id.username)}>
@@ -73,7 +74,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
                     <ProfileIcon fill='#ccc' className='simple-card-profile-picture' />
                 }
                 <div onClick={()=>profileClick(card.owner_id.username)}>
-                    <p className='simple-card-text'>{card.owner_id.name}</p>
+                    <p className='simple-card-text'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
                     <p className='simple-card-text'>{timeAgo(card.createdAt)}</p>
                 </div>
             </div>
