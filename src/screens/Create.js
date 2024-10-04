@@ -7,10 +7,9 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
-import { useSearchParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { calculateAspectRatio } from '../utils/calculateDimensions';
+import Alert from '../components/Alert.js';
 
 function Create() {
   const [loading , setLoading] = useState(false);
@@ -25,9 +24,8 @@ function Create() {
   const [tintColor, setTintColor] = useState('rgba(0, 0, 0, 0.4)');
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [aspectRatio, setAspectRatio] = useState('');
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  
+  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
   // Separate states for each color picker visibility
   const [activePicker, setActivePicker] = useState(null);
@@ -39,17 +37,10 @@ function Create() {
     if (file) {
       if (file.type.startsWith('image/')) {
         const img = new Image();
-        img.onload = () => {
-        const width = img.width;
-        const height = img.height;
-        const ratio = calculateAspectRatio(width,height);
-
-        setAspectRatio(ratio);
-        };
         img.src = URL.createObjectURL(file);
         setBackgroundImage(file);
       } else {
-        alert('Please select a valid image file');
+        setUserAlert({ message: 'Please select a valid image file' , type: 'error', visible: true });
         e.target.value = '';
       }
     }
@@ -63,23 +54,22 @@ function Create() {
     setActivePicker(activePicker === picker ? null : picker);
   };
 
-  const handleImageSelect = async (imageUrl , width , height) => {
+  const handleImageSelect = async (imageUrl) => {
     try {
       const response = await axios.get(imageUrl, { responseType: 'blob' });
       const file = new File([response.data], 'background.jpg', { type: response.data.type });
-      const ratio = calculateAspectRatio(width , height);
-      setAspectRatio(ratio);
       setBackgroundImage(file);
     } catch (error) {
       console.error('Failed to download image', error);
-      alert('Failed to download image. Please try again.');
+      setUserAlert({ message: 'Failed to download image. Please try again.', type: 'error', visible: true });
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (!title || !content || !author || !category || !tags.length || !backgroundImage) {
-      alert('Please fill in all fields.');
+      setUserAlert({ message: 'Please fill in all fields.', type: 'error', visible: true });
       return;
     }
     setLoading(true);
@@ -103,11 +93,12 @@ function Create() {
           'Content-Type': 'multipart/form-data'
         }
       });
+      setUserAlert({ message: 'Post created Successfully', type: 'success', visible: true });
       defaultCreateValues();
     } catch (error) {
       setLoading(false);
       console.error('Operation failed', error);
-      alert('Failed to create post. Please try again.');
+      setUserAlert({ message: 'Failed to create post. Please try again.', type: 'error', visible: true });
     }
   };
 
@@ -143,13 +134,12 @@ function Create() {
       setAllTags(response.data.names);
     }
     catch{
-      console.log('Unable to teatch tags');
+      setUserAlert({ message: 'Unable to featch tags.', type: 'error', visible: true });
     }
   }
 
   const closeOnlineImage = () =>{
     setBrowseOnline(false);
-    setSearchParams();
   }
 
   const handleCheckBox = () => {
@@ -170,6 +160,15 @@ function Create() {
         <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} title={title} />
       ) : (
         <div className='create-page'>
+          {userAlert.visible &&
+            <Alert
+              message={userAlert.message}
+              type={userAlert.type}
+              duration={3000}
+              visible={userAlert.visible}
+              setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
+            />
+          }
           <p className='create-page-title'>Create Post</p>
           <form onSubmit={handleSubmit} className='form-group'>
             <div className='img-container'>

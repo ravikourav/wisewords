@@ -29,30 +29,6 @@ function Profile() {
     const [isOwner , setIsOwner] = useState(false);
     const [isFollowing , setIsFollowing] = useState(null);
 
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}`;
-            const response = await axios.get(endPoint);
-            setData(response.data);
-            checkOwner(response.data._id);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const checkOwner = (id) => {
-        if(user?._id === id){
-            setIsOwner(true);
-        }else{
-            setIsOwner(false);
-            setIsFollowing(user?.following.includes(id));
-        }
-    }
-
     const followUnfollowOwner = async () => {
         const token = Cookies.get('authToken');
         const endpoint = isFollowing 
@@ -75,10 +51,34 @@ function Profile() {
     };
 
     useEffect(() => {
+        const checkOwner = (id) => {
+            if(user?._id === id){
+                setIsOwner(true);
+            }else{
+                setIsOwner(false);
+                setIsFollowing(user?.following.includes(id));
+            }
+        }
+
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}`;
+                const response = await axios.get(endPoint);
+                setData(response.data);
+                checkOwner(response.data._id);
+                console.log(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         if (username) {
             fetchData();
         }
-    }, [username , user]);
+    }, [username, user ]);
 
     useEffect(() => {
         if (data) {

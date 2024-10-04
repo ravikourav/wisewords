@@ -16,6 +16,7 @@ import IconButton from '../components/IconButton.js';
 
 import { calculateAspectRatio } from '../utils/calculateDimensions.js';
 import Badge from '../components/Badge.js';
+import Alert from '../components/Alert.js';
 
 //icons
 import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
@@ -53,6 +54,7 @@ function DetailedCard() {
 
   const utteranceRef = useRef(null);
 
+  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
   const featchCardData = async() =>{
     setLoading(true);
@@ -125,7 +127,7 @@ function DetailedCard() {
 }, [cardData]);
 
   useEffect(() => {
-    featchCardData();
+    featchCardData();// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   const followUnfollowOwner = async () => {
@@ -184,7 +186,7 @@ function DetailedCard() {
         console.log(liked ? 'post unliked succesfully' : 'post liked succesfully');
       }
     } catch (error) {
-      console.error('Error liking/unliking user:', error);
+      setUserAlert({ message: liked ? 'Error while liking post' : 'Error while liking post' , type: 'error', visible: true });
     }
   };
 
@@ -224,6 +226,7 @@ function DetailedCard() {
       }
     }catch(err) {
       console.error('Error Adding Comment/Reply user:', err);
+      setUserAlert({ message: replyingTo ? `Error while Replying to ${replyingTo}` : 'Error Adding Comment' , type: 'error', visible: true });
     }
   }
 
@@ -246,7 +249,7 @@ function DetailedCard() {
         }));
       }
     }catch(err) {
-      console.error('Error Deleting Comment ', err);
+      setUserAlert({ message: 'Error deleting comment', type: 'error', visible: true });
     }
   }
 
@@ -271,7 +274,7 @@ function DetailedCard() {
         }));
       }
     } catch (error) {
-      console.error('Error deleting reply:', error);
+      setUserAlert({ message: 'Error deleting reply', type: 'error', visible: true });
     }
   };
   
@@ -301,7 +304,7 @@ function DetailedCard() {
         setIsPlaying(false);
       }
     } else {
-      alert('Sorry, your browser does not support text to speech.');
+      setUserAlert({ message: 'your browser does not support text to speech.', type: 'error', visible: true });
     }
   };
 
@@ -360,7 +363,7 @@ function DetailedCard() {
         setTimeout(() => setCopied(false), 2000);
       }
     } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
+      setUserAlert({ message: 'Oops, unable to copy', type: 'error', visible: true });
     }
 
     document.body.removeChild(textArea);
@@ -378,13 +381,13 @@ function DetailedCard() {
     const token = Cookies.get('authToken');
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
     try {
-      const response = await axios.delete(endpoint,{
+      await axios.delete(endpoint,{
         headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }});
     }catch {
-      console.log('error deleting this post')
+      setUserAlert({ message: 'Error Deleting this Post', type: 'error', visible: true });
     }
   }
 
@@ -396,6 +399,15 @@ function DetailedCard() {
           <Loading /> 
           : 
           <>
+            {userAlert.visible &&
+              <Alert
+                message={userAlert.message}
+                type={userAlert.type}
+                duration={3000}
+                visible={userAlert.visible}
+                setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
+              />
+            }
             <BackButton onClick={handleClose}/>
             
             <div className='content-wraper'>

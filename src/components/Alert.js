@@ -1,30 +1,27 @@
-import React,{ useEffect, useState } from 'react'
+import React, { useEffect } from 'react';
 import './css/Alert.css';
 
-function Alert({ message, type = 'info', duration = 3000, onClose }) {
-  
-  const [isVisible, setIsVisible] = useState(true);
+function Alert({ message, type = 'info', duration = 3000, setVisible, visible }) {
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      if (onClose) {
-        onClose(); // Call the onClose callback if provided
-      }
-    }, duration);
-    return () => clearTimeout(timer); // Cleanup timer on unmount
-  }, [duration, onClose]);
+    if (visible) {
+      const timer = setTimeout(() => {
+        setVisible(false);
+      }, duration);
+      return () => clearTimeout(timer);
+    }
+  }, [visible, duration, setVisible]);
 
-  if (!isVisible) return null;
-  
+  if (!visible) return null;
+
   return (
     <div className={`custom-alert custom-alert--${type}`}>
       <span>{message}</span>
-      <button className="custom-alert__close" onClick={() => setIsVisible(false)}>
-        &times; {/* Close button */}
+      <button className="custom-alert__close" onClick={() => setVisible(false)}>
+        &times;
       </button>
     </div>
-  )
+  );
 }
 
-export default Alert
+export default Alert;

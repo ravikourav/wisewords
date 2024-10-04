@@ -4,55 +4,33 @@ import BackButton from '../components/BackButton';
 import OnlineImageCard from '../components/OnlineImageCard';
 import Loading from '../components/Loading.js';
 import axios from 'axios';
-
 import { Masonry } from '@mui/lab';
 import Switch from '@mui/material/Switch';
-
 import Button from '../components/Button.js';
-
+import Alert from '../components/Alert.js';
 import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
-
 
 function BrowseImage({ onClose, onSelectImage, title }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [searchInput, setSearchInput] = useState(title || 'new');
   const [searchQuery, setSearchQuery] = useState('new');
   const PIXABAY_API_KEY = process.env.REACT_APP_PIXABAY_API_KEY;
   const [page, setPage] = useState(1); // Current page for pagination
+  const [fullResolutionImage, setFullResolutionImage] = useState(false);
 
-  const [fullResolutionImage , setFullResolutionImage] = useState(false);
+  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
-  const fetchImages = async () => {
-    try {
-      const encodedQuery = encodeURIComponent(searchQuery);
-      const response = await axios.get('https://pixabay.com/api/', {
-        params: {
-          key: PIXABAY_API_KEY,
-          q: encodedQuery,
-          image_type: 'photo',
-          page: page,
-        },
-      });
-      setImages(response.data.hits);
-      setPage(prevPage => prevPage + 1);
-      console.log(response);
-    } catch (error) {
-      console.error('Error fetching images:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Handle search submission
   const handleSearch = () => {
-    setSearchQuery(searchInput); // Trigger search when clicking the button
-    setPage(1); // Reset page for new search
+    setSearchQuery(searchInput); // Update search query
+    setPage(1); // Reset page to 1 for a new search
     setImages([]); // Clear previous images
-    setLoading(true);
+    setLoading(true); // Set loading state
   };
 
-  const fetchMore = async () => {
+  // Fetch images from Pixabay API
+  const fetchImages = async (reset = false) => {
     setLoading(true);
     try {
       const encodedQuery = encodeURIComponent(searchQuery.trim());
@@ -64,37 +42,50 @@ function BrowseImage({ onClose, onSelectImage, title }) {
           page: page,
         },
       });
-      setImages((prevImages) => [...prevImages, ...response.data.hits]);
-      setPage(prevPage => prevPage + 1);
+      if (reset) {
+        setImages(response.data.hits); // Reset images on a new search
+      } else {
+        setImages((prevImages) => [...prevImages, ...response.data.hits]); // Append images for pagination
+      }
+      setPage((prevPage) => prevPage + 1); // Increment page number
     } catch (error) {
-      console.error('Error fetching images:', error);
+      setUserAlert({ message: 'Error fetching images' , type: 'error', visible: true });
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch user setting from localStorage for resolution preference
   const fetchUserSetting = () => {
     let fullResolutionImg = localStorage.getItem('fullResolutionImage');
     if (fullResolutionImg === null) {
-      // If it doesn't exist, set it to 'false'
+      // If setting doesn't exist, set it to 'false' initially
       localStorage.setItem('fullResolutionImage', 'false');
       fullResolutionImg = 'false';
-    }else{
-      setFullResolutionImage(fullResolutionImg === 'true');
     }
-  }
+    setFullResolutionImage(fullResolutionImg === 'true');
+  };
 
+  // Handle Enter key press to trigger search
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   };
 
+  // Fetch images when the component mounts and when searchQuery changes
   useEffect(() => {
     fetchUserSetting();
-    setLoading(true);
-    fetchImages();
-  }, [searchQuery])
+    fetchImages(true); // Fetch images for new search (reset is true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]); // Fetch images only when the search query changes
+
+  // Save resolution setting to localStorage when toggled
+  const handleResolutionChange = (e) => {
+    const isFullResolution = e.target.checked;
+    setFullResolutionImage(isFullResolution);
+    localStorage.setItem('fullResolutionImage', isFullResolution.toString());
+  };
 
   const breakpointCols = {
     lg: 4,
@@ -103,44 +94,60 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     xs: 1,
   };
 
+  // Handle image selection
   const handleImageSelect = (image) => {
-    onSelectImage(image.largeImageURL , image.imageWidth , image.imageHeight); 
+    onSelectImage(image.largeImageURL);
     onClose(); // Close the browse image modal
   };
 
   return (
     <div>
       <div className='browse-image-container'>
+        {userAlert.visible &&
+          <Alert
+            message={userAlert.message}
+            type={userAlert.type}
+            duration={3000}
+            visible={userAlert.visible}
+            setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
+          />
+        }
         <BackButton onClick={onClose} />
         <p className='browse-suggestion'>If you seek a specific treasure, let the search guide your way.</p>
         <div className='custom-search-box'>
-          <SearchIcon className='search-icon'/>
-          <input type="text" value={searchInput} onKeyDown={handleKeyDown} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search" className="mobile-search-input " />
+          <SearchIcon className='search-icon' />
+          <input
+            type="text"
+            value={searchInput}
+            onKeyDown={handleKeyDown}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search"
+            className="mobile-search-input"
+          />
         </div>
         <div className='switch-container'>
           <p className='browse-suggestion-2'>
-            {fullResolutionImage 
+            {fullResolutionImage
               ? "The full splendor is now within your grasp, unbound by modesty."
               : "Be aware, these are but glimpses in modest quality. Rest assured, the full splendor awaits in high resolution."
             }
           </p>
-          <Switch checked={fullResolutionImage} onChange={(e)=>{setFullResolutionImage(e.target.checked)}} inputProps={{ 'aria-label': 'controlled' }} />
+          <Switch checked={fullResolutionImage} onChange={handleResolutionChange} inputProps={{ 'aria-label': 'controlled' }} />
         </div>
-        
+
         {images?.length > 0 ? (
           <>
-            {loading ? <Loading /> :
-              <Masonry columns={breakpointCols} spacing={2}>
-                {images.map((image) => (
-                  <OnlineImageCard
+            <Masonry columns={breakpointCols} spacing={2}>
+              {images.map((image) => (
+                <OnlineImageCard
                   key={image.id}
-                  image={fullResolutionImage? image.largeImageURL : image.previewURL}
+                  image={fullResolutionImage ? image.largeImageURL : image.previewURL}
                   onSelect={() => handleImageSelect(image)}
-                  />
-                ))}
-              </Masonry>
-            }
-            <Button onClick={fetchMore} text='More'/>
+                />
+              ))}
+            </Masonry>
+            {!loading && <Button onClick={() => fetchImages()} text='More' />}
+            {loading && <Loading />}
           </>
         ) : (
           <p>No images found.</p>

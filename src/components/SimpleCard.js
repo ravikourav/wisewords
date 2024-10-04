@@ -7,17 +7,54 @@ import timeAgo from '../utils/timeAgo.js'
 import IconButton from './IconButton.js';
 import Dropdown from './Dropdown.js';
 import Badge from './Badge.js';
-
+import { truncateTextByChars } from '../utils/truncate.js';
 //icons 
 import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import { ReactComponent as BookmarkIcon } from '../assets/icon/bookmark.svg';
 
 function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , likes , profileClick , currentUser}) {
+
     const [savedCardId, setSavedCardId] = useState([]);
     const [saved , setSaved] = useState(false);
     const [liked , setLiked] = useState(false);
+
+    const [cardSize, setCardSize] = useState('small');
+    const [cardContent, setCardContent] = useState('');
   
+    useEffect(()=>{
+      const getCardSizeAndContent = () => {
+        const contentLength = card.content.length;
+      
+        if (contentLength > 300) {
+          return {
+            size: 'large',
+            content: truncateTextByChars(card.content, 300)
+          };
+        } else if (contentLength > 250) {
+          return { 
+            size: 'large', 
+            content: card.content 
+          };
+        } else if (contentLength > 160) {
+          return { 
+            size: 'medium', 
+            content: card.content 
+          };
+        } else {
+          return { 
+            size: 'small', 
+            content: card.content 
+          };
+        }
+      };
+
+      const { size, content } = getCardSizeAndContent();
+        setCardSize(size); // Update size state
+        setCardContent(content); // Update content state
+    },[card.content])
+
+
     useEffect(() => {
         // Set savedCard to user.saved only if the user is logged in
         if (isLoggedIn) {
@@ -27,8 +64,8 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
 
     useEffect(() => {
         if( isLoggedIn){
-            setSaved(savedCardId.includes(card._id));
-            setLiked(likes.includes(currentUser));   
+          setSaved(savedCardId.includes(card._id));
+          setLiked(likes.includes(currentUser));   
         }
     }, [ savedCardId , isLoggedIn ,likes, card._id,currentUser]);
 
@@ -53,17 +90,18 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
         } catch (error) {
           console.error('Error liking/unliking post:', error);
         }
-      };
-
+    };
+    
     return (
     <div>
         <Card
           margin={true}
-          content={card.content}
+          content={cardContent}
           textColor={card.contentColor}
           author={card.author}
           authorColor={card.authorColor}
           background={card.backgroundImage}
+          sampleSize={cardSize}
           onClick={() => cardClick(card._id)}
         />
         <div className='simple-card-info-container'>

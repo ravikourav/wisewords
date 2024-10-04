@@ -4,8 +4,7 @@ import CardGrid from '../components/CardGrid.js';
 import { ReactComponent as BackImg } from '../assets/icon/arrow-back.svg';
 import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import './css/Explore.css';
-import { Masonry } from '@mui/lab';
-import { getCurrentSize } from '../utils/resposiveSize.js';
+import Alert from '../components/Alert.js';
 import { useIsMobile } from '../utils/screenSize.js';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
@@ -18,8 +17,7 @@ function Explore() {
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedTagPosts, setSelectedTagPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [ currectSize, setCurrentSize] = useState(getCurrentSize());
-  const [error, setError] = useState('');
+  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
   useEffect(() => {
     fetchAllTags();
@@ -32,24 +30,11 @@ function Explore() {
       const response = await axios.get(endpoint);
       setTags(response.data);
     } catch (err) {
-      setError('Unable to fetch Tags');
+      setUserAlert({ message: 'Unable to Load Tags' , type: 'error', visible: true });
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setCurrentSize(getCurrentSize());
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   const handleCardClick = async (card) => {
     const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/${card._id}/posts`;
@@ -58,7 +43,7 @@ function Explore() {
       const response = await axios.get(endPoint);
       setSelectedTagPosts(response.data);
     } catch (err) {
-      setError('Unable to fetch Posts');
+      setUserAlert({ message: 'Unable to fetch Posts' , type: 'error', visible: true });
     } finally {
       setLoading(false);
     }
@@ -97,11 +82,20 @@ function Explore() {
           </div>
         ) : (
           <div className='explore-tag-selected-layout'>
+            {userAlert.visible &&
+              <Alert
+                message={userAlert.message}
+                type={userAlert.type}
+                duration={3000}
+                visible={userAlert.visible}
+                setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
+              />
+            }
             <BackImg className='close' onClick={closeSelectedTag} />
             <ExploreCard
               className='tagSelected'
               name={selectedTag.tag}
-              background={selectedTag.imageURL}
+              background={selectedTag.backgroundImage}
               slogan={selectedTag.tagLine}
             />
             <div className='tag-post-container'>

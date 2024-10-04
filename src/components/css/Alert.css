@@ -1,6 +1,6 @@
 .custom-alert {
-    position: absolute; /* Positioning to be absolute */
-    top: 20px; /* Distance from the top */
+    position: fixed; /* Positioning to be absolute */
+    top: 70px; /* Distance from the top */
     right: 20px; /* Distance from the right */
     padding: 15px 20px;
     border-radius: 5px;
