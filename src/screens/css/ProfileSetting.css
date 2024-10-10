@@ -58,7 +58,7 @@
     right: -10px;
 }
 
-.remove-avatar-button {
+.remove-profile-button {
     top: -80px;
     right: -15px;
 }
@@ -75,7 +75,7 @@
     .form-group-profile {
         margin-bottom: 100px;
     }
-    .remove-avatar-button {
+    .remove-profile-button {
         top: -60px;
     }
     .remove-cover-button {
@@ -89,7 +89,7 @@
 
 @media (max-width: 576px){
 
-    .remove-avatar-button {
+    .remove-profile-button {
         top: -50px;
     }
     .remove-cover-button {

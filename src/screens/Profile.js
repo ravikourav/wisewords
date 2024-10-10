@@ -116,8 +116,8 @@ function Profile() {
                     <div className='profile-img-container'>
                         {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
                         }
-                        {data.avatar ?
-                            <img src={data.avatar} alt='' className='profile-img' />
+                        {data.profile ?
+                            <img src={data.profile} alt='' className='profile-img' />
                         :
                             <ProfileIcon fill='#ccc' className='profile-img' />
                         }

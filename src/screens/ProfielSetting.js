@@ -17,17 +17,17 @@ import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
 function ProfileSetting() {
   const { user } = useContext(AuthContext);
   const [data , setData] = useState();
-  const [newAvatar, setNewAvatar] = useState(null);
+  const [newProfile, setNewProfile] = useState(null);
   const [newCoverImage, setNewCoverImage] = useState(null);
   const [bio, setBio] = useState('');
   const [name, setName] = useState('');
 
   const [loading , setLoading] = useState(false);
   const [browseOnline , setBrowseOnline] = useState(false);
-  const [browseAvatar , setBrowseAvatar] = useState(false);
-  const [removeAvatar, setRemoveAvatar] = useState(false);
+  const [browseProfile , setBrowseProfile] = useState(false);
+  const [removeProfile, setRemoveProfile] = useState(false);
   const [removeCover, setRemoveCover] = useState(false);
-  const [showAvatarDropdown, setShowAvatarDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showCoverDropdown, setShowCoverDropdown] = useState(false);
   
   const fetchData = async() => {
@@ -49,26 +49,25 @@ function ProfileSetting() {
     fetchData();
   },[])
 
-  const handleAvatarChange = (e) => {
+  const handleProfileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.type.startsWith('image/')) {
-        setRemoveAvatar(false);
-        setNewAvatar(file);
-        setShowAvatarDropdown(false);
+        setRemoveProfile(false);
+        setNewProfile(file);
+        setShowProfileDropdown(false);
       } else {
         alert('Please select a valid image file');
         e.target.value = '';
       }
     }
   };
-
   
   const handleCoverImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.type.startsWith('image/')) {
-        setRemoveAvatar(false);
+        setRemoveProfile(false);
         setNewCoverImage(file);
         setShowCoverDropdown(false);
       } else {
@@ -88,10 +87,10 @@ function ProfileSetting() {
       formData.append('name' , name);
       formData.append('bio', bio);
 
-      if (removeAvatar) {
-        formData.append('removeAvatar', removeAvatar);
-      } else if (newAvatar) {
-        formData.append('avatar', newAvatar);
+      if (removeProfile) {
+        formData.append('removeProfile', removeProfile);
+      } else if (newProfile) {
+        formData.append('profile', newProfile);
       }
 
       if (removeCover) {
@@ -121,10 +120,10 @@ function ProfileSetting() {
   const handleImageSelect = async (imageUrl) => {
     try {
       const response = await axios.get(imageUrl, { responseType: 'blob' });
-      const file = new File([response.data], browseAvatar ? 'avatar.jpg' : 'cover.jpg', { type: response.data.type });
-      if(browseAvatar){
-        setRemoveAvatar(false);
-        setNewAvatar(file);
+      const file = new File([response.data], browseProfile ? 'profile.jpg' : 'cover.jpg', { type: response.data.type });
+      if(browseProfile){
+        setRemoveProfile(false);
+        setNewProfile(file);
       }else{
         setRemoveCover(false);
         setNewCoverImage(file);
@@ -135,10 +134,10 @@ function ProfileSetting() {
     }
   };
 
-  const removeAvatarImage = () => {
-    setNewAvatar(null);
-    setRemoveAvatar(true);
-    setData((prevData) => ({ ...prevData, avatar: '' }));
+  const removeProfileImage = () => {
+    setNewProfile(null);
+    setRemoveProfile(true);
+    setData((prevData) => ({ ...prevData, profile: '' }));
 };
 
 const removeCoverImage = () => {
@@ -181,7 +180,7 @@ const removeCoverImage = () => {
                             label: 'Browse On Pixel', 
                             onClick: () => {
                               setBrowseOnline(true);
-                              setBrowseAvatar(false);
+                              setBrowseProfile(false);
                               setShowCoverDropdown(false);
                             }
                           }
@@ -195,35 +194,35 @@ const removeCoverImage = () => {
                 }
               </div>
               <div className='edit-profile-img-container'>
-                {data?.avatar || newAvatar  ?
+                {data?.profile || newProfile  ?
                   <>
-                    <img src={newAvatar ? URL.createObjectURL(newAvatar) : data?.avatar} alt='' className='profile-img' />
-                    <IconButton className='close-button remove-avatar-button' size='20px' icon={CloseImg} onClick={removeAvatarImage} type='button'/>
+                    <img src={newProfile ? URL.createObjectURL(newProfile) : data?.profile} alt='' className='profile-img' />
+                    <IconButton className='close-button remove-profile-button' size='20px' icon={CloseImg} onClick={removeProfileImage} type='button'/>
                   </>
                   :
                   <div className='edit-profile-img-container'>
-                    <ProfileIcon fill={`${!showAvatarDropdown? '#ccc' : '#a3a3a3'}`} className='profile-img img-template' onClick={()=>setShowAvatarDropdown(!showAvatarDropdown)} />
-                    <input type='file' id='avatar-image-upload' className='file-input' onChange={handleAvatarChange} />
+                    <ProfileIcon fill={`${!showProfileDropdown? '#ccc' : '#a3a3a3'}`} className='profile-img img-template' onClick={()=>setShowProfileDropdown(!showProfileDropdown)} />
+                    <input type='file' id='profile-image-upload' className='file-input' onChange={handleProfileChange} />
                     <Dropdown 
                       showIcon={false} 
                       options={[
                         { 
                           label: 'Upload', 
                           onClick: () => {
-                            setShowAvatarDropdown(false);
-                            document.getElementById('avatar-image-upload').click(); // Trigger the file input
+                            setShowProfileDropdown(false);
+                            document.getElementById('profile-image-upload').click(); // Trigger the file input
                           }
                         },
                         { 
                           label: 'Browse On Pixel', 
                           onClick: () => {
                             setBrowseOnline(true);
-                            setBrowseAvatar(true);
-                            setShowAvatarDropdown(false);
+                            setBrowseProfile(true);
+                            setShowProfileDropdown(false);
                           }
                         }
                       ]} 
-                      handleMenu={showAvatarDropdown} 
+                      handleMenu={showProfileDropdown} 
                       menuPosition='bottom'
                     />
                   </div>

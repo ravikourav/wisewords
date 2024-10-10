@@ -22,7 +22,7 @@ function NotificationTemplate({data , markRead}) {
   return (
     <div className='notification-wraper' >
       <div onClick={()=>{handleCommentClick('profile')}} >
-        <img className='notification-user-img' src={data.sender.avatar} alt='' />
+        <img className='notification-user-img' src={data.sender.profile} alt='' />
       </div>
       <div className='notification-info' onClick={()=>{handleCommentClick(data.type === 'follow' ? 'profile' : 'post')}}>
         <p className={data.read ? 'notification-msg-read' : 'notification-msg-unread'}>

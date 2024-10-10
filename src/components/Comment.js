@@ -141,8 +141,8 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
   return (
     <div className='comment-warper'>
       <div className='main-comment'>
-        {data.comment_author.avatar ?
-          <img src={data.comment_author.avatar} alt='' className='comment-profile-picture' />
+        {data.comment_author.profile ?
+          <img src={data.comment_author.profile} alt='' className='comment-profile-picture' />
         :
           <ProfileIcon fill='#ccc' className='comment-profile-picture' />
         }
@@ -169,7 +169,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
       
       {!viewReply && data.replies.map((reply, index) => (
         <div className='reply-container' key={reply._id}>
-          <img src={reply.reply_author.avatar || ProfileIcon} alt='' className='reply-profile-picture' />
+          <img src={reply.reply_author.profile || ProfileIcon} alt='' className='reply-profile-picture' />
           <div className='comment-reply-body'>
             <div className='row'>
               <p className='comment-name'>{reply.reply_author.name}</p>

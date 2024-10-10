@@ -80,8 +80,8 @@ function Header()  {
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'black' } className='icon'
               onClick={handleNotification} /> 
               <Link to={`user/${user.username}`} onClick={()=>{select('Profile')}} >
-                { user.avatar ?
-                  <img src={user.avatar} alt='' className='profile-picture' />
+                { user.profile ?
+                  <img src={user.profile} alt='' className='profile-picture' />
                 :
                   <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'profile-picture'/>
                 }
@@ -116,8 +116,8 @@ function Header()  {
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='nav-icon'
               onClick={handleNotification} />
               <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
-                { user.avatar ?
-                  <img src={user.avatar} alt='' className='nav-icon' />
+                { user.profile ?
+                  <img src={user.profile} alt='' className='nav-icon' />
                 :
                   <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'nav-icon' alt="User"/>
                 }

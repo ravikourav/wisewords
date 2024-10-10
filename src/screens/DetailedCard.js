@@ -426,8 +426,8 @@ function DetailedCard() {
                 <div className='post-owner-container'>
                   <div className='flex-row'>
                     <Link to={`/user/${cardData.owner_id.username}`} >
-                      {cardData.owner_id.avatar ?
-                        <img src={cardData.owner_id.avatar} alt='' className='post-owner-profile-image' />
+                      {cardData.owner_id.profile ?
+                        <img src={cardData.owner_id.profile} alt='' className='post-owner-profile-image' />
                       :
                         <ProfileIcon fill='#ccc' className='post-owner-profile-image' />
                       }
@@ -477,8 +477,8 @@ function DetailedCard() {
                   </div>
                 }
                 <div className='add-comment-container'>
-                  {user?.avatar ?
-                    <img src={user.avatar} alt='' className='user-profile-image' />
+                  {user?.profile ?
+                    <img src={user.profile} alt='' className='user-profile-image' />
                   :
                     <ProfileIcon fill='#ccc' className='user-profile-image' />
                   }

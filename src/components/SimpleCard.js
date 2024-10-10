@@ -106,8 +106,8 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
         />
         <div className='simple-card-info-container'>
             <div className='simple-card-user-wraper' onClick={()=>profileClick(card.owner_id.username)}>
-                { card.owner_id.avatar ?
-                    <img src={card.owner_id.avatar} alt='' className='simple-card-profile-picture' />
+                { card.owner_id.profile ?
+                    <img src={card.owner_id.profile} alt='' className='simple-card-profile-picture' />
                 :
                     <ProfileIcon fill='#ccc' className='simple-card-profile-picture' />
                 }
@@ -135,7 +135,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
                       label : 'Report' ,
                       onClick : () => console.log('Reported')
                     }]
-                } iconOrientation='vertical' menuPosition='top-right' showIcon={true} size='22'/>
+                } iconOrientation='vertical' menuPosition='top-right' showIcon={true} size='22' paddingNone={true}/>
             </div>
         </div>
     </div>
