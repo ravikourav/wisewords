@@ -13,8 +13,8 @@ import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 function BrowseImage({ onClose, onSelectImage, title }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searchInput, setSearchInput] = useState(title || 'new');
-  const [searchQuery, setSearchQuery] = useState('new');
+  const [searchInput, setSearchInput] = useState(title || '');
+  const [searchQuery, setSearchQuery] = useState('');
   const PIXABAY_API_KEY = process.env.REACT_APP_PIXABAY_API_KEY;
   const [page, setPage] = useState(1); // Current page for pagination
   const [fullResolutionImage, setFullResolutionImage] = useState(false);
@@ -75,7 +75,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   };
 
   useEffect(() => {
-    const savedSetting = localStorage.getItem('fullResolutionImage');
+    const savedSetting = localStorage.getItem('fullResolutionImage') === 'true';
     setFullResolutionImage(savedSetting);
   }, []);
   
@@ -105,7 +105,6 @@ function BrowseImage({ onClose, onSelectImage, title }) {
           />
         }
         <BackButton onClick={onClose} />
-        <p className='browse-suggestion'>If you seek a specific treasure, let the search guide your way.</p>
         <div className='custom-search-box'>
           <SearchIcon className='search-icon' />
           <input
@@ -126,10 +125,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
           </p>
           <Switch 
             checked={fullResolutionImage}
-            onChange={(e) => {
-              setFullResolutionImage(e.target.checked);
-            }} 
-            inputProps={{ 'aria-label': 'controlled' }} 
+            onChange={(e) => {handleImgStateChange(e)}}
           />
         </div>
 
