@@ -55,17 +55,6 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     }
   };
 
-  // Fetch user setting from localStorage for resolution preference
-  const fetchUserSetting = () => {
-    let fullResolutionImg = localStorage.getItem('fullResolutionImage');
-    if (fullResolutionImg === null) {
-      // If setting doesn't exist, set it to 'false' initially
-      localStorage.setItem('fullResolutionImage', 'false');
-      fullResolutionImg = 'false';
-    }
-    setFullResolutionImage(fullResolutionImg === 'true');
-  };
-
   // Handle Enter key press to trigger search
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -75,16 +64,25 @@ function BrowseImage({ onClose, onSelectImage, title }) {
 
   // Fetch images when the component mounts and when searchQuery changes
   useEffect(() => {
-    fetchUserSetting();
     fetchImages(true); // Fetch images for new search (reset is true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]); // Fetch images only when the search query changes
 
-  // Save resolution setting to localStorage when toggled
-  const handleResolutionChange = (e) => {
-    const isFullResolution = e.target.checked;
-    setFullResolutionImage(isFullResolution);
-    localStorage.setItem('fullResolutionImage', isFullResolution.toString());
+  // Handle image selection
+  const handleImageSelect = (image) => {
+    onSelectImage(image.largeImageURL);
+    onClose(); // Close the browse image modal
+  };
+
+  useEffect(() => {
+    const savedSetting = localStorage.getItem('fullResolutionImage');
+    setFullResolutionImage(savedSetting);
+  }, []);
+  
+  const handleImgStateChange = (e) => {
+    const newValue = e.target.checked;
+    setFullResolutionImage(newValue);
+    localStorage.setItem('fullResolutionImage', newValue);
   };
 
   const breakpointCols = {
@@ -92,12 +90,6 @@ function BrowseImage({ onClose, onSelectImage, title }) {
     md: 3,
     sm: 2,
     xs: 1,
-  };
-
-  // Handle image selection
-  const handleImageSelect = (image) => {
-    onSelectImage(image.largeImageURL);
-    onClose(); // Close the browse image modal
   };
 
   return (
@@ -132,7 +124,13 @@ function BrowseImage({ onClose, onSelectImage, title }) {
               : "Be aware, these are but glimpses in modest quality. Rest assured, the full splendor awaits in high resolution."
             }
           </p>
-          <Switch checked={fullResolutionImage} onChange={handleResolutionChange} inputProps={{ 'aria-label': 'controlled' }} />
+          <Switch 
+            checked={fullResolutionImage}
+            onChange={(e) => {
+              setFullResolutionImage(e.target.checked);
+            }} 
+            inputProps={{ 'aria-label': 'controlled' }} 
+          />
         </div>
 
         {images?.length > 0 ? (
