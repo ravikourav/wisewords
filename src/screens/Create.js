@@ -127,7 +127,7 @@ function Create() {
   },[])
 
   const featchTags = async () =>{
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/name`;
+    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/names`;
     try{
       const response = await axios.get(endpoint);
       setAllTags(response.data.names);
