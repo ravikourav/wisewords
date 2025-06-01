@@ -77,7 +77,7 @@ function Header()  {
         <div className="header-user-container">
           {isLoggedIn ? (
             <div className='left-nav-links'>
-              <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'black' } className='icon'
+              <BellIcon fill={Selected === 'Notification' ? '#404040' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#404040' } className='bell-icon-desktop'
               onClick={handleNotification} /> 
               <Link to={`user/${user.username}`} onClick={()=>{select('Profile')}} >
                 { user.profile ?

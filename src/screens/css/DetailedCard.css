@@ -4,7 +4,7 @@
   width: 100vw;
 }
 
-.modal-wraper {
+.modal-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,7 +13,7 @@
   margin-bottom: 60px;
 }
   
-.content-wraper {
+.content-wrapper {
   display: flex;
   border-radius: 50px;
   overflow: hidden;
@@ -158,6 +158,7 @@ a.custom-link {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
   padding: 5px;
   margin: 10px;
   width: 250px;
@@ -166,16 +167,17 @@ a.custom-link {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 
-.control-wraper {
+.control-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   cursor: pointer;
   padding:5px;
   width: 75px;
 }
-.control-wraper-disabled {
+.control-wrapper-disabled {
   opacity: 0.5; 
   pointer-events: none; 
   cursor: not-allowed;
@@ -195,19 +197,31 @@ a.custom-link {
 /* Meida */
 
 @media (max-width: 994px){
-  .content-wraper{
+  .content-wrapper{
     flex-direction: column;
   }
 }
 
 @media(max-width : 768px){
-  .modal-wraper {
+  .modal-wrapper {
     margin-top: 0;
   }
 }
 
+@media (max-width: 564px){
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0px 0px 30px 30px;
+  }
+  .modal-box {
+    width: 100vw;
+  }
+}
+
+
 @media (max-width: 418px){
-  .content-wraper {
+  .content-wrapper {
     display: flex;
     flex-direction: column;
     border-radius: 0px 0px 30px 30px;

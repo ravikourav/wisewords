@@ -42,5 +42,10 @@
 .explore-card-slogan {
     color: aliceblue;
     margin-top: 10px;
+}
+
+.explore-card-post-count {
+    color: aliceblue;
+    font-size: 0.75rem;
     margin-bottom: 30px;
 }

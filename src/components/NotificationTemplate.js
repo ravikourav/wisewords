@@ -20,7 +20,7 @@ function NotificationTemplate({data , markRead}) {
   const message = notificationMessage(data.type, data.type === 'like' ? data.data.context : null);
 
   return (
-    <div className='notification-wraper' >
+    <div className='notification-wrapper' >
       <div onClick={()=>{handleCommentClick('profile')}} >
         <img className='notification-user-img' src={data.sender.profile} alt='' />
       </div>

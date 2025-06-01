@@ -8,6 +8,7 @@ function ExploreCard(props) {
       <div className='explore-bg-tint'>
         <p className='explore-card-name'>{props.name}</p>
         <p className='explore-card-slogan'>{props.slogan}</p>
+        <p className='explore-card-post-count'>Echoes Shared ({props.postCount})</p>
       </div>
     </div>
   )

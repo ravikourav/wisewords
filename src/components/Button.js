@@ -25,7 +25,7 @@ function Button({ selected, disabled, width, text, onClick, to  , align , type})
         disabled={disabled} 
         style={{ width: `${width}px` , alignSelf : `${align}` }}
         onClick={disabled ? null : onClick}
-        type={type}
+        type={type || 'button'}
     >
         {text}
     </button>

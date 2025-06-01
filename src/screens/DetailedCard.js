@@ -394,7 +394,7 @@ function DetailedCard() {
   return (
     <div className='detailed-page-layout'>
       <div className='card-layout'>
-        <div className="modal-wraper">
+        <div className="modal-wrapper">
           {loading ? 
           <Loading /> 
           : 
@@ -410,7 +410,7 @@ function DetailedCard() {
             }
             <BackButton onClick={handleClose}/>
             
-            <div className='content-wraper'>
+            <div className='content-wrapper'>
               <Card
                 sizeCustom={true}
                 width={isMobile ? '' : cardWidth}
@@ -488,7 +488,7 @@ function DetailedCard() {
               </div>
             </div>
             <div className='post-controle'>
-              <div className='control-wraper' onClick={handleSpeak} >
+              <div className='control-wrapper' onClick={handleSpeak} >
                 {!isPlaying ? 
                 <PlayIcon className='post-icon' /> : 
                 <PauseIcon className='post-icon' />
@@ -501,7 +501,7 @@ function DetailedCard() {
                   stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='3' className='post-icon'/>
                 <p className='controle-lable'>{formatNumber(likes)}</p>
               </div>
-              <div className='control-wraper' onClick={handleCopy}>
+              <div className='control-wrapper' onClick={handleCopy}>
                 <CopyIcon className='post-icon' />
                 <p className='controle-lable'>{!copied ? 'Copy' : 'Copied'}</p>
               </div>

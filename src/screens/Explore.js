@@ -72,9 +72,10 @@ function Explore() {
               {tags.map((card, index) => (
                 <ExploreCard
                   key={index}
-                  name={card.tag}
+                  name={card.name}
                   background={card.backgroundImage}
-                  slogan={card.tagLine}
+                  slogan={card.description}
+                  postCount={card.postCount}
                   onClick={() => handleCardClick(card)}
                 />
               ))}
@@ -94,9 +95,10 @@ function Explore() {
             <BackImg className='close' onClick={closeSelectedTag} />
             <ExploreCard
               className='tagSelected'
-              name={selectedTag.tag}
+              name={selectedTag.name}
               background={selectedTag.backgroundImage}
-              slogan={selectedTag.tagLine}
+              slogan={selectedTag.description}
+              postCount={selectedTag.postCount}
             />
             <div className='tag-post-container'>
               {selectedTagPosts.length > 0 ? (

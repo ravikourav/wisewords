@@ -105,7 +105,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
           onClick={() => cardClick(card._id)}
         />
         <div className='simple-card-info-container'>
-            <div className='simple-card-user-wraper' onClick={()=>profileClick(card.owner_id.username)}>
+            <div className='simple-card-user-wrapper' onClick={()=>profileClick(card.owner_id.username)}>
                 { card.owner_id.profile ?
                     <img src={card.owner_id.profile} alt='' className='simple-card-profile-picture' />
                 :

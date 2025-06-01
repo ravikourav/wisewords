@@ -46,10 +46,10 @@ const CardGrid = ({ data }) => {
   };
 
   const breakpoint = {
-    xl: 6,
-    lg: 5,
-    md: 4,
-    sm: 3,
+    xl: 4,
+    lg: 3,
+    md: 3,
+    sm: 2,
     xs: 2,
     xxs: 1,
   };

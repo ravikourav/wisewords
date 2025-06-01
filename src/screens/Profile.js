@@ -128,15 +128,15 @@ function Profile() {
                             <p className='user-bio'>{data.bio}</p>
                             <p className='user-id'>@{data.username}</p>
                             <div className='follow-container'>
-                                <div className='user-data-wraper'>
+                                <div className='user-data-wrapper'>
                                     <p className='user-data'>{data.posts.length}</p>
                                     <p className='user-data-label'>Posts</p>
                                 </div>
-                                <div className='user-data-wraper' >
+                                <div className='user-data-wrapper' >
                                     <p className='user-data'>{data.followers.length}</p>
                                     <p className='user-data-label'>Followers</p>
                                 </div>
-                                <div className='user-data-wraper' >
+                                <div className='user-data-wrapper' >
                                     <p className='user-data'>{data.following.length}</p>
                                     <p className='user-data-label'>Following</p>
                                 </div>
