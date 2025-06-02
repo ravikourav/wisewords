@@ -1,12 +1,27 @@
-.simple-card-info-container {
+
+.simple-card-container {
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 10px auto;
+    padding: 10px;
     display: flex;
-    justify-content: space-between;
-    margin-top: 5px;
+    flex-direction: column;
 }
 
-.simple-card-user-wrapper {
+/* header */
+
+.simple-card-header {
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
+}
+
+.simple-card-user-container{
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
 }
 
 .simple-card-profile-picture {
@@ -16,11 +31,30 @@
     border-radius: 50%;
 }
 
-.simple-card-text {
-    font-size: 0.8rem;
+.simple-card-username {
     margin-left: 5px;
-    font-weight: 500;
+    text-align: left;
+}
+
+.simple-card-time {
+    font-size: 0.7rem;
+    margin-left: 5px;
     color: #818181;
+    text-align: left;
+}
+
+
+/* footer */
+
+.simple-card-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    align-items: center;
+}
+
+.simple-card-title {
+    margin-left: 5px;
     text-align: left;
 }
 

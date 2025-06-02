@@ -28,6 +28,7 @@ import { ReactComponent as PauseIcon } from '../assets/icon/pause.svg';
 import { ReactComponent as CloseIcon } from '../assets/icon/close.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import Dropdown from '../components/Dropdown.js';
+import timeAgo from '../utils/timeAgo.js';
 
 function DetailedCard() {
   const { id } = useParams();
@@ -62,6 +63,7 @@ function DetailedCard() {
     const response = await axios.get(endpoint);
     setCardData(response.data);
     setLikes(response.data.likes.length);
+    console.log(response.data);
     if(isLoggedIn){
       await followStatus(response.data);
     }else{
@@ -411,18 +413,27 @@ function DetailedCard() {
             <BackButton onClick={handleClose}/>
             
             <div className='content-wrapper'>
-              <Card
-                sizeCustom={true}
-                width={isMobile ? '' : cardWidth}
-                margin={false}
-                content={cardData.content}
-                textColor={cardData.contentColor}
-                author={cardData.author}
-                authorColor={cardData.authorColor}
-                background={cardData.backgroundImage}
-                tint={cardData.tintColor}
-              />
-              <div style={{height:cardHeight}} className="modal-box">
+              <div style={{ borderRight: '1px solid rgb(224, 224, 224)' }} className='card-container'>
+                <Card
+                  sizeCustom={true}
+                  width={isMobile ? '' : cardWidth}
+                  margin={false}
+                  content={cardData.content}
+                  textColor={cardData.contentColor}
+                  author={cardData.author}
+                  authorColor={cardData.authorColor}
+                  background={cardData.backgroundImage}
+                  tint={cardData.tintColor}
+                />
+                {/* <p className='detailed-card-post-title'>{cardData.title}</p>
+                <p className="detailed-card-post-tag">
+                  {cardData.tags.map((tag, index) => (
+                    <span key={index}>#{tag} </span>
+                  ))}
+                </p>
+                <p className="detailed-card-post-time">{timeAgo(cardData.createdAt)}</p> */}
+              </div>
+              <div className="modal-box">
                 <div className='post-owner-container'>
                   <div className='flex-row'>
                     <Link to={`/user/${cardData.owner_id.username}`} >
@@ -498,7 +509,7 @@ function DetailedCard() {
               <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
                 <LikeIcon 
                   fill={liked ? 'red' : 'white'}
-                  stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='3' className='post-icon'/>
+                  stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='1.5' className='post-icon'/>
                 <p className='controle-lable'>{formatNumber(likes)}</p>
               </div>
               <div className='control-wrapper' onClick={handleCopy}>

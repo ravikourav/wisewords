@@ -93,7 +93,27 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
     };
     
     return (
-    <div>
+    <div className='simple-card-container'>
+        <div className='simple-card-header'>
+          <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
+            { card.owner_id.profile ?
+              <img src={card.owner_id.profile} alt='' className='simple-card-profile-picture' />
+            :
+              <ProfileIcon fill='#ccc' className='simple-card-profile-picture' />
+            }
+            <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+              <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
+              <p className='simple-card-time'>{timeAgo(card.createdAt)}</p>
+            </div>
+          </div>
+          <Dropdown options={[
+              { 
+                label : 'Report' ,
+                onClick : () => console.log('Reported')
+              }]
+            } iconOrientation='vertical' menuPosition='bottom-right' showIcon={true} size='22' paddingNone={true}/>
+        </div>
+
         <Card
           margin={true}
           content={cardContent}
@@ -104,38 +124,25 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
           sampleSize={cardSize}
           onClick={() => cardClick(card._id)}
         />
-        <div className='simple-card-info-container'>
-            <div className='simple-card-user-wrapper' onClick={()=>profileClick(card.owner_id.username)}>
-                { card.owner_id.profile ?
-                    <img src={card.owner_id.profile} alt='' className='simple-card-profile-picture' />
-                :
-                    <ProfileIcon fill='#ccc' className='simple-card-profile-picture' />
-                }
-                <div onClick={()=>profileClick(card.owner_id.username)}>
-                    <p className='simple-card-text'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
-                    <p className='simple-card-text'>{timeAgo(card.createdAt)}</p>
-                </div>
-            </div>
+
+        <div className='simple-card-footer'>
+            
+            <p className='simple-card-title'>{card.title}</p>
+
             <div className='simple-card-icon'>
-                <div onClick={isLoggedIn ? handleLike : null}>
-                    <IconButton 
-                        icon={LikeIcon}
-                        fill={liked ? 'red' : 'white'}
-                        stroke={liked ? 'red' : 'black'}
-                        disabled={!isLoggedIn} 
-                        strokeWidth='3'
-                        size='25'
-                    />
-                </div>
-                <div onClick={isLoggedIn ? () => setSaved(saveClick(card._id , saved)) : null }>
-                    <IconButton disabled={!isLoggedIn} icon={BookmarkIcon} fill={saved ? 'black' : 'white'}  size='25'/>
-                </div>
-                <Dropdown options={[
-                    { 
-                      label : 'Report' ,
-                      onClick : () => console.log('Reported')
-                    }]
-                } iconOrientation='vertical' menuPosition='top-right' showIcon={true} size='22' paddingNone={true}/>
+              <div onClick={isLoggedIn ? handleLike : null}>
+                  <IconButton 
+                    icon={LikeIcon}
+                    fill={liked ? 'red' : 'white'}
+                    stroke={liked ? 'red' : 'black'}
+                    disabled={!isLoggedIn} 
+                    strokeWidth='1.5'
+                    size='25'
+                  />
+              </div>
+              <div onClick={isLoggedIn ? () => setSaved(saveClick(card._id , saved)) : null }>
+                <IconButton disabled={!isLoggedIn} icon={BookmarkIcon} fill={saved ? 'black' : 'white'}  size='25'/>
+              </div>
             </div>
         </div>
     </div>

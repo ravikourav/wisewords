@@ -1,6 +1,6 @@
 import React, { useState , useEffect, useContext } from 'react';
 import './css/Header.css';
-import { Link , useLocation, useSearchParams } from 'react-router-dom';
+import { Link , useLocation, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import NotificationModel from '../screens/NotificationModel.js';
 import {  AuthContext } from '../hooks/AuthContext.js';
@@ -15,9 +15,9 @@ import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 
 function Header()  {
+  const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams , setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [search, setSearch] = useState('');
   const [Selected , setSelected] = useState(location);
   const { isLoggedIn, user} = useContext(AuthContext);
 
@@ -32,6 +32,7 @@ function Header()  {
   }, [location]);
 
   const select = (clicked) => {
+    setSearch('');
     setSelected(clicked);
   };
 
@@ -51,9 +52,7 @@ function Header()  {
     const value = e.target.value;
     setSearch(value);
     if (e.key === 'Enter') {
-      setSearchParams({
-        search: value
-      });
+      navigate(`/search?query=${encodeURIComponent(value)}`);
     }
   }
 

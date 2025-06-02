@@ -11,24 +11,43 @@ function Home() {
 
   const fetchData = async (concat = false) => {
     try {
+      if(!concat)
       setLoading(true);
-      let scrollY = window.scrollY; 
-
+    
       const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/random?limit=20`;
       const response = await axios.get(endPoint);
-      setData(prevData => concat ? [...prevData, ...response.data] : response.data);
+      const newData = concat ? [...data, ...response.data] : response.data;
+      setData(newData);
       console.log(response.data);
       
-      setTimeout(() => window.scrollTo(0, scrollY), 100);
+      // Store data and scroll position
+      sessionStorage.setItem('homeData', JSON.stringify(newData));
+
     } catch (error) {
-        console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    const savedData = sessionStorage.getItem('homeData');
+
+    if (savedData) {
+      setData(JSON.parse(savedData));
+      setLoading(false);
+
+    } else {
+      fetchData();
+    }
+
+     // Optional: clear cache on hard refresh
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem('homeData');
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
   return (

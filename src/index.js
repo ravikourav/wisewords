@@ -19,6 +19,7 @@ import ProtectedRoute from './hooks/ProtectedRoute.js';
 import reportWebVitals from './reportWebVitals.js';
 import DetailedCard from './screens/DetailedCard.js';
 import ProfileSetting from './screens/ProfielSetting.js';
+import SearchResult from './screens/SearchResult.js';
 
 const router = createBrowserRouter([{
   path: '/',
@@ -28,6 +29,10 @@ const router = createBrowserRouter([{
     {
       path: '',
       element: <Home />
+    },
+    {
+      path: 'search',
+      element: <SearchResult />
     },
     {
       path: 'explore',
