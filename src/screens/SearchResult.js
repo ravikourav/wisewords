@@ -4,18 +4,26 @@ import Loading from '../components/Loading';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import CardGrid from '../components/CardGrid';
-
-import ProfileIcon from '../assets/icon/profile.svg';
+import { useIsMobile } from '../utils/screenSize.js';
 import Badge from '../components/Badge';
+import SearchBar from '../components/SearchBar.js';
+
+
+import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+import {ReactComponent as BackIcon} from '../assets/icon/arrow-back.svg';
+import IconButton from '../components/IconButton.js';
+
 function SearchResult() {
-  const [ searchParams ] = useSearchParams();
-  const query = searchParams.get('query');
+  const isMobile = useIsMobile();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get('query') || '');
   const navigate = useNavigate();
   const [data, setData] = useState({ users: [], posts: [] });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('posts'); 
+  
 
-  const fetchData = async () => {
+  const fetchData = async (query) => {
     try {
       setLoading(true);
       const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/search/`;
@@ -38,13 +46,34 @@ function SearchResult() {
   };
 
   useEffect(() => {
-    if (query) {
-      fetchData(query);
+    const q = searchParams.get('query') || '';
+    setQuery(q.trim());
+
+    if (q !== '') {
+      fetchData(q);
+    } else {
+      setLoading(false);
     }
-  }, [query]);
+}, [searchParams]);
+
+  const onSearch = (value) => {
+    setSearchParams({ query: value }); 
+  }
+
 
   return (
     loading ? <Loading /> : 
+    <>
+      {isMobile && (
+        <div className="explore-search-header">
+          { query && isMobile &&
+            <div className='search-result-back-icon-container' >
+              <IconButton icon={BackIcon} size={30} onClick={()=>navigate(-1)}/>
+            </div>
+          }
+          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''} />
+        </div>
+      )}
       <div className='search-result-root'>
         {/* Tab Bar */}
         <div className='search-result-tab-bar'>
@@ -68,7 +97,7 @@ function SearchResult() {
               <CardGrid data={data.posts} />
             ) 
             : 
-            <p>No posts found.</p>
+            <p className='message' >No posts found.</p>
           ) : (
             data.users.length ? (
               <div className='search-result-content'>{
@@ -86,9 +115,10 @@ function SearchResult() {
                   </div>
                 ))
               }</div>
-            ) : <p>No users found.</p>
+            ) : <p className='message'>No users found.</p>
           )}
       </div>
+    </>
   );
 }
 

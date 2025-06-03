@@ -476,7 +476,7 @@ function DetailedCard() {
                         <p style={{fontSize:'2rem'}}>.</p>
                       </>
                     ) : (
-                      <p className='message'>No echoes to share.</p>
+                      <p className='message'>No thoughts shared yet</p>
                     )
                   ) : null}
                   </div>

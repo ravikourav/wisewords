@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import ExploreCard from '../components/ExploreCard';
 import CardGrid from '../components/CardGrid.js';
 import { ReactComponent as BackImg } from '../assets/icon/arrow-back.svg';
-import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import './css/Explore.css';
 import Alert from '../components/Alert.js';
 import { useIsMobile } from '../utils/screenSize.js';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import SearchBar from '../components/SearchBar.js';
 
 function Explore() {
   
   const isMobile = useIsMobile();
-
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedTagPosts, setSelectedTagPosts] = useState([]);
@@ -55,14 +57,15 @@ function Explore() {
     setSelectedTag(null);
   };
 
+  const onSearch = (value) => {
+    navigate(`/search?query=${encodeURIComponent(value)}`);
+  }
+
   return (
     <div className='explore-page'>
       {isMobile && !selectedTag && (
         <div className="explore-search-header">
-          <div className='custom-search-box'>
-            <SearchIcon className='search-icon'/>
-            <input type="text" placeholder="Search" className="mobile-search-input " />
-          </div>
+          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''}/>
         </div>
         )}
         {loading ? <Loading /> : (

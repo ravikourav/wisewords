@@ -1,23 +1,23 @@
 import React, { useState , useEffect, useContext } from 'react';
 import './css/Header.css';
-import { Link , useLocation, useNavigate } from 'react-router-dom';
+import { Link , useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import NotificationModel from '../screens/NotificationModel.js';
 import {  AuthContext } from '../hooks/AuthContext.js';
 import Button from './Button.js';
+import SearchBar from './SearchBar.js';
 
 //icons
 import { ReactComponent as HomeIcon } from '../assets/icon/home.svg';
 import { ReactComponent as AddIcon} from '../assets/icon/add.svg';
 import { ReactComponent as CategoryIcon} from '../assets/icon/category.svg';
 import { ReactComponent as BellIcon} from '../assets/icon/bell.svg';
-import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 
 function Header()  {
   const navigate = useNavigate();
   const location = useLocation();
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
   const [Selected , setSelected] = useState(location);
   const { isLoggedIn, user} = useContext(AuthContext);
 
@@ -32,7 +32,6 @@ function Header()  {
   }, [location]);
 
   const select = (clicked) => {
-    setSearch('');
     setSelected(clicked);
   };
 
@@ -48,12 +47,8 @@ function Header()  {
     }
   }
 
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearch(value);
-    if (e.key === 'Enter') {
-      navigate(`/search?query=${encodeURIComponent(value)}`);
-    }
+  const onSearch = (value) => {
+    navigate(`/search?query=${encodeURIComponent(value)}`);
   }
 
   return (
@@ -68,10 +63,7 @@ function Header()  {
           <Link className={`desktop-nav-link ${Selected === 'Create' ? 'nav-selected' : '' }`} to="create" onClick={()=>{select('Create')}}>Create</Link>)}
         </div>
         <div className="search-container">
-            <div className='custom-search-box'>
-              <SearchIcon className='search-icon'/>
-              <input type="text" placeholder="Search" value={search}  className="mobile-search-input" onChange={handleSearch} onKeyDown={handleSearch}/>
-            </div>
+          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''} />
         </div>
         <div className="header-user-container">
           {isLoggedIn ? (

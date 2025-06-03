@@ -1,5 +1,5 @@
 .search-result-root {
-  margin-top: 75px;
+  padding-top: 75px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,7 +31,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 40%;
+    width: 90%;
 }
 
 .search-result-user-card{
@@ -50,7 +50,6 @@
     object-fit: cover;
     border: 2px solid rgb(255, 255, 255);
     background-color: white;
-    bottom: -60px;
 }
 
 .search-result-user-info {
@@ -60,10 +59,10 @@
 }
 
 .search-result-user-name {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 500;
-    margin-left: 1rem;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-left: 1rem;
 }
 
 .search-result-user-username {
@@ -75,6 +74,28 @@
 
 @media (max-width: 768px){
   .search-result-root {
-    margin: 10px 0px 60px 0px;
+    padding: 75px 0px 60px 0px;
+  }
+
+  .search-result-back-icon-container{
+    display: flex;
+    align-items: center;
+    padding: 10px 0px 10px 15px;
+  }
+
+  .search-result-profile-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .search-result-user-name {
+    font-size: 1.2rem;
+    margin-left: 0.6rem;
+    margin-left: 0.6rem;
+  }
+
+  .search-result-user-username {
+      font-size: 1rem;
+      margin-left: 0.6rem;
   }
 }
