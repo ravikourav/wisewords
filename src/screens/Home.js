@@ -9,12 +9,26 @@ function Home() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getCurrentColumnCount = () => {
+    const width = window.innerWidth;
+    if (width >= 1600) return 4;
+    if (width >= 992) return 3;
+    if (width >= 600) return 2;
+    return 1;
+  };
+
   const fetchData = async (concat = false) => {
     try {
       if(!concat)
       setLoading(true);
-    
-      const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/random?limit=20`;
+
+      const columns = getCurrentColumnCount();
+      const desiredPostCount = 20;
+
+      const remainder = desiredPostCount % columns;
+      const adjustedLimit = remainder === 0 ? desiredPostCount : desiredPostCount + (columns - remainder);
+
+      const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/random?limit=${adjustedLimit}`;
       const response = await axios.get(endPoint);
       const newData = concat ? [...data, ...response.data] : response.data;
       setData(newData);
