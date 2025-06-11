@@ -11,7 +11,15 @@
 }
 
 .tagSelected {
-    width: 350px;
+    padding: 0;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 16px;
+    height: 150px;
+    width: 250px;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .img-fit {
