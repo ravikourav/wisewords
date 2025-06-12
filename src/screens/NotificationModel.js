@@ -3,12 +3,14 @@ import NotificationTemplate from '../components/NotificationTemplate.js';
 import './css/Notification.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import Loading from '../components/Loading.js';
 
 function NotificationModel() {
-  
+  const [loading, setLoading] = useState(false);
   const [notificationData, setNotificationData] = useState([]);
 
   const fetchNotification = async () => {
+    setLoading(true);
     const token = Cookies.get('authToken');
     try {
       const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/notifications`;
@@ -21,6 +23,9 @@ function NotificationModel() {
       }
     } catch (error) {
       console.error('Error fetching Notification', error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -52,14 +57,15 @@ function NotificationModel() {
           <p className='notification-title'>Updates</p>
       </div>
       <div className='notification-body'>
-        {notificationData.length > 0 ?
-          notificationData?.map((data) => (
-            <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />
-          ))
-        :
-          <div className='empty-state-container'>
-            <p className='empty-state-message'>All is calm — no new words for now.</p>
-          </div>
+        {loading ? <Loading /> : 
+          notificationData.length > 0 ?
+            notificationData?.map((data) => (
+              <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />
+            ))
+            :
+            <div className='empty-state-container'>
+              <p className='empty-state-message'>All is calm — no new words for now.</p>
+            </div>
         }
       </div>
     </div>
