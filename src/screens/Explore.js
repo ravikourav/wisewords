@@ -26,9 +26,9 @@ function Explore() {
   }, []);
 
   const fetchAllTags = async () => {
+    setLoading(true);
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/all`;
     try {
-      setLoading(true);
       const response = await axios.get(endpoint);
       setTags(response.data);
     } catch (err) {
@@ -39,9 +39,9 @@ function Explore() {
   };
 
   const handleCardClick = async (card) => {
+    setLoading(true);
     const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/${card._id}/posts`;
     try {
-      setLoading(true);
       const response = await axios.get(endPoint);
       setSelectedTagPosts(response.data);
     } catch (err) {
@@ -62,14 +62,14 @@ function Explore() {
   }
 
   return (
+    loading ? <Loading /> :
     <div className='explore-page'>
       {isMobile && !selectedTag && (
         <div className="explore-search-header">
           <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''}/>
         </div>
         )}
-        {loading ? <Loading /> : (
-         !selectedTag ? (
+        {!selectedTag ? (
           <div className='explore-tag-layout'>
             <div className='explore-card-grid'>
               {tags.map((card, index) => (
@@ -113,8 +113,7 @@ function Explore() {
               )}
             </div>
           </div>
-        )
-      )}
+        )}
     </div>    
   );
 }

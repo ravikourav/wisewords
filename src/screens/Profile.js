@@ -145,148 +145,143 @@ function Profile() {
     const displayData = selected === 'your-thought' ? postedData : saveCardData;
 
     return (
+        loading ? <Loading/> :
         <div className='page-root'>
-            {loading ? ( <Loading/> ) : 
-                (
-                    <>
-                    {tab === 'home' && (
-                        <div className='profile-page'>
-                            <div className='profile-img-container'>
-                                {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
-                                }
-                                {data.profile ?
-                                    <img src={data.profile} alt='' className='profile-img' />
-                                :
-                                    <ProfileIcon fill='#ccc' className='profile-img' />
-                                }
-                            </div>
-                            {data && (
-                                <div className='user-profile-info'>
-                                    <p className='user-name'>{data.name} <Badge badge={data.badge} size={26}/></p>
-                                    <p className='user-bio'>{data.bio}</p>
-                                    <p className='user-id'>@{data.username}</p>
-                                    <div className='follow-container'>
-                                        <div className='user-data-wrapper'>
-                                            <p className='user-data'>{data.posts.length}</p>
-                                            <p className='user-data-label'>Posts</p>
-                                        </div>
-                                        <div className='user-data-wrapper' onClick={() => setTab('followers')} >
-                                            <p className='user-data'>{data.followers.length}</p>
-                                            <p className='user-data-label'>Followers</p>
-                                        </div>
-                                        <div className='user-data-wrapper' onClick={() => setTab('following')} >
-                                            <p className='user-data'>{data.following.length}</p>
-                                            <p className='user-data-label'>Following</p>
-                                        </div>
-                                    </div>
+            {tab === 'home' && (
+                <div className='profile-page'>
+                    <div className='profile-img-container'>
+                        {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
+                        }
+                        {data.profile ?
+                            <img src={data.profile} alt='' className='profile-img' />
+                        :
+                            <ProfileIcon fill='#ccc' className='profile-img' />
+                        }
+                    </div>
+                    {data && (
+                        <div className='user-profile-info'>
+                            <p className='user-name'>{data.name} <Badge badge={data.badge} size={26}/></p>
+                            <p className='user-bio'>{data.bio}</p>
+                            <p className='user-id'>@{data.username}</p>
+                            <div className='follow-container'>
+                                <div className='user-data-wrapper'>
+                                    <p className='user-data'>{data.posts.length}</p>
+                                    <p className='user-data-label'>Posts</p>
                                 </div>
-                            )}
-                            {isOwner ? 
-                                <div className='profile-control'>
-                                    <div className='control-button'>
-                                        <IconButton icon={ShareIcon} onClick={()=>handleShare(data.username)} size='25px'/>
-                                    </div>
-                                    <div className='control-button'>
-                                        <Button text='Logout' selected={true} onClick={logout} />
-                                    </div>
-                                    <div className='control-button'>
-                                        <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => setTab('settings')}]} menuPosition='top-right'/>
-                                    </div>
-                                </div> 
-                                :
-                                <div className='profile-control'>
-                                    <div className='control-button'>
-                                        <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
-                                    </div>
-                                    <div className='control-button'>
-                                        <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} /> 
-                                    </div>   
-                                    <div className='control-button'>
-                                        <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
-                                    </div>
+                                <div className='user-data-wrapper' onClick={() => setTab('followers')} >
+                                    <p className='user-data'>{data.followers.length}</p>
+                                    <p className='user-data-label'>Followers</p>
                                 </div>
-                            }
-                            <div className='post-selector-container'>
-                                <p className={`post-selector ${selected === 'your-thought' && 'post-selected'}`} onClick={() => selectContent('your-thought')}>{isOwner ? 'Your Posts' : 'Created'}</p>
-                                <p className={`post-selector ${selected === 'saved' && 'post-selected'}`} onClick={() => selectContent('saved')}>Saved</p>
+                                <div className='user-data-wrapper' onClick={() => setTab('following')} >
+                                    <p className='user-data'>{data.following.length}</p>
+                                    <p className='user-data-label'>Following</p>
+                                </div>
                             </div>
-                            <CardGrid data={displayData} />
                         </div>
                     )}
-                    {tab === 'followers' && (
-                        <>
-                            <div className='pannel-header' onClick={() => setTab('home')}>
-                                <BackButton onClick={() => setTab('home')} />
-                                <h2 className='pannel-title'>Followers</h2>
+                    {isOwner ? 
+                        <div className='profile-control'>
+                            <div className='control-button'>
+                                <IconButton icon={ShareIcon} onClick={()=>handleShare(data.username)} size='25px'/>
                             </div>
-                            {loadingFol ? ( <Loading/> ) : 
-                                <div className='followers-container'>
-                                    {/* Followers List */}
-                                    {followerUsers.length > 0 ? (
-                                        <div className='user-list'>
-                                            {followerUsers.map((user) => (
-                                                <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
-                                                    {user.profile ?
-                                                    <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
-                                                    :
-                                                    <ProfileIcon fill='#ccc' className='ff-profile-img' />
-                                                    }
-                                                    <div className='ff-user-info'>
-                                                        <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
-                                                        <h3 className='ff-user-username'>@{user.username}</h3>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <div className='empty-state-container'>
-                                            <p className='empty-state-message'>Even the wisest voices begin in silence.</p>
-                                        </div>
-                                    )}
-                                </div>
-                            }
-                        </>
-                    )}
-                    {tab === 'following' && (
-                        <>
-                            <div className='pannel-header' onClick={() => setTab('home')}>
-                                <BackButton  onClick={() => setTab('home')}/>
-                                <h2 className='pannel-title' >Following</h2>
+                            <div className='control-button'>
+                                <Button text='Logout' selected={true} onClick={logout} />
                             </div>
-                            {loadingFol ? ( <Loading/> ) : 
-                                <div className='following-container'>
-                                    {/* Following List */}
-                                    {followingUsers.length > 0 ? (
-                                        <div className='user-list'>{
-                                            followingUsers.map((user) => (
-                                            <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
-                                                {user.profile ?
-                                                <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
-                                                :
-                                                <ProfileIcon fill='#ccc' className='ff-profile-img' />
-                                                }
-                                                <div className='ff-user-info'>
-                                                    <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
-                                                    <h3 className='ff-user-username'>@{user.username}</h3>
-                                                </div>
+                            <div className='control-button'>
+                                <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => setTab('settings')}]} menuPosition='top-right'/>
+                            </div>
+                        </div> 
+                        :
+                        <div className='profile-control'>
+                            <div className='control-button'>
+                                <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
+                            </div>
+                            <div className='control-button'>
+                                <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} /> 
+                            </div>   
+                            <div className='control-button'>
+                                <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
+                            </div>
+                        </div>
+                    }
+                    <div className='post-selector-container'>
+                        <p className={`post-selector ${selected === 'your-thought' && 'post-selected'}`} onClick={() => selectContent('your-thought')}>{isOwner ? 'Your Posts' : 'Created'}</p>
+                        <p className={`post-selector ${selected === 'saved' && 'post-selected'}`} onClick={() => selectContent('saved')}>Saved</p>
+                    </div>
+                    <CardGrid data={displayData} />
+                </div>
+            )}
+            {tab === 'followers' && (
+                <>
+                    <div className='pannel-header' onClick={() => setTab('home')}>
+                        <BackButton onClick={() => setTab('home')} />
+                        <h2 className='pannel-title'>Followers</h2>
+                    </div>
+                    {loadingFol ? <Loading height='65vh'/> : 
+                        <div className='followers-container'>
+                            {/* Followers List */}
+                            {followerUsers.length > 0 ? (
+                                <div className='user-list'>
+                                    {followerUsers.map((user) => (
+                                        <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
+                                            {user.profile ?
+                                            <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
+                                            :
+                                            <ProfileIcon fill='#ccc' className='ff-profile-img' />
+                                            }
+                                            <div className='ff-user-info'>
+                                                <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
+                                                <h3 className='ff-user-username'>@{user.username}</h3>
                                             </div>
-                                            ))}
                                         </div>
-                                    ) : (
-                                        <div className='empty-state-container'>
-                                            <p className='empty-state-message'>Your path is empty — find voices worth hearing.</p>
-                                        </div>
-                                    )}
+                                    ))}
                                 </div>
-                            }
-                        </>
-                    )}
-                    {tab === 'settings' && (
-                        <ProfileSetting onClose={()=>setTab('home')}/>
-                    )}
-                    </>
-                )
-            }
+                            ) : (
+                                <div className='empty-state-container'>
+                                    <p className='empty-state-message'>Even the wisest voices begin in silence.</p>
+                                </div>
+                            )}
+                        </div>
+                    }
+                </>
+            )}
+            {tab === 'following' && (
+                <>
+                    <div className='pannel-header' onClick={() => setTab('home')}>
+                        <BackButton  onClick={() => setTab('home')}/>
+                        <h2 className='pannel-title' >Following</h2>
+                    </div>
+                    {loadingFol ? <Loading height='65vh'/> : 
+                        <div className='following-container'>
+                            {/* Following List */}
+                            {followingUsers.length > 0 ? (
+                                <div className='user-list'>{
+                                    followingUsers.map((user) => (
+                                    <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
+                                        {user.profile ?
+                                        <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
+                                        :
+                                        <ProfileIcon fill='#ccc' className='ff-profile-img' />
+                                        }
+                                        <div className='ff-user-info'>
+                                            <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
+                                            <h3 className='ff-user-username'>@{user.username}</h3>
+                                        </div>
+                                    </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className='empty-state-container'>
+                                    <p className='empty-state-message'>Your path is empty — find voices worth hearing.</p>
+                                </div>
+                            )}
+                        </div>
+                    }
+                </>
+            )}
+            {tab === 'settings' && (
+                <ProfileSetting onClose={()=>setTab('home')}/>
+            )}
         </div>
     );
 }

@@ -57,7 +57,7 @@ function NotificationModel() {
           <p className='notification-title'>Updates</p>
       </div>
       <div className='notification-body'>
-        {loading ? <Loading /> : 
+        {loading ? <Loading height='100%' /> : 
           notificationData.length > 0 ?
             notificationData?.map((data) => (
               <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />

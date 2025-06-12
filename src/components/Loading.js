@@ -1,10 +1,18 @@
+import { styled } from "@mui/material";
 import { HashLoader } from "react-spinners";
 
-function Loading() {
+function Loading(props) {
+  const loaderStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: props.height ? props.height : '100vh',
+    width: '100%',
+  };
   return (
-    <div style={{display: 'flex', alignContent: 'center' , justifyItems: 'center' , alignItems: 'center' ,height: '100%' , width: '100%', justifyContent: 'center'}}>
+    <div style={loaderStyle}>
       <HashLoader
-        size={50}
+        size={props.size ? props.size : 40}
         color="#63b6ff"
       />
     </div>

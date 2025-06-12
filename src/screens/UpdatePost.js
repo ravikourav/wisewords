@@ -160,10 +160,9 @@ function UpdatePost() {
   };
 
   return (
+    loading ? <Loading /> :
     <div className='page-root'>
-      {loading ? (
-        <Loading />
-      ) : browseOnline ? (
+      {browseOnline ? (
         <BrowseImage onClose={() => setBrowseOnline(false)} onSelectImage={handleImageSelect} title={title} />
       ) : (
         <div className='create-page'>

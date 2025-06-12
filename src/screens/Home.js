@@ -32,7 +32,6 @@ function Home() {
       const response = await axios.get(endPoint);
       const newData = concat ? [...data, ...response.data] : response.data;
       setData(newData);
-      console.log(response.data);
       
       // Store data and scroll position
       sessionStorage.setItem('homeData', JSON.stringify(newData));

@@ -157,7 +157,7 @@ const removeCoverImage = () => {
             <BackButton onClick={onClose} />
             <p className='update-page-title'>Edit Profile</p>
           </div>
-          { loading ? <Loading/> : (
+          { loading ? <Loading height='65vh'/> : (
             <form className='form-group-profile' onSubmit={handleSubmit}>
               <div className='profile-img-container'>
                 <div className='cover-container'>

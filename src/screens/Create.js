@@ -153,9 +153,9 @@ function Create() {
   }
 
   return (
+    loading ? <Loading/> :
     <div className='page-root'>
-      { loading ? <Loading/> : 
-      browseOnline ? (
+      {browseOnline ? (
         <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} title={title} />
       ) : (
         <div className='create-page'>

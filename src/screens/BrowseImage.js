@@ -93,7 +93,6 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   };
 
   return (
-    <div>
       <div className='browse-image-container'>
         {userAlert.visible &&
           <Alert
@@ -131,7 +130,6 @@ function BrowseImage({ onClose, onSelectImage, title }) {
             onChange={(e) => {handleImgStateChange(e)}}
           />
         </div>
-
         {images?.length > 0 ? (
           <>
             <Masonry columns={breakpointCols} spacing={2}>
@@ -146,11 +144,13 @@ function BrowseImage({ onClose, onSelectImage, title }) {
             {!loading && <Button onClick={() => fetchImages()} text='More' />}
             {loading && <Loading />}
           </>
-        ) : (
-          <p>No images found.</p>
-        )}
+          ) : (
+            <div className='empty-state-container'>
+              <p className='empty-state-message'>No images found.</p>
+            </div>
+          )
+        }
       </div>
-    </div>
   );
 }
 
