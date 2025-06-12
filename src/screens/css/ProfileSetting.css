@@ -1,14 +1,19 @@
-.profile-setting {
-    margin-top: 75px;
+.update-page-header {
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    padding: 10px 10px 10px 20px;
+    width: 100%;
+    top: 62px;
+    position: sticky;
+    background-color: #ffffff;
+    z-index: 1001;
 }
 
 .update-page-title {
+    margin: 0 0 0 0.75rem;
     font-size: 1.5rem;
     font-weight: 600;
-    text-decoration: underline;
-    width: 90vw;
-    text-align: left;
-    margin:0px 0px 25px 10px;
 }
 
 .form-group-profile {
@@ -16,10 +21,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 25px;
+    padding: 10px 25px 25px 25px;
     border-radius: 20px;
     width: 90vw;
-    border: 1px solid rgb(224,224,224);
 }
 
 .cover-container {
@@ -73,7 +77,8 @@
 @media (max-width: 768px) {
 
     .form-group-profile {
-        margin-bottom: 100px;
+        padding: 0;
+        padding-top: 10px;
     }
     .remove-profile-button {
         top: -60px;
@@ -82,8 +87,9 @@
         top: -10px;
         right: -10px;
     }
-    .update-page-title {
-        margin:10px 0px 25px 15px;
+    .update-page-header {
+        top: 0;
+        padding-top: 10px;
     }
 }
 
@@ -103,9 +109,4 @@
     .form-group-profile {
         margin-bottom: 80px;
     }
-    
-    .update-page-title {
-        margin:10px 0px 25px 25px;
-    }
-
 }

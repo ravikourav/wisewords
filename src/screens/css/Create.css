@@ -1,7 +1,6 @@
 .create-page-title {
     font-size: 1.5rem;
     font-weight: 600;
-    text-decoration: underline;
     text-align: left;
     width: 88vw;
     margin-bottom: 25px;
@@ -15,7 +14,6 @@
     flex-wrap: wrap;
     padding: 25px 0px;
     border-radius: 20px;
-    border: 1px solid rgb(224,224,224);
     width: 90vw;
 }
 

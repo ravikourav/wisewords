@@ -16,6 +16,7 @@ import BackButton from '../components/BackButton.js';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import {ReactComponent as ShareIcon } from '../assets/icon/share.svg';
 import Dropdown from '../components/Dropdown.js';
+import ProfileSetting from './ProfielSetting.js';
 
 function Profile() {
     const navigate = useNavigate();
@@ -29,7 +30,7 @@ function Profile() {
     const [tab, setTab] = useState('home');
     const [followerUsers, setFollowerUsers] = useState([]);
     const [followingUsers, setFollowingUsers] = useState([]);
-
+    const [loadingFol, setLoadingFol] = useState(false);
 
     const [isOwner , setIsOwner] = useState(false);
     const [isFollowing , setIsFollowing] = useState(null);
@@ -94,13 +95,15 @@ function Profile() {
 
     useEffect(() => {
         const fetchUserList = async (setter) => {
+            setLoadingFol(true);
             try {
                 const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/${tab}`;
                 const response = await axios.get(endPoint);
                 setter(response.data);
-                console.log(`${tab} users:`, response.data);
             } catch (error) {
                 console.error('Error fetching user list:', error);
+            }finally {
+                setLoadingFol(false);
             }
         };
 
@@ -187,7 +190,7 @@ function Profile() {
                                         <Button text='Logout' selected={true} onClick={logout} />
                                     </div>
                                     <div className='control-button'>
-                                        <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => navigate('/editUser') }]} menuPosition='top-right'/>
+                                        <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => setTab('settings')}]} menuPosition='top-right'/>
                                     </div>
                                 </div> 
                                 :
@@ -216,11 +219,46 @@ function Profile() {
                                 <BackButton onClick={() => setTab('home')} />
                                 <h2 className='pannel-title'>Followers</h2>
                             </div>
-                            <div className='followers-container'>
-                                {/* Followers List */}
-                                {followerUsers.length > 0 ? (
-                                    <div className='user-list'>
-                                        {followerUsers.map((user) => (
+                            {loadingFol ? ( <Loading/> ) : 
+                                <div className='followers-container'>
+                                    {/* Followers List */}
+                                    {followerUsers.length > 0 ? (
+                                        <div className='user-list'>
+                                            {followerUsers.map((user) => (
+                                                <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
+                                                    {user.profile ?
+                                                    <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
+                                                    :
+                                                    <ProfileIcon fill='#ccc' className='ff-profile-img' />
+                                                    }
+                                                    <div className='ff-user-info'>
+                                                        <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
+                                                        <h3 className='ff-user-username'>@{user.username}</h3>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className='empty-state-container'>
+                                            <p className='empty-state-message'>Even the wisest voices begin in silence.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            }
+                        </>
+                    )}
+                    {tab === 'following' && (
+                        <>
+                            <div className='pannel-header' onClick={() => setTab('home')}>
+                                <BackButton  onClick={() => setTab('home')}/>
+                                <h2 className='pannel-title' >Following</h2>
+                            </div>
+                            {loadingFol ? ( <Loading/> ) : 
+                                <div className='following-container'>
+                                    {/* Following List */}
+                                    {followingUsers.length > 0 ? (
+                                        <div className='user-list'>{
+                                            followingUsers.map((user) => (
                                             <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
                                                 {user.profile ?
                                                 <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
@@ -232,48 +270,19 @@ function Profile() {
                                                     <h3 className='ff-user-username'>@{user.username}</h3>
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className='empty-state-container'>
-                                        <p className='empty-state-message'>Even the wisest voices begin in silence.</p>
-                                    </div>
-                                )}
-                            </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className='empty-state-container'>
+                                            <p className='empty-state-message'>Your path is empty — find voices worth hearing.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            }
                         </>
                     )}
-                    {tab === 'following' && (
-                        <>
-                            <div className='pannel-header' onClick={() => setTab('home')}>
-                                <BackButton  onClick={() => setTab('home')}/>
-                                <h2 className='pannel-title' >Following</h2>
-                            </div>
-                            
-                            <div className='following-container'>
-                                {/* Following List */}
-                                {followingUsers.length > 0 ? (
-                                    <div className='user-list'>{
-                                        followingUsers.map((user) => (
-                                        <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
-                                            {user.profile ?
-                                            <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
-                                            :
-                                            <ProfileIcon fill='#ccc' className='ff-profile-img' />
-                                            }
-                                            <div className='ff-user-info'>
-                                                <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
-                                                <h3 className='ff-user-username'>@{user.username}</h3>
-                                            </div>
-                                        </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className='empty-state-container'>
-                                        <p className='empty-state-message'>Your path is empty — find voices worth hearing.</p>
-                                    </div>
-                                )}
-                            </div>
-                        </>
+                    {tab === 'settings' && (
+                        <ProfileSetting onClose={()=>setTab('home')}/>
                     )}
                     </>
                 )

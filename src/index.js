@@ -51,10 +51,6 @@ const router = createBrowserRouter([{
       element: <Profile /> 
     },
     {
-      path : 'editUser',
-      element: <ProfileSetting />
-    },
-    {
       path: 'post/:id',
       element: <DetailedCard />
     },

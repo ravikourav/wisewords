@@ -104,18 +104,21 @@ function BrowseImage({ onClose, onSelectImage, title }) {
             setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
           />
         }
-        <BackButton onClick={onClose} />
-        <div className='custom-search-box'>
-          <SearchIcon className='search-icon' />
-          <input
-            type="text"
-            value={searchInput}
-            onKeyDown={handleKeyDown}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search"
-            className="mobile-search-input"
-          />
+        <div className='browse-image-header'>
+          <BackButton onClick={onClose} />
+          <div className='custom-search-box'>
+            <SearchIcon className='search-icon' />
+            <input
+              type="text"
+              value={searchInput}
+              onKeyDown={handleKeyDown}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search"
+              className="mobile-search-input"
+            />
+          </div>
         </div>
+        
         <div className='switch-container'>
           <p className='browse-suggestion-2'>
             {fullResolutionImage

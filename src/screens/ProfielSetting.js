@@ -12,9 +12,10 @@ import Cookies from 'js-cookie';
 //Profile Icon
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
+import BackButton from '../components/BackButton.js';
 
 
-function ProfileSetting() {
+function ProfileSetting({onClose}) {
   const { user } = useContext(AuthContext);
   const [data , setData] = useState();
   const [newProfile, setNewProfile] = useState(null);
@@ -147,112 +148,116 @@ const removeCoverImage = () => {
 };
 
   return (
-    <div className="page-root">
-      { loading ? <Loading/> :
-      browseOnline ? (
+    <>
+      {browseOnline ? (
         <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} />
       ) : (
-        <div>
-          <p className='update-page-title'>Edit Profile</p>
-          <form className='form-group-profile' onSubmit={handleSubmit}>
-            <div className='profile-img-container'>
-              <div className='cover-container'>
-                {data?.coverImg || newCoverImage ? 
-                  <>
-                    <img className='cover-img' src={newCoverImage ? URL.createObjectURL(newCoverImage) : data?.coverImg} alt='' />
-                    <IconButton className='close-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} size={30} type='button'/>
-                  </>
-                  :
-                  <>
-                    <label className="cover-input-label" style={{backgroundColor: `${!showCoverDropdown? '#f1f1f1' : '#a3a3a3' }`}} onClick={()=>setShowCoverDropdown(!showCoverDropdown)}>Unveil Your Cover</label>
-                    <input type='file' accept="image/*" id='cover-image-upload' className='file-input' onChange={handleCoverImageChange} />
-                    <div className='img-upload-dropdown'>
+        <>
+          <div className='update-page-header'>
+            <BackButton onClick={onClose} />
+            <p className='update-page-title'>Edit Profile</p>
+          </div>
+          { loading ? <Loading/> : (
+            <form className='form-group-profile' onSubmit={handleSubmit}>
+              <div className='profile-img-container'>
+                <div className='cover-container'>
+                  {data?.coverImg || newCoverImage ? 
+                    <>
+                      <img className='cover-img' src={newCoverImage ? URL.createObjectURL(newCoverImage) : data?.coverImg} alt='' />
+                      <IconButton className='close-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} size={30} type='button'/>
+                    </>
+                    :
+                    <>
+                      <label className="cover-input-label" style={{backgroundColor: `${!showCoverDropdown? '#f1f1f1' : '#a3a3a3' }`}} onClick={()=>setShowCoverDropdown(!showCoverDropdown)}>Unveil Your Cover</label>
+                      <input type='file' accept="image/*" id='cover-image-upload' className='file-input' onChange={handleCoverImageChange} />
+                      <div className='img-upload-dropdown'>
+                        <Dropdown 
+                          options={[
+                            { 
+                              label: 'Upload', 
+                              onClick: () => {
+                                setShowCoverDropdown(false);
+                                document.getElementById('cover-image-upload').click(); // Trigger the file input
+                              }
+                            },
+                            { 
+                              label: 'Browse On Pixel', 
+                              onClick: () => {
+                                setBrowseOnline(true);
+                                setBrowseProfile(false);
+                                setShowCoverDropdown(false);
+                              }
+                            }
+                          ]} 
+                          showIcon={false} 
+                          handleMenu={showCoverDropdown} 
+                          menuPosition='bottom'
+                        />
+                      </div>
+                    </>
+                  }
+                </div>
+                <div className='edit-profile-img-container'>
+                  {data?.profile || newProfile  ?
+                    <>
+                      <img src={newProfile ? URL.createObjectURL(newProfile) : data?.profile} alt='' className='profile-img' />
+                      <IconButton className='close-button remove-profile-button' size='20px' icon={CloseImg} onClick={removeProfileImage} type='button'/>
+                    </>
+                    :
+                    <div className='edit-profile-img-container'>
+                      <ProfileIcon fill={`${!showProfileDropdown? '#ccc' : '#a3a3a3'}`} className='profile-img img-template' onClick={()=>setShowProfileDropdown(!showProfileDropdown)} />
+                      <input type='file' id='profile-image-upload' className='file-input' onChange={handleProfileChange} />
                       <Dropdown 
+                        showIcon={false} 
                         options={[
                           { 
                             label: 'Upload', 
                             onClick: () => {
-                              setShowCoverDropdown(false);
-                              document.getElementById('cover-image-upload').click(); // Trigger the file input
+                              setShowProfileDropdown(false);
+                              document.getElementById('profile-image-upload').click(); // Trigger the file input
                             }
                           },
                           { 
                             label: 'Browse On Pixel', 
                             onClick: () => {
                               setBrowseOnline(true);
-                              setBrowseProfile(false);
-                              setShowCoverDropdown(false);
+                              setBrowseProfile(true);
+                              setShowProfileDropdown(false);
                             }
                           }
                         ]} 
-                        showIcon={false} 
-                        handleMenu={showCoverDropdown} 
+                        handleMenu={showProfileDropdown} 
                         menuPosition='bottom'
                       />
                     </div>
-                  </>
-                }
+                  }
+                </div>
               </div>
-              <div className='edit-profile-img-container'>
-                {data?.profile || newProfile  ?
-                  <>
-                    <img src={newProfile ? URL.createObjectURL(newProfile) : data?.profile} alt='' className='profile-img' />
-                    <IconButton className='close-button remove-profile-button' size='20px' icon={CloseImg} onClick={removeProfileImage} type='button'/>
-                  </>
-                  :
-                  <div className='edit-profile-img-container'>
-                    <ProfileIcon fill={`${!showProfileDropdown? '#ccc' : '#a3a3a3'}`} className='profile-img img-template' onClick={()=>setShowProfileDropdown(!showProfileDropdown)} />
-                    <input type='file' id='profile-image-upload' className='file-input' onChange={handleProfileChange} />
-                    <Dropdown 
-                      showIcon={false} 
-                      options={[
-                        { 
-                          label: 'Upload', 
-                          onClick: () => {
-                            setShowProfileDropdown(false);
-                            document.getElementById('profile-image-upload').click(); // Trigger the file input
-                          }
-                        },
-                        { 
-                          label: 'Browse On Pixel', 
-                          onClick: () => {
-                            setBrowseOnline(true);
-                            setBrowseProfile(true);
-                            setShowProfileDropdown(false);
-                          }
-                        }
-                      ]} 
-                      handleMenu={showProfileDropdown} 
-                      menuPosition='bottom'
-                    />
-                  </div>
-                }
+              <div className='content-container'>
+                <label>Name</label>
+                <input 
+                  type="text" 
+                  className='main-input input-title'
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
-            </div>
-            <div className='content-container'>
-              <label>Name</label>
-              <input 
-                type="text" 
-                className='main-input input-title'
-                value={name} 
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className='content-container'>
-              <label>Bio</label>
-              <textarea 
-                className='main-input input-create-content' 
-                value={bio} 
-                onChange={(e) => setBio(e.target.value)}
-                maxLength={160}
-              />
-              <p>{bio.length}/160</p>
-            </div>
-            <Button text='Update' type="submit">Update Profile</Button>
-          </form>
-        </div>
+              <div className='content-container'>
+                <label>Bio</label>
+                <textarea 
+                  className='main-input input-create-content' 
+                  value={bio} 
+                  onChange={(e) => setBio(e.target.value)}
+                  maxLength={160}
+                />
+                <p>{bio.length}/160</p>
+              </div>
+              <Button text='Update' type="submit">Update Profile</Button>
+            </form>
+          )}
+        </>
       )}
-    </div>
+    </>
   );
 }
 

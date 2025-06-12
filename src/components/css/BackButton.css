@@ -5,7 +5,6 @@
   color: black;
   font-weight: bold;
   border-radius: 50%;
-  z-index: 1000;
   transition: background-color 0.2s ease;
 }
 
@@ -13,6 +12,7 @@
   position: fixed;
   top: 75px;
   left: 20px;
+  z-index: 1000;
 }
 
 .close:hover,
