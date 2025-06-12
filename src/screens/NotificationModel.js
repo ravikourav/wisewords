@@ -52,9 +52,15 @@ function NotificationModel() {
           <p className='notification-title'>Updates</p>
       </div>
       <div className='notification-body'>
-          {notificationData?.map((data) => (
+        {notificationData.length > 0 ?
+          notificationData?.map((data) => (
             <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />
-          ))}
+          ))
+        :
+          <div className='empty-state-container'>
+            <p className='empty-state-message'>All is calm — no new words for now.</p>
+          </div>
+        }
       </div>
     </div>
   );

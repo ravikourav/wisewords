@@ -410,7 +410,7 @@ function DetailedCard() {
                 setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
               />
             }
-            <BackButton onClick={handleClose}/>
+            <BackButton type='fixed' onClick={handleClose}/>
             
             <div className='content-wrapper'>
               <div className='card-container'>
@@ -477,7 +477,9 @@ function DetailedCard() {
                           <p style={{fontSize:'2rem'}}>.</p>
                         </>
                       ) : (
-                        <p className='message'>No thoughts shared yet</p>
+                        <div className='empty-state-container'>
+                          <p className='empty-state-message'>No thoughts shared yet.</p>
+                        </div>
                       )
                     ) : null}
                     </div>

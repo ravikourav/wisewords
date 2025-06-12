@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ExploreCard from '../components/ExploreCard';
 import CardGrid from '../components/CardGrid.js';
-import { ReactComponent as BackImg } from '../assets/icon/arrow-back.svg';
 import './css/Explore.css';
 import Alert from '../components/Alert.js';
 import { useIsMobile } from '../utils/screenSize.js';
@@ -9,6 +8,7 @@ import axios from 'axios';
 import Loading from '../components/Loading.js';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import SearchBar from '../components/SearchBar.js';
+import BackButton from '../components/BackButton.js';
 
 function Explore() {
   
@@ -95,7 +95,7 @@ function Explore() {
                 setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
               />
             }
-            <BackImg className='close' onClick={closeSelectedTag} />
+            <BackButton type='fixed' onClick={closeSelectedTag} />
             <ExploreCard
               className='tagSelected'
               name={selectedTag.name}
@@ -107,7 +107,9 @@ function Explore() {
               {selectedTagPosts.length > 0 ? (
                 <CardGrid data={selectedTagPosts} />
               ) : (
-                <p className='suggestion'>The silence of this tag remains unbroken</p>
+                <div className='empty-state-container'>
+                  <p className='empty-state-message'>The silence of this tag remains unbroken.</p>
+                </div>
               )}
             </div>
           </div>

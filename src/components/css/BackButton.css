@@ -1,14 +1,18 @@
 .close {
-  position: fixed;
-  top: 75px;
-  left: 20px;
   padding: 5px;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   color: black;
   font-weight: bold;
   border-radius: 50%;
   z-index: 1000;
+  transition: background-color 0.2s ease;
+}
+
+.close-fixed {
+  position: fixed;
+  top: 75px;
+  left: 20px;
 }
 
 .close:hover,
@@ -19,11 +23,14 @@
 }
 
 @media (max-width: 768px){
-  .close {
+  .close,
+  .close-fixed {
+    font-size: 14px;
+  }
+
+  .close-fixed {
     top: 10px;
     left: 10px;
-    height: 30px;
-    width: 30px;
     background-color: #eeeeee;
   }
 }
@@ -32,8 +39,5 @@
   .close {
     top: 10px;
     left: 5px;
-    height: 30px;
-    width: 30px;
-    background-color: #eeeeee;
   }
 }

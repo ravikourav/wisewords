@@ -94,7 +94,9 @@ const CardGrid = ({ data }) => {
             ))}
           </Masonry>
         ) : (
-          <p>The deck is empty, awaiting new stories.</p>
+          <div className='empty-state-container'>
+            <p className='empty-state-message'>The deck is empty, awaiting new stories.</p>
+          </div>
         )}
     </div>
   );

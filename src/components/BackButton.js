@@ -2,12 +2,10 @@ import React from 'react'
 import './css/BackButton.css';
 import { ReactComponent as BackIcon } from '../assets/icon/arrow-back.svg';
 
-function BackButton({onClick , marginFromTop}) {
-
-  const buttonStyle = marginFromTop ? { top: `${marginFromTop}px` } : {};
+function BackButton({type, onClick}) {
   
   return (
-    <BackIcon className='close' onClick={onClick} style={buttonStyle} />
+    <BackIcon className={type === 'fixed' ? 'close close-fixed' : 'close'} onClick={onClick} />
   )
 }
 

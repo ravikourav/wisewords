@@ -8,10 +8,8 @@ import { useIsMobile } from '../utils/screenSize.js';
 import Badge from '../components/Badge';
 import SearchBar from '../components/SearchBar.js';
 
-
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
-import {ReactComponent as BackIcon} from '../assets/icon/arrow-back.svg';
-import IconButton from '../components/IconButton.js';
+import BackButton from '../components/BackButton.js';
 
 function SearchResult() {
   const isMobile = useIsMobile();
@@ -68,7 +66,7 @@ function SearchResult() {
         <div className="explore-search-header">
           { query && isMobile &&
             <div className='search-result-back-icon-container' >
-              <IconButton icon={BackIcon} size={30} onClick={()=>navigate(-1)}/>
+              <BackButton onClick={()=>navigate(-1)}/>
             </div>
           }
           <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''} />
@@ -97,7 +95,9 @@ function SearchResult() {
               <CardGrid data={data.posts} />
             ) 
             : 
-            <p className='message' >No posts found.</p>
+            <div className='empty-state-container'>
+              <p className='empty-state-message' >No posts found.</p>
+            </div>
           ) : (
             data.users.length ? (
               <div className='search-result-content'>{
@@ -115,7 +115,10 @@ function SearchResult() {
                   </div>
                 ))
               }</div>
-            ) : <p className='message'>No users found.</p>
+            ) : 
+              <div className='empty-state-container'>
+                <p className='message'>No users found.</p>
+              </div>
           )}
       </div>
     </>

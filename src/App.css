@@ -31,11 +31,16 @@ p {
   text-align: center;
 }
 
-.suggestion{
-  color: #818181;
+.empty-state-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  padding: 2rem 1rem;
 }
 
-.message{
+.empty-state-message{
   color: #818181;
   font-weight: 500;
 }
