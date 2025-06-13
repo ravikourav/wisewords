@@ -38,10 +38,6 @@
 
 
 @media (max-width: 768px){
-    .explore-page {
-        padding-bottom: 60px;
-    }
-
     .explore-tag-selected-layout{
         margin-top: 25px;
     }

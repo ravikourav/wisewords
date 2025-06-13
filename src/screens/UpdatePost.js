@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { calculateAspectRatio } from '../utils/calculateDimensions';
+import BackButton from '../components/BackButton';
 
 function UpdatePost() {
   const { id } = useParams();
@@ -165,8 +166,11 @@ function UpdatePost() {
       {browseOnline ? (
         <BrowseImage onClose={() => setBrowseOnline(false)} onSelectImage={handleImageSelect} title={title} />
       ) : (
-        <div className='create-page'>
-          <p className='create-page-title'>Update Post</p>
+        <>
+          <div className='create-page-header'>
+            <BackButton onClick={()=>{navigate(-1)}}/>
+            <p className='create-page-title'>Update Post</p>
+          </div>
           <form onSubmit={handleSubmit} className='form-group'>
             <div className='img-container'>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -291,7 +295,7 @@ function UpdatePost() {
               <Button type='submit' width={250} text='Update Post' align='center' />
             </div>
           </form>
-        </div>
+        </>
       )}
     </div>
   );

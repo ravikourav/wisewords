@@ -65,7 +65,7 @@ function Home() {
 
   return (
     loading ? <Loading /> : 
-      <div className='home-page-layout'>
+      <div className='page-root home-page-layout'>
         <CardGrid data={data} />
         <div className='paginate-container'>
           <Button text='More' onClick={()=>fetchData(true)} />

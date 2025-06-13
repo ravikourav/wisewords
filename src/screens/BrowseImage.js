@@ -93,64 +93,64 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   };
 
   return (
-      <div className='browse-image-container'>
-        {userAlert.visible &&
-          <Alert
-            message={userAlert.message}
-            type={userAlert.type}
-            duration={3000}
-            visible={userAlert.visible}
-            setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
-          />
-        }
-        <div className='browse-image-header'>
-          <BackButton onClick={onClose} />
-          <div className='custom-search-box'>
-            <SearchIcon className='search-icon' />
-            <input
-              type="text"
-              value={searchInput}
-              onKeyDown={handleKeyDown}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search"
-              className="mobile-search-input"
-            />
-          </div>
-        </div>
-        
-        <div className='switch-container'>
-          <p className='browse-suggestion-2'>
-            {fullResolutionImage
-              ? "The full splendor is now within your grasp, unbound by modesty."
-              : "Be aware, these are but glimpses in modest quality. Rest assured, the full splendor awaits in high resolution."
-            }
-          </p>
-          <Switch 
-            checked={fullResolutionImage}
-            onChange={(e) => {handleImgStateChange(e)}}
+    <div className='browse-image-container'>
+      {userAlert.visible &&
+        <Alert
+          message={userAlert.message}
+          type={userAlert.type}
+          duration={3000}
+          visible={userAlert.visible}
+          setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
+        />
+      }
+      <div className='browse-image-header'>
+        <BackButton onClick={onClose} />
+        <div className='custom-search-box'>
+          <SearchIcon className='search-icon' />
+          <input
+            type="text"
+            value={searchInput}
+            onKeyDown={handleKeyDown}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search"
+            className="mobile-search-input"
           />
         </div>
-        {images?.length > 0 ? (
-          <>
-            <Masonry columns={breakpointCols} spacing={2}>
-              {images.map((image) => (
-                <OnlineImageCard
-                  key={image.id}
-                  image={fullResolutionImage ? image.largeImageURL : image.previewURL}
-                  onSelect={() => handleImageSelect(image)}
-                />
-              ))}
-            </Masonry>
-            {!loading && <Button onClick={() => fetchImages()} text='More' />}
-            {loading && <Loading />}
-          </>
-          ) : (
-            <div className='empty-state-container'>
-              <p className='empty-state-message'>No images found.</p>
-            </div>
-          )
-        }
       </div>
+      
+      <div className='switch-container'>
+        <p className='browse-suggestion-2'>
+          {fullResolutionImage
+            ? "The veil is lifted behold every detail in its finest truth."
+            : "The full splendor awaits in high resolution."
+          }
+        </p>
+        <Switch 
+          checked={fullResolutionImage}
+          onChange={(e) => {handleImgStateChange(e)}}
+        />
+      </div>
+      {images?.length > 0 ? (
+        <>
+          <Masonry columns={breakpointCols} spacing={2}>
+            {images.map((image) => (
+              <OnlineImageCard
+                key={image.id}
+                image={fullResolutionImage ? image.largeImageURL : image.previewURL}
+                onSelect={() => handleImageSelect(image)}
+              />
+            ))}
+          </Masonry>
+          {!loading && <Button onClick={() => fetchImages()} text='More' />}
+          {loading && <Loading />}
+        </>
+        ) : (
+          <div className='empty-state-container'>
+            <p className='empty-state-message'>No images found.</p>
+          </div>
+        )
+      }
+    </div>
   );
 }
 

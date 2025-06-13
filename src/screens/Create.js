@@ -158,7 +158,7 @@ function Create() {
       {browseOnline ? (
         <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} title={title} />
       ) : (
-        <div className='create-page'>
+        <>
           {userAlert.visible &&
             <Alert
               message={userAlert.message}
@@ -168,7 +168,9 @@ function Create() {
               setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
             />
           }
-          <p className='create-page-title'>Create Post</p>
+          <div className='create-page-header'>
+            <p className='create-page-title'>Create Post</p>
+          </div>
           <form onSubmit={handleSubmit} className='form-group'>
             <div className='img-container'>
               {backgroundImage ? (
@@ -280,7 +282,7 @@ function Create() {
               <Button type='submit' width={250} text='Create' align='center' />
             </div>
           </form>
-        </div>
+        </>
       )}
     </div>
   );

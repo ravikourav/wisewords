@@ -22,7 +22,6 @@ function Header()  {
   const { isLoggedIn, user} = useContext(AuthContext);
 
   const [notificationBgPage , setNotificationBgPage] = useState();
-  const [notificationOpened , setNotificationOpened] = useState(false);
 
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
@@ -36,14 +35,12 @@ function Header()  {
   };
 
   const handleNotification = () => {
-    if(!notificationOpened){
+    if(Selected !== 'Notification'){
       setNotificationBgPage(Selected);
       select('Notification');
-      setNotificationOpened(true);
     }
     else{
       select(notificationBgPage);
-      setNotificationOpened(false);
     }
   }
 
@@ -52,73 +49,83 @@ function Header()  {
   }
 
   return (
-    <div className='header-root' >
+    <div className='header-root'>
       {!isMobile ? (
-      <div className="header-container">
+      <div className="header-container-desktop">
         <img className="header-logo" src="/logo192.png" alt="Logo" />
-        <div className="nav-links">
-          <Link className={`desktop-nav-link ${Selected === 'Home' ? 'nav-selected' : '' }`} to="/" onClick={()=>{select('Home')}}>Home</Link>
-          <Link className={`desktop-nav-link ${Selected === 'Explore' ? 'nav-selected' : '' }`} to="explore" onClick={()=>{select('Explore')}}>Explore</Link>
+          <Link to="/" onClick={()=>{select('Home')}}>
+            <HomeIcon className='icon' 
+              fill={Selected === 'Home' ? 'black' : 'white'} 
+              stroke={Selected === 'Home' ? 'white' :'black' } 
+            />
+          </Link>
+          <Link to="explore" onClick={()=>{select('Explore')}}>
+            <CategoryIcon className='icon' fill={ Selected === 'Explore' ? 
+              'black' : 'white' } stroke={Selected === 'Explore' ? 
+              'white' : 'black'} />
+          </Link>
           { isLoggedIn && (
-          <Link className={`desktop-nav-link ${Selected === 'Create' ? 'nav-selected' : '' }`} to="create" onClick={()=>{select('Create')}}>Create</Link>)}
-        </div>
-        <div className="search-container">
-          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''} />
-        </div>
-        <div className="header-user-container">
+          <Link to="create" onClick={()=>{select('Create')}}>
+            <AddIcon fill={ Selected === 'Create' ? 
+              'black' : 'white' } stroke={Selected === 'Create' ? 
+              'white' : 'black'} className='icon' />
+          </Link>)}
           {isLoggedIn ? (
-            <div className='left-nav-links'>
-              <BellIcon fill={Selected === 'Notification' ? '#404040' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#404040' } className='bell-icon-desktop'
+            <>
+              <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'black' } className='icon'
               onClick={handleNotification} /> 
               <Link to={`user/${user.username}`} onClick={()=>{select('Profile')}} >
                 { user.profile ?
-                  <img src={user.profile} alt='' className='profile-picture' />
+                  <img src={user.profile} alt='' className='icon' />
                 :
-                  <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'profile-picture'/>
-                }
-              </Link>
-            </div>
-          ) : (
-            <Button text='Login' to='login' onClick={()=>{select('Login')}} />
-          )}
-        </div>
-      </div>
-      ):(
-        <div className="header-container">
-            <Link to="/" onClick={()=>{select('Home')}}>
-              <HomeIcon fill={ Selected === 'Home' ? 
-                'black' : 'white' } stroke={Selected === 'Home' ? 
-                'white' : '#767676'} className='nav-icon' />
-            </Link>
-            <Link to="explore" onClick={()=>{select('Explore')}}>
-              <CategoryIcon fill={ Selected === 'Explore' ? 
-                'black' : 'white' } stroke={Selected === 'Explore' ? 
-                'white' : '#767676'} className='nav-icon' />
-            </Link>
-            { isLoggedIn && (
-              <Link to="create" onClick={()=>{select('Create')}}>
-                <AddIcon fill={ Selected === 'Create' ? 
-                'black' : 'white' } stroke={Selected === 'Create' ? 
-                'white' : '#767676'} className='nav-icon' />
-              </Link>
-            )}
-            {isLoggedIn ? (
-            <>
-              <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='nav-icon'
-              onClick={handleNotification} />
-              <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
-                { user.profile ?
-                  <img src={user.profile} alt='' className='nav-icon' />
-                :
-                  <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'nav-icon' alt="User"/>
+                  <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'icon'/>
                 }
               </Link>
             </>
-            ) : (
-              <Link to='login' onClick={()=>{select('Login')}} >
-                <ProfileIcon fill={Selected === 'Login' ? 'black' : '#ccc'} className= 'nav-icon' />
-              </Link>
-            )}
+          ) : (
+            <Button text='Login' to='login' onClick={()=>{select('Login')}} />
+          )}
+      
+        {/*<div className="search-container">
+          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''} />
+        </div>*/}
+      </div>
+      ):(
+        <div className="header-container-mobile">
+          <Link to="/" onClick={()=>{select('Home')}}>
+            <HomeIcon fill={ Selected === 'Home' ? 
+              'black' : 'white' } stroke={Selected === 'Home' ? 
+              'white' : '#767676'} className='icon' />
+          </Link>
+          <Link to="explore" onClick={()=>{select('Explore')}}>
+            <CategoryIcon fill={ Selected === 'Explore' ? 
+              'black' : 'white' } stroke={Selected === 'Explore' ? 
+              'white' : '#767676'} className='icon' />
+          </Link>
+          { isLoggedIn && (
+            <Link to="create" onClick={()=>{select('Create')}}>
+              <AddIcon fill={ Selected === 'Create' ? 
+              'black' : 'white' } stroke={Selected === 'Create' ? 
+              'white' : '#767676'} className='icon' />
+            </Link>
+          )}
+          {isLoggedIn ? (
+          <>
+            <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='icon'
+            onClick={handleNotification} />
+            <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
+              { user.profile ?
+                <img src={user.profile} alt='' className='icon' />
+              :
+                <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'icon' alt="User"/>
+              }
+            </Link>
+          </>
+          ) : (
+            <Link to='login' onClick={()=>{select('Login')}} >
+              <ProfileIcon fill={Selected === 'Login' ? 'black' : '#ccc'} className= 'icon' />
+            </Link>
+          )}
         </div>
       )}    
 

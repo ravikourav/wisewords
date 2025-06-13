@@ -63,7 +63,7 @@ function Explore() {
 
   return (
     loading ? <Loading /> :
-    <div className='explore-page'>
+    <div className='page-root'>
       {isMobile && !selectedTag && (
         <div className="explore-search-header">
           <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''}/>

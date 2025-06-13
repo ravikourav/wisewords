@@ -1,6 +1,4 @@
 .home-page-layout {
-  margin-top: 75px;
-  padding: 0;
   display: flex;
   flex: 1;
   justify-content: center;
@@ -17,7 +15,4 @@
 }
 
 @media (max-width: 768px){
-  .home-page-layout {
-    margin: 10px 0px 60px 0px;
-  }
 }
