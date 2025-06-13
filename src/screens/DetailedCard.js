@@ -389,6 +389,7 @@ function DetailedCard() {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }});
+      navigate(-1);
     }catch {
       setUserAlert({ message: 'Error Deleting this Post', type: 'error', visible: true });
     }
@@ -428,7 +429,7 @@ function DetailedCard() {
                 {isOwner ? (
                   <Dropdown size={25} showIcon={true} options={[
                     { label : 'Edit' , onClick : editPost },
-                    { label : 'Delete' , onClick : deletePost }]} menuPosition='bottom-right' />
+                    { label : 'Delete' , onClick : deletePost }]} iconOrientation='vertical' menuPosition='bottom-right' />
                 ) : (
                   <Button 
                     onClick={followUnfollowOwner} 
