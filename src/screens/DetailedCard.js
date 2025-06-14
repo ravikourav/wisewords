@@ -5,7 +5,7 @@ import { formatNumber } from '../utils/formatNumbers.js';
 import Button from '../components/Button.js';
 import Loading from '../components/Loading.js';
 import { useMediaQuery } from 'react-responsive';
-import { Link, useParams ,useSearchParams , useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import Comment from '../components/Comment.js';
@@ -35,7 +35,6 @@ import timeAgo from '../utils/timeAgo.js';
 function DetailedCard() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { isLoggedIn, user, setUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
@@ -397,14 +396,11 @@ function DetailedCard() {
     }
   }
 
-  const onSearch = (value) => {
-    navigate(`/search?query=${encodeURIComponent(value)}`);
-  }
-
   return (
     loading ? <Loading size={40}/> :
-    <div className='detailed-page-layout'>
+    <div className='page-root detailed-page-layout'>
       <div className='home-header'>
+        <BackButton onClick={()=>navigate(-1)}/>
         <SearchBar />
       </div>
       <div className="modal-wrapper">

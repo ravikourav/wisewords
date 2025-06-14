@@ -59,9 +59,7 @@ function SearchResult() {
     <div className='page-root'>
       <div className='search-root'>
         <div className="search-result-header">
-          {query &&
-            <BackButton onClick={()=>navigate(-1)}/>
-          }
+          <BackButton onClick={()=>navigate(-1)}/>
           <SearchBar />
         </div>
         <div className='search-result-root'>

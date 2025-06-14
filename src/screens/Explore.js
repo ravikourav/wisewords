@@ -57,11 +57,9 @@ function Explore() {
   return (
     loading ? <Loading /> :
     <div className='page-root'>
-      {isMobile && !selectedTag && (
         <div className="explore-search-header">
           <SearchBar />
         </div>
-        )}
         {!selectedTag ? (
           <div className='explore-tag-layout'>
             <div className='explore-card-grid'>

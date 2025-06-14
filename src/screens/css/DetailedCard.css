@@ -1,16 +1,13 @@
 .detailed-page-layout{
-  display: flex;
-  justify-content: center;
-  width: 100vw;
+  flex-direction: column;
+  flex: 100%;
 }
 
 .modal-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 85%;
-  margin-top: 75px;
-  margin-bottom: 60px;
+  margin-top: 10px;
 }
   
 .content-wrapper {
