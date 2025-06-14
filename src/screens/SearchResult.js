@@ -56,7 +56,7 @@ function SearchResult() {
 
   return (
     <div className='page-root search-root'>
-      <div className="search-result-header">
+      <div className="searchbar-header-container">
         <BackButton onClick={()=>navigate(-1)}/>
         <SearchBar />
       </div>

@@ -66,16 +66,16 @@ function Home() {
 
   return (
       <div className='page-root home-page-layout'>
-        <div className='home-header'>
+        <div className='searchbar-header-container'>
           <SearchBar />
         </div>
         {loading ? <Loading height='85vh'/> : 
-          <>
+          <div className='home-data-container'>
             <CardGrid data={data} />
             <div className='paginate-container'>
               <Button text='More' onClick={()=>fetchData(true)} />
             </div>
-          </>
+          </div>
         }
       </div>
   );

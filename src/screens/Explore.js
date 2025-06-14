@@ -56,24 +56,22 @@ function Explore() {
 
   return (
     <div className='page-root'>
-      <div className="explore-search-header">
+      <div className="searchbar-header-container">
         <SearchBar />
       </div>
       { loading ? <Loading height='85vh' /> :
         !selectedTag ? (
-          <div className='explore-tag-layout'>
-            <div className='explore-card-grid'>
-              {tags.map((card, index) => (
-                <ExploreCard
-                  key={index}
-                  name={card.name}
-                  background={card.backgroundImage}
-                  slogan={card.description}
-                  postCount={card.postCount}
-                  onClick={() => handleCardClick(card)}
-                />
-              ))}
-            </div>
+          <div className='explore-card-grid'>
+            {tags.map((card, index) => (
+              <ExploreCard
+                key={index}
+                name={card.name}
+                background={card.backgroundImage}
+                slogan={card.description}
+                postCount={card.postCount}
+                onClick={() => handleCardClick(card)}
+              />
+            ))}
           </div>
         ) : (
           <div className='explore-tag-selected-layout'>

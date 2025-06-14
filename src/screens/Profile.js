@@ -11,6 +11,7 @@ import Button from '../components/Button.js';
 import IconButton from '../components/IconButton.js';
 import Badge from '../components/Badge.js';
 import BackButton from '../components/BackButton.js';
+import SearchBar from '../components/SearchBar.js';
 
 //icons
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
@@ -145,71 +146,77 @@ function Profile() {
     const displayData = selected === 'your-thought' ? postedData : saveCardData;
 
     return (
-        loading ? <Loading/> :
         <div className='page-root'>
             {tab === 'home' && (
-                <div className='profile-page'>
-                    <div className='profile-img-container'>
-                        {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
-                        }
-                        {data.profile ?
-                            <img src={data.profile} alt='' className='profile-img' />
-                        :
-                            <ProfileIcon fill='#ccc' className='profile-img' />
-                        }
+                <>
+                    <div className='searchbar-header-container'>
+                        <SearchBar />
                     </div>
-                    {data && (
-                        <div className='user-profile-info'>
-                            <p className='user-name'>{data.name} <Badge badge={data.badge} size={26}/></p>
-                            <p className='user-bio'>{data.bio}</p>
-                            <p className='user-id'>@{data.username}</p>
-                            <div className='follow-container'>
-                                <div className='user-data-wrapper'>
-                                    <p className='user-data'>{data.posts.length}</p>
-                                    <p className='user-data-label'>Posts</p>
+                    {loading ? <Loading height='65vh'/> :
+                        <div className='profile-page'>
+                            <div className='profile-img-container'>
+                                {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
+                                }
+                                {data.profile ?
+                                    <img src={data.profile} alt='' className='profile-img' />
+                                :
+                                    <ProfileIcon fill='#ccc' className='profile-img' />
+                                }
+                            </div>
+                            {data && (
+                                <div className='user-profile-info'>
+                                    <p className='user-name'>{data.name} <Badge badge={data.badge} size={26}/></p>
+                                    <p className='user-bio'>{data.bio}</p>
+                                    <p className='user-id'>@{data.username}</p>
+                                    <div className='follow-container'>
+                                        <div className='user-data-wrapper'>
+                                            <p className='user-data'>{data.posts.length}</p>
+                                            <p className='user-data-label'>Posts</p>
+                                        </div>
+                                        <div className='user-data-wrapper' onClick={() => setTab('followers')} >
+                                            <p className='user-data'>{data.followers.length}</p>
+                                            <p className='user-data-label'>Followers</p>
+                                        </div>
+                                        <div className='user-data-wrapper' onClick={() => setTab('following')} >
+                                            <p className='user-data'>{data.following.length}</p>
+                                            <p className='user-data-label'>Following</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='user-data-wrapper' onClick={() => setTab('followers')} >
-                                    <p className='user-data'>{data.followers.length}</p>
-                                    <p className='user-data-label'>Followers</p>
+                            )}
+                            {isOwner ? 
+                                <div className='profile-control'>
+                                    <div className='control-button'>
+                                        <IconButton icon={ShareIcon} onClick={()=>handleShare(data.username)} size='25px'/>
+                                    </div>
+                                    <div className='control-button'>
+                                        <Button text='Logout' selected={true} onClick={logout} />
+                                    </div>
+                                    <div className='control-button'>
+                                        <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => setTab('settings')}]} menuPosition='top-right'/>
+                                    </div>
+                                </div> 
+                                :
+                                <div className='profile-control'>
+                                    <div className='control-button'>
+                                        <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
+                                    </div>
+                                    <div className='control-button'>
+                                        <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} /> 
+                                    </div>   
+                                    <div className='control-button'>
+                                        <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
+                                    </div>
                                 </div>
-                                <div className='user-data-wrapper' onClick={() => setTab('following')} >
-                                    <p className='user-data'>{data.following.length}</p>
-                                    <p className='user-data-label'>Following</p>
-                                </div>
+                            }
+                            <div className='post-selector-container'>
+                                <p className={`post-selector ${selected === 'your-thought' && 'post-selected'}`} onClick={() => selectContent('your-thought')}>{isOwner ? 'Your Posts' : 'Created'}</p>
+                                <p className={`post-selector ${selected === 'saved' && 'post-selected'}`} onClick={() => selectContent('saved')}>Saved</p>
                             </div>
-                        </div>
-                    )}
-                    {isOwner ? 
-                        <div className='profile-control'>
-                            <div className='control-button'>
-                                <IconButton icon={ShareIcon} onClick={()=>handleShare(data.username)} size='25px'/>
-                            </div>
-                            <div className='control-button'>
-                                <Button text='Logout' selected={true} onClick={logout} />
-                            </div>
-                            <div className='control-button'>
-                                <Dropdown showIcon={true} options={[{ label : 'Edit Profile' , onClick : () => setTab('settings')}]} menuPosition='top-right'/>
-                            </div>
-                        </div> 
-                        :
-                        <div className='profile-control'>
-                            <div className='control-button'>
-                                <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
-                            </div>
-                            <div className='control-button'>
-                                <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} /> 
-                            </div>   
-                            <div className='control-button'>
-                                <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
-                            </div>
+                            <CardGrid data={displayData} />
                         </div>
                     }
-                    <div className='post-selector-container'>
-                        <p className={`post-selector ${selected === 'your-thought' && 'post-selected'}`} onClick={() => selectContent('your-thought')}>{isOwner ? 'Your Posts' : 'Created'}</p>
-                        <p className={`post-selector ${selected === 'saved' && 'post-selected'}`} onClick={() => selectContent('saved')}>Saved</p>
-                    </div>
-                    <CardGrid data={displayData} />
-                </div>
+                </>
             )}
             {tab === 'followers' && (
                 <>

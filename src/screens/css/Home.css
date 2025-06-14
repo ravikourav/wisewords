@@ -6,12 +6,10 @@
   flex-direction: column;
 }
 
-.home-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.home-data-container {
   width: 100%;
-  margin-bottom: 10px;
+  height: 100%;
+  padding-top: 10px;
 }
 
 .paginate-container {

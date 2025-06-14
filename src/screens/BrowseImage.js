@@ -9,6 +9,7 @@ import Switch from '@mui/material/Switch';
 import Button from '../components/Button.js';
 import Alert from '../components/Alert.js';
 import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
+import pixabayLogo from '../assets/other/pixabaylogo192.png'; 
 
 function BrowseImage({ onClose, onSelectImage, title }) {
   const [images, setImages] = useState([]);
@@ -103,7 +104,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
           setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
         />
       }
-      <div className='browse-image-header'>
+      <div className='searchbar-header-container'>
         <BackButton onClick={onClose} />
         <div className='custom-search-box'>
           <SearchIcon className='search-icon' />
@@ -112,10 +113,11 @@ function BrowseImage({ onClose, onSelectImage, title }) {
             value={searchInput}
             onKeyDown={handleKeyDown}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search"
+            placeholder="Search pixabay"
             className="mobile-search-input"
           />
         </div>
+        <img src={pixabayLogo} alt='' className='search-source-logo' />
       </div>
       
       <div className='switch-container'>

@@ -398,8 +398,8 @@ function DetailedCard() {
 
   return (
     <div className='page-root detailed-page-layout'>
-      <div className='home-header'>
-        <BackButton onClick={()=>navigate(-1)}/>
+      <div className='searchbar-header-container'>
+        <BackButton onClick={handleClose}/>
         <SearchBar />
       </div>
       {loading ? <Loading height='85vh' /> :
@@ -413,7 +413,6 @@ function DetailedCard() {
               setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
             />
           }
-          <BackButton type='fixed' onClick={handleClose}/>
           
           <div className='content-wrapper'>
             <div className='card-container'>
