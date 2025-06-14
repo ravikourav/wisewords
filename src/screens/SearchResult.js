@@ -55,13 +55,12 @@ function SearchResult() {
   }, [searchParams]);
 
   return (
-    loading ? <Loading /> : 
-    <div className='page-root'>
-      <div className='search-root'>
-        <div className="search-result-header">
-          <BackButton onClick={()=>navigate(-1)}/>
-          <SearchBar />
-        </div>
+    <div className='page-root search-root'>
+      <div className="search-result-header">
+        <BackButton onClick={()=>navigate(-1)}/>
+        <SearchBar />
+      </div>
+      {loading ? <Loading height='85vh' /> :
         <div className='search-result-root'>
           {/* Tab Bar */}
           <div className='search-result-tab-bar'>
@@ -111,7 +110,7 @@ function SearchResult() {
                 </div>
             )}
         </div>
-      </div>
+      }
     </div>
   );
 }

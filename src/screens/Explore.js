@@ -55,12 +55,12 @@ function Explore() {
   };
 
   return (
-    loading ? <Loading /> :
     <div className='page-root'>
-        <div className="explore-search-header">
-          <SearchBar />
-        </div>
-        {!selectedTag ? (
+      <div className="explore-search-header">
+        <SearchBar />
+      </div>
+      { loading ? <Loading height='85vh' /> :
+        !selectedTag ? (
           <div className='explore-tag-layout'>
             <div className='explore-card-grid'>
               {tags.map((card, index) => (
@@ -104,7 +104,8 @@ function Explore() {
               )}
             </div>
           </div>
-        )}
+        )
+      }
     </div>    
   );
 }

@@ -65,15 +65,18 @@ function Home() {
   }, []);
 
   return (
-    loading ? <Loading /> : 
       <div className='page-root home-page-layout'>
         <div className='home-header'>
           <SearchBar />
         </div>
-        <CardGrid data={data} />
-        <div className='paginate-container'>
-          <Button text='More' onClick={()=>fetchData(true)} />
-        </div>
+        {loading ? <Loading height='85vh'/> : 
+          <>
+            <CardGrid data={data} />
+            <div className='paginate-container'>
+              <Button text='More' onClick={()=>fetchData(true)} />
+            </div>
+          </>
+        }
       </div>
   );
 }

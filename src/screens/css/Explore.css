@@ -1,3 +1,13 @@
+.explore-search-header {
+    display: flex;
+    position: sticky;
+    top: 10px;
+    width: 100%;
+    background-color: white; 
+    z-index: 10;
+    align-items: center;
+}
+
 .explore-tag-layout{
     display: flex;
     margin-top: 10px;
@@ -21,18 +31,6 @@
     justify-content: center;
     width: 100%;
     flex-wrap: wrap;
-}
-
-/* custom serach */
-
-.explore-search-header {
-    display: flex;
-    position: sticky;
-    top: 10px;
-    width: 100%;
-    background-color: white; 
-    z-index: 10;
-    align-items: center;
 }
 
 
