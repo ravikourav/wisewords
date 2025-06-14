@@ -4,6 +4,7 @@ import CardGrid from '../components/CardGrid';
 import Loading from '../components/Loading';
 import axios from 'axios';
 import Button from '../components/Button';
+import SearchBar from '../components/SearchBar';
 
 function Home() {
   const [data, setData] = useState([]);
@@ -66,6 +67,9 @@ function Home() {
   return (
     loading ? <Loading /> : 
       <div className='page-root home-page-layout'>
+        <div className='home-header'>
+          <SearchBar />
+        </div>
         <CardGrid data={data} />
         <div className='paginate-container'>
           <Button text='More' onClick={()=>fetchData(true)} />

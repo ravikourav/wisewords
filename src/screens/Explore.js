@@ -6,15 +6,12 @@ import Alert from '../components/Alert.js';
 import { useIsMobile } from '../utils/screenSize.js';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import SearchBar from '../components/SearchBar.js';
 import BackButton from '../components/BackButton.js';
 
 function Explore() {
   
   const isMobile = useIsMobile();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedTagPosts, setSelectedTagPosts] = useState([]);
@@ -57,16 +54,12 @@ function Explore() {
     setSelectedTag(null);
   };
 
-  const onSearch = (value) => {
-    navigate(`/search?query=${encodeURIComponent(value)}`);
-  }
-
   return (
     loading ? <Loading /> :
     <div className='page-root'>
       {isMobile && !selectedTag && (
         <div className="explore-search-header">
-          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''}/>
+          <SearchBar />
         </div>
         )}
         {!selectedTag ? (

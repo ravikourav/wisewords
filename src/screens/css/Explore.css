@@ -1,12 +1,12 @@
 .explore-tag-layout{
     display: flex;
-    margin-top: 75px;
+    margin-top: 20px;
     justify-content: center;
 }
 
 .explore-tag-selected-layout{
     display: flex;
-    margin-top: 75px;
+    margin-top: 20px;
     flex-direction: column;
     align-items: center;
 }

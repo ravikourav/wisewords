@@ -1,9 +1,23 @@
-.search-result-root {
-  padding-top: 75px;
+.search-root {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 85vw;
+  padding: 10px;
+}
 
+.search-result-header{
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.search-result-root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .search-result-tab-bar {

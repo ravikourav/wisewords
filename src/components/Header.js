@@ -5,7 +5,6 @@ import { useMediaQuery } from 'react-responsive';
 import NotificationModel from '../screens/NotificationModel.js';
 import {  AuthContext } from '../hooks/AuthContext.js';
 import Button from './Button.js';
-import SearchBar from './SearchBar.js';
 
 //icons
 import { ReactComponent as HomeIcon } from '../assets/icon/home.svg';
@@ -17,7 +16,6 @@ import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 function Header()  {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
   const [Selected , setSelected] = useState(location);
   const { isLoggedIn, user} = useContext(AuthContext);
 
@@ -42,10 +40,6 @@ function Header()  {
     else{
       select(notificationBgPage);
     }
-  }
-
-  const onSearch = (value) => {
-    navigate(`/search?query=${encodeURIComponent(value)}`);
   }
 
   return (

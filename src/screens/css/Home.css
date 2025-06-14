@@ -4,6 +4,15 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-top: 10px;
+}
+
+.home-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 95%;
+  margin-bottom: 10px;
 }
 
 .paginate-container {

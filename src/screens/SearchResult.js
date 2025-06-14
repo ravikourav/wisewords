@@ -52,76 +52,69 @@ function SearchResult() {
     } else {
       setLoading(false);
     }
-}, [searchParams]);
-
-  const onSearch = (value) => {
-    setSearchParams({ query: value }); 
-  }
-
+  }, [searchParams]);
 
   return (
     loading ? <Loading /> : 
-    <>
-      {isMobile && (
-        <div className="explore-search-header">
-          { query && isMobile &&
-            <div className='search-result-back-icon-container' >
-              <BackButton onClick={()=>navigate(-1)}/>
-            </div>
+    <div className='page-root'>
+      <div className='search-root'>
+        <div className="search-result-header">
+          {query &&
+            <BackButton onClick={()=>navigate(-1)}/>
           }
-          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''} />
+          <SearchBar />
         </div>
-      )}
-      <div className='search-result-root'>
-        {/* Tab Bar */}
-        <div className='search-result-tab-bar'>
-          <button
-            className={`search-result-tab-button ${activeTab === 'posts' ? 'active' : ''}`}
-            onClick={() => setActiveTab('posts')}
-          >
-            Posts
-          </button>
-          <button
-            className={`search-result-tab-button ${activeTab === 'users' ? 'active' : ''}`}
-            onClick={() => setActiveTab('users')}
-          >
-            Users
-          </button>
-        </div>
+        <div className='search-result-root'>
+          {/* Tab Bar */}
+          <div className='search-result-tab-bar'>
+            <button
+              className={`search-result-tab-button ${activeTab === 'posts' ? 'active' : ''}`}
+              onClick={() => setActiveTab('posts')}
+            >
+              Posts
+            </button>
+            <button
+              className={`search-result-tab-button ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => setActiveTab('users')}
+            >
+              Users
+            </button>
+          </div>
 
-        {/* Tab Content */}
-          {activeTab === 'posts' ? (
-            data.posts.length ? (
-              <CardGrid data={data.posts} />
-            ) 
-            : 
-            <div className='empty-state-container'>
-              <p className='empty-state-message' >No posts found.</p>
-            </div>
-          ) : (
-            data.users.length ? (
-              <div className='search-result-content'>{
-                data.users.map((user) => (
-                  <div key={user._id} className='search-result-user-card' onClick={()=>handleProfileClick(user.username)}>
-                    {user.profile ?
-                      <img src={user.profile} alt='' className='search-result-profile-img' />
-                    :
-                      <ProfileIcon fill='#ccc' className='search-result-profile-img' />
-                    }
-                    <div className='search-result-user-info'>
-                      <h3 className='search-result-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
-                      <h3 className='search-result-user-username'>@{user.username}</h3>
-                    </div>
-                  </div>
-                ))
-              }</div>
-            ) : 
+          {/* Tab Content */}
+            {activeTab === 'posts' ? (
+              data.posts.length ? (
+                <CardGrid data={data.posts} />
+              ) 
+              : 
               <div className='empty-state-container'>
-                <p className='message'>No users found.</p>
+                <p className='empty-state-message' >No posts found.</p>
               </div>
-          )}
+            ) : (
+              data.users.length ? (
+                <div className='search-result-content'>{
+                  data.users.map((user) => (
+                    <div key={user._id} className='search-result-user-card' onClick={()=>handleProfileClick(user.username)}>
+                      {user.profile ?
+                        <img src={user.profile} alt='' className='search-result-profile-img' />
+                      :
+                        <ProfileIcon fill='#ccc' className='search-result-profile-img' />
+                      }
+                      <div className='search-result-user-info'>
+                        <h3 className='search-result-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
+                        <h3 className='search-result-user-username'>@{user.username}</h3>
+                      </div>
+                    </div>
+                  ))
+                }</div>
+              ) : 
+                <div className='empty-state-container'>
+                  <p className='message'>No users found.</p>
+                </div>
+            )}
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

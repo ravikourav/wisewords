@@ -5,7 +5,7 @@ import { formatNumber } from '../utils/formatNumbers.js';
 import Button from '../components/Button.js';
 import Loading from '../components/Loading.js';
 import { useMediaQuery } from 'react-responsive';
-import { Link, useParams , useNavigate } from 'react-router-dom';
+import { Link, useParams ,useSearchParams , useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 import Comment from '../components/Comment.js';
@@ -17,6 +17,7 @@ import IconButton from '../components/IconButton.js';
 import { calculateAspectRatio } from '../utils/calculateDimensions.js';
 import Badge from '../components/Badge.js';
 import Alert from '../components/Alert.js';
+import SearchBar from '../components/SearchBar.js';
 
 //icons
 import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
@@ -34,6 +35,7 @@ import timeAgo from '../utils/timeAgo.js';
 function DetailedCard() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { isLoggedIn, user, setUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
@@ -395,135 +397,142 @@ function DetailedCard() {
     }
   }
 
+  const onSearch = (value) => {
+    navigate(`/search?query=${encodeURIComponent(value)}`);
+  }
+
   return (
     loading ? <Loading size={40}/> :
     <div className='detailed-page-layout'>
-        <div className="modal-wrapper">
-          {userAlert.visible &&
-            <Alert
-              message={userAlert.message}
-              type={userAlert.type}
-              duration={3000}
-              visible={userAlert.visible}
-              setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
-            />
-          }
-          <BackButton type='fixed' onClick={handleClose}/>
-          
-          <div className='content-wrapper'>
-            <div className='card-container'>
-              <div className='post-owner-container'>
-                <div className='flex-row'>
-                  <Link to={`/user/${cardData.owner_id.username}`} >
-                    {cardData.owner_id.profile ?
-                      <img src={cardData.owner_id.profile} alt='' className='post-owner-profile-image' />
-                    :
-                      <ProfileIcon fill='#ccc' className='post-owner-profile-image' />
-                    }
-                  </Link>
-                  <div className='flex-column'>
-                    <p onClick={()=>{navigate(`/user/${cardData.owner_id.username}`)}} className='post-owner-name'>{cardData.owner_id.name} <Badge badge={cardData.owner_id.badge} size={16}/></p>
-                    <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
-                  </div>
-                </div>
-                {isOwner ? (
-                  <Dropdown size={25} showIcon={true} options={[
-                    { label : 'Edit' , onClick : editPost },
-                    { label : 'Delete' , onClick : deletePost }]} iconOrientation='vertical' menuPosition='bottom-right' />
-                ) : (
-                  <Button 
-                    onClick={followUnfollowOwner} 
-                    disabled={!isLoggedIn} 
-                    text={isFollowing ? 'Following' : 'Follow'} 
-                    selected={isFollowing} 
-                  />
-                )}
-              </div>
-              <Card
-                sizeCustom={true}
-                width={isMobile ? '' : cardWidth}
-                margin={false}
-                content={cardData.content}
-                textColor={cardData.contentColor}
-                author={cardData.author}
-                authorColor={cardData.authorColor}
-                background={cardData.backgroundImage}
-                tint={cardData.tintColor}
-              />
-              <p className='detailed-card-post-title'>{cardData.title}</p>
-              <p className="detailed-card-post-tag">
-                {cardData.tags.map((tag, index) => (
-                  <span key={index}>#{tag} </span>
-                ))}
-              </p>
-              <p className="detailed-card-post-time">{timeAgo(cardData.createdAt)}</p>
-            </div>
-            {hideComments &&
-              <div className="modal-box">
-                <div className='comment-container'>
-                  <div className='flex-row commnet-title-container'>
-                    <p className='comment-header'>Comments</p>
-                    <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
-                  </div>
-                  <div className='commnet-section' style={{ marginBottom: '10px' }}>
-                  {hideComments ? (
-                    cardData.comments.length > 0 ? (
-                      <>
-                        {cardData.comments.map((comment) => (
-                          <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={isLoggedIn ? user._id : null} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
-                        ))}
-                        <p style={{fontSize:'2rem'}}>.</p>
-                      </>
-                    ) : (
-                      <div className='empty-state-container'>
-                        <p className='empty-state-message'>No thoughts shared yet.</p>
-                      </div>
-                    )
-                  ) : null}
-                  </div>
-                </div>
-                { replyingTo &&
-                  <div className='replyingTo-container'>
-                    <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
-                    <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
-                  </div>
-                }
-                <div className='add-comment-container'>
-                  {user?.profile ?
-                    <img src={user.profile} alt='' className='user-profile-image' />
+      <div className='home-header'>
+        <SearchBar />
+      </div>
+      <div className="modal-wrapper">
+        {userAlert.visible &&
+          <Alert
+            message={userAlert.message}
+            type={userAlert.type}
+            duration={3000}
+            visible={userAlert.visible}
+            setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
+          />
+        }
+        <BackButton type='fixed' onClick={handleClose}/>
+        
+        <div className='content-wrapper'>
+          <div className='card-container'>
+            <div className='post-owner-container'>
+              <div className='flex-row'>
+                <Link to={`/user/${cardData.owner_id.username}`} >
+                  {cardData.owner_id.profile ?
+                    <img src={cardData.owner_id.profile} alt='' className='post-owner-profile-image' />
                   :
-                    <ProfileIcon fill='#ccc' className='user-profile-image' />
+                    <ProfileIcon fill='#ccc' className='post-owner-profile-image' />
                   }
-                  <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
-                  <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
+                </Link>
+                <div className='flex-column'>
+                  <p onClick={()=>{navigate(`/user/${cardData.owner_id.username}`)}} className='post-owner-name'>{cardData.owner_id.name} <Badge badge={cardData.owner_id.badge} size={16}/></p>
+                  <p className='post-owner-followers'>{formatNumber(cardData.owner_id.followers.length)} followers</p>
                 </div>
               </div>
-            }
+              {isOwner ? (
+                <Dropdown size={25} showIcon={true} options={[
+                  { label : 'Edit' , onClick : editPost },
+                  { label : 'Delete' , onClick : deletePost }]} iconOrientation='vertical' menuPosition='bottom-right' />
+              ) : (
+                <Button 
+                  onClick={followUnfollowOwner} 
+                  disabled={!isLoggedIn} 
+                  text={isFollowing ? 'Following' : 'Follow'} 
+                  selected={isFollowing} 
+                />
+              )}
+            </div>
+            <Card
+              sizeCustom={true}
+              width={isMobile ? '' : cardWidth}
+              margin={false}
+              content={cardData.content}
+              textColor={cardData.contentColor}
+              author={cardData.author}
+              authorColor={cardData.authorColor}
+              background={cardData.backgroundImage}
+              tint={cardData.tintColor}
+            />
+            <p className='detailed-card-post-title'>{cardData.title}</p>
+            <p className="detailed-card-post-tag">
+              {cardData.tags.map((tag, index) => (
+                <span key={index}>#{tag} </span>
+              ))}
+            </p>
+            <p className="detailed-card-post-time">{timeAgo(cardData.createdAt)}</p>
           </div>
-          <div className='post-controle'>
-            <div className='control-wrapper' onClick={handleSpeak} >
-              {!isPlaying ? 
-              <PlayIcon className='post-icon' /> : 
-              <PauseIcon className='post-icon' />
+          {hideComments &&
+            <div className="modal-box">
+              <div className='comment-container'>
+                <div className='flex-row commnet-title-container'>
+                  <p className='comment-header'>Comments</p>
+                  <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
+                </div>
+                <div className='commnet-section' style={{ marginBottom: '10px' }}>
+                {hideComments ? (
+                  cardData.comments.length > 0 ? (
+                    <>
+                      {cardData.comments.map((comment) => (
+                        <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={isLoggedIn ? user._id : null} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
+                      ))}
+                      <p style={{fontSize:'2rem'}}>.</p>
+                    </>
+                  ) : (
+                    <div className='empty-state-container'>
+                      <p className='empty-state-message'>No thoughts shared yet.</p>
+                    </div>
+                  )
+                ) : null}
+                </div>
+              </div>
+              { replyingTo &&
+                <div className='replyingTo-container'>
+                  <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
+                  <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
+                </div>
               }
-              <p className='controle-lable'>{isPlaying ? 'Pause' : 'Play' }</p>
+              <div className='add-comment-container'>
+                {user?.profile ?
+                  <img src={user.profile} alt='' className='user-profile-image' />
+                :
+                  <ProfileIcon fill='#ccc' className='user-profile-image' />
+                }
+                <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
+                <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
+              </div>
             </div>
-            <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
-              <LikeIcon 
-                fill={liked ? 'red' : 'white'}
-                stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='1.5' className='post-icon'/>
-              <p className='controle-lable'>{formatNumber(likes)}</p>
-            </div>
-            <div className='control-wrapper' onClick={handleCopy}>
-              <CopyIcon className='post-icon' />
-              <p className='controle-lable'>{!copied ? 'Copy' : 'Copied'}</p>
-            </div>
-            <div className='control-wrapper' onClick={()=>{setHideComments(!hideComments)}}>
-              <CommentIcon className='post-icon' />
-              <p className='controle-lable'>{formatNumber(cardData.comments.length)}</p>
-            </div>
+          }
+        </div>
+        <div className='post-controle'>
+          <div className='control-wrapper' onClick={handleSpeak} >
+            {!isPlaying ? 
+            <PlayIcon className='post-icon' /> : 
+            <PauseIcon className='post-icon' />
+            }
+            <p className='controle-lable'>{isPlaying ? 'Pause' : 'Play' }</p>
+          </div>
+          <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
+            <LikeIcon 
+              fill={liked ? 'red' : 'white'}
+              stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='1.5' className='post-icon'/>
+            <p className='controle-lable'>{formatNumber(likes)}</p>
+          </div>
+          <div className='control-wrapper' onClick={handleCopy}>
+            <CopyIcon className='post-icon' />
+            <p className='controle-lable'>{!copied ? 'Copy' : 'Copied'}</p>
+          </div>
+          <div className='control-wrapper' onClick={()=>{setHideComments(!hideComments)}}>
+            <CommentIcon className='post-icon' />
+            <p className='controle-lable'>{formatNumber(cardData.comments.length)}</p>
           </div>
         </div>
+      </div>
     </div>
   );
 }
