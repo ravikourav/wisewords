@@ -94,6 +94,11 @@ p {
 
 @media (max-width: 768px) {
   .page-root {
-    margin:10px 0px 60px 0px;
+    margin:0px 0px 60px 0px;
+    padding: 0px 0px;
+  }
+
+  .searchbar-header-container {
+    padding: 10px 0px 0px 0px;
   }
 }

@@ -89,7 +89,7 @@
     }
     .update-page-header {
         top: 0;
-        padding-top: 10px;
+        padding:20px 10px 10px 10px;
     }
 }
 

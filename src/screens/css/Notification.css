@@ -100,6 +100,7 @@
         right: 10px;
         bottom: 60px;
         left: 10px;
+        width: fit-content;
     }
 
     .notification-body {

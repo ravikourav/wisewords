@@ -197,6 +197,7 @@
 /* Media */
 
 @media (max-width: 768px){
+
     .profile-container{
         margin: 20px 0px 80px 0px;
     }
@@ -212,6 +213,10 @@
         width: 90px;
         height: 90px;
         bottom: -45px
+    }
+
+    .pannel-header {
+        padding: 20px 20px 10px 10px;
     }
 }
 
