@@ -10,8 +10,8 @@ import Badge from './Badge.js';
 import { truncateTextByChars } from '../utils/truncate.js';
 //icons 
 import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
-import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import { ReactComponent as BookmarkIcon } from '../assets/icon/bookmark.svg';
+import RenderProfileImage from './RenderProfileImage.js';
 
 function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , likes , profileClick , currentUser}) {
 
@@ -96,11 +96,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
     <div className='simple-card-container'>
         <div className='simple-card-header'>
           <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
-            { card.owner_id.profile ?
-              <img src={card.owner_id.profile} alt='' className='simple-card-profile-picture' />
-            :
-              <ProfileIcon fill='#ccc' className='simple-card-profile-picture' />
-            }
+            <RenderProfileImage source={card.owner_id.profile} className='simple-card-profile-picture' />
             <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
               <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
               <p className='simple-card-time'>{timeAgo(card.createdAt)}</p>

@@ -9,43 +9,14 @@
   align-items: center;
   margin-top: 10px;
 }
-  
+
+/* post content */
 .content-wrapper {
   display: flex;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px 0px;
 }
-
-.detailed-card-post-title{
-  font-size: 1.2rem;
-  margin: 20px 20px 0px 20px;
-  text-align: left;
-}
-
-.detailed-card-post-tag{
-  font-size: 0.8rem;
-  margin: 0px 20px 0px 20px;
-  text-align: left;
-  color: blue;
-}
-
-.detailed-card-post-time{
-  font-size: 0.8rem;
-  margin: 0px 20px 20px 20px;
-  text-align: left;
-  color: #818181;
-}
-
-/* info model css */
-
-.modal-box {
-  display: flex;
-  flex-direction: column;
-  background-color: #fefefe;
-  flex: 1;
-}
-
 
 /* posted by / post owner css */
 
@@ -84,27 +55,51 @@
   text-decoration: none;
 }
 
-a.custom-link {
-  text-decoration: none; /* Remove underline */
-  color: blue; /* Example color */
-}
-
 .post-owner-followers {
   font-size: 0.8rem;
   font-weight: 400;
   text-align: left;
 }
 
+/* post info */
+
+.detailed-card-post-title{
+  font-size: 1.2rem;
+  margin: 20px 20px 0px 20px;
+  text-align: left;
+}
+
+.detailed-card-post-tag{
+  font-size: 0.8rem;
+  margin: 0px 20px 0px 20px;
+  text-align: left;
+  color: blue;
+}
+
+.detailed-card-post-time{
+  font-size: 0.8rem;
+  margin: 0px 20px 20px 20px;
+  text-align: left;
+  color: #818181;
+}
+
+
 /* comment section css */
 
-.comment-container {
-  flex: 1;
-  overflow: auto;
+.modal-box {
+  display: flex;
+  flex-direction: column;
+  background-color: #fefefe;
+  flex: 100%;
 }
 
 .commnet-title-container {
-  padding: 15px 15px 15px 25px;
-  align-self: center;
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  padding-left: 20px;
+  padding-right: 10px;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -229,7 +224,6 @@ a.custom-link {
     display: flex;
     flex-direction: column;
     border-radius: 0px 0px 30px 30px;
-    width: 100vw;
   }
 }
 
@@ -239,9 +233,6 @@ a.custom-link {
     display: flex;
     flex-direction: column;
     border-radius: 0px 0px 30px 30px;
-  }
-  .modal-box {
-    width: 100vw;
   }
 }
 

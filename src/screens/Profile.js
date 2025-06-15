@@ -14,10 +14,10 @@ import BackButton from '../components/BackButton.js';
 import SearchBar from '../components/SearchBar.js';
 
 //icons
-import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import {ReactComponent as ShareIcon } from '../assets/icon/share.svg';
 import Dropdown from '../components/Dropdown.js';
 import ProfileSetting from './ProfielSetting.js';
+import RenderProfileImage from '../components/RenderProfileImage.js';
 
 function Profile() {
     const navigate = useNavigate();
@@ -157,11 +157,7 @@ function Profile() {
                             <div className='profile-img-container'>
                                 {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
                                 }
-                                {data.profile ?
-                                    <img src={data.profile} alt='' className='profile-img' />
-                                :
-                                    <ProfileIcon fill='#ccc' className='profile-img' />
-                                }
+                                <RenderProfileImage source={data.profile} className='profile-img' />
                             </div>
                             {data && (
                                 <div className='user-profile-info'>
@@ -231,11 +227,7 @@ function Profile() {
                                 <div className='user-list'>
                                     {followerUsers.map((user) => (
                                         <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
-                                            {user.profile ?
-                                            <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
-                                            :
-                                            <ProfileIcon fill='#ccc' className='ff-profile-img' />
-                                            }
+                                            <RenderProfileImage source={user.profile} className='ff-profile-img' />
                                             <div className='ff-user-info'>
                                                 <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
                                                 <h3 className='ff-user-username'>@{user.username}</h3>
@@ -265,11 +257,7 @@ function Profile() {
                                 <div className='user-list'>{
                                     followingUsers.map((user) => (
                                     <div key={user._id} className='user-card' onClick={()=>handleProfileClick(user.username)} >
-                                        {user.profile ?
-                                        <img src={user.profile} alt={`${user.name}'s profile`} className='ff-profile-img' />
-                                        :
-                                        <ProfileIcon fill='#ccc' className='ff-profile-img' />
-                                        }
+                                        <RenderProfileImage source={user.profile} className='ff-profile-img' />
                                         <div className='ff-user-info'>
                                             <h3 className='ff-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
                                             <h3 className='ff-user-username'>@{user.username}</h3>

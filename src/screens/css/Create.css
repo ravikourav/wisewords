@@ -3,7 +3,7 @@
     align-items: center;
     align-self: flex-start;
     padding: 20px 10px 10px 20px;
-    width: 90%;
+    width: 100%;
     top: 0px;
     position: sticky;
     background-color: #ffffff;
@@ -124,6 +124,11 @@
 }
 
 @media (max-width: 768px) {
+    .create-page-header {
+        padding: 20px 10px 10px 10px;
+    }
+
+
     .img-container{
         margin: 0;
         padding: 0;

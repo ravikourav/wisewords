@@ -8,8 +8,8 @@ import Dropdown from '../components/Dropdown.js';
 
 //icons
 import { ReactComponent as LikedIcon } from '../assets/icon/like.svg';
-import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import Badge from './Badge.js';
+import RenderProfileImage from './RenderProfileImage.js';
 
 function Comment({data , userId , postId , postOwnerId , deleteComment , deleteReply , reply}) {
   const { isLoggedIn } = useContext(AuthContext);
@@ -141,11 +141,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
   return (
     <div className='comment-warper'>
       <div className='main-comment'>
-        {data.comment_author.profile ?
-          <img src={data.comment_author.profile} alt='' className='comment-profile-picture' />
-        :
-          <ProfileIcon fill='#ccc' className='comment-profile-picture' />
-        }
+        <RenderProfileImage src={data.comment_author.profile} className='comment-profile-picture' />
         <div className='comment-body'>
           <div className='row'>
             <p className='comment-name'>{data.comment_author.name} <Badge badge={data.comment_author.badge} size={12}/></p>
@@ -169,7 +165,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
       
       {!viewReply && data.replies.map((reply, index) => (
         <div className='reply-container' key={reply._id}>
-          <img src={reply.reply_author.profile || ProfileIcon} alt='' className='reply-profile-picture' />
+          <RenderProfileImage source={reply.reply_author.profile} className='reply-profile-picture' />
           <div className='comment-reply-body'>
             <div className='row'>
               <p className='comment-name'>{reply.reply_author.name}</p>

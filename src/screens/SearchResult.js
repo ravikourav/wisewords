@@ -8,8 +8,9 @@ import { useIsMobile } from '../utils/screenSize.js';
 import Badge from '../components/Badge';
 import SearchBar from '../components/SearchBar.js';
 
-import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+//import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import BackButton from '../components/BackButton.js';
+import RenderProfileImage from '../components/RenderProfileImage.js';
 
 function SearchResult() {
   const isMobile = useIsMobile();
@@ -92,13 +93,9 @@ function SearchResult() {
                 <div className='search-result-content'>{
                   data.users.map((user) => (
                     <div key={user._id} className='search-result-user-card' onClick={()=>handleProfileClick(user.username)}>
-                      {user.profile ?
-                        <img src={user.profile} alt='' className='search-result-profile-img' />
-                      :
-                        <ProfileIcon fill='#ccc' className='search-result-profile-img' />
-                      }
+                      <RenderProfileImage source={user.profile} className='search-result-profile-img' />
                       <div className='search-result-user-info'>
-                        <h3 className='search-result-user-name'>{user.name} <Badge badge={user.badge} size={26}/></h3>
+                        <h3 className='search-result-user-name'>{user.name} <Badge badge={user.badge} size={20}/></h3>
                         <h3 className='search-result-user-username'>@{user.username}</h3>
                       </div>
                     </div>

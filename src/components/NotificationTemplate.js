@@ -1,10 +1,9 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import timeAgo from '../utils/timeAgo';
 import { notificationMessage } from '../utils/notificationMessages';
 import { truncateText } from '../utils/truncate';
 
-import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+import RenderProfileImage from './RenderProfileImage';
 
 function NotificationTemplate({data , markRead}) {
   const navigate = useNavigate();
@@ -24,11 +23,7 @@ function NotificationTemplate({data , markRead}) {
   return (
     <div className='notification-wrapper' >
       <div onClick={()=>{handleCommentClick('profile')}} >
-        {data.sender.profile ?
-          <img src={data.sender.profile} alt={`${data.sender.name}'s profile`} className='notification-user-img' />
-          :
-          <ProfileIcon fill='#ccc' className='notification-user-img' />
-        }
+        <RenderProfileImage profile={data.sender.profile} className='notification-user-img' />
       </div>
       <div className='notification-info' onClick={()=>{handleCommentClick(data.type === 'follow' ? 'profile' : 'post')}}>
         <p className={data.read ? 'notification-msg-read' : 'notification-msg-unread'}>

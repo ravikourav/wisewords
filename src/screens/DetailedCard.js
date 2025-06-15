@@ -27,10 +27,10 @@ import { ReactComponent as CopyIcon } from '../assets/icon/copy.svg';
 import { ReactComponent as PlayIcon } from '../assets/icon/play.svg';
 import { ReactComponent as PauseIcon } from '../assets/icon/pause.svg';
 import { ReactComponent as CloseIcon } from '../assets/icon/close.svg';
-import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import { ReactComponent as CommentIcon } from '../assets/icon/comment.svg';
 import Dropdown from '../components/Dropdown.js';
 import timeAgo from '../utils/timeAgo.js';
+import RenderProfileImage from '../components/RenderProfileImage.js';
 
 function DetailedCard() {
   const { id } = useParams();
@@ -419,11 +419,7 @@ function DetailedCard() {
               <div className='post-owner-container'>
                 <div className='flex-row'>
                   <Link to={`/user/${cardData.owner_id.username}`} >
-                    {cardData.owner_id.profile ?
-                      <img src={cardData.owner_id.profile} alt='' className='post-owner-profile-image' />
-                    :
-                      <ProfileIcon fill='#ccc' className='post-owner-profile-image' />
-                    }
+                    <RenderProfileImage source={cardData.owner_id.profile} className='post-owner-profile-image' />
                   </Link>
                   <div className='flex-column'>
                     <p onClick={()=>{navigate(`/user/${cardData.owner_id.username}`)}} className='post-owner-name'>{cardData.owner_id.name} <Badge badge={cardData.owner_id.badge} size={16}/></p>
@@ -465,7 +461,7 @@ function DetailedCard() {
             {hideComments &&
               <div className="modal-box">
                 <div className='comment-container'>
-                  <div className='flex-row commnet-title-container'>
+                  <div className='commnet-title-container'>
                     <p className='comment-header'>Comments</p>
                     <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
                   </div>
@@ -493,11 +489,7 @@ function DetailedCard() {
                   </div>
                 }
                 <div className='add-comment-container'>
-                  {user?.profile ?
-                    <img src={user.profile} alt='' className='user-profile-image' />
-                  :
-                    <ProfileIcon fill='#ccc' className='user-profile-image' />
-                  }
+                  <RenderProfileImage source={user.profile} className='user-profile-image' />
                   <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
                   <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
                 </div>

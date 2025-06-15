@@ -1,6 +1,6 @@
 import React, { useState , useEffect, useContext } from 'react';
 import './css/Header.css';
-import { Link , useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import NotificationModel from '../screens/NotificationModel.js';
 import {  AuthContext } from '../hooks/AuthContext.js';
@@ -12,9 +12,9 @@ import { ReactComponent as AddIcon} from '../assets/icon/add.svg';
 import { ReactComponent as CategoryIcon} from '../assets/icon/category.svg';
 import { ReactComponent as BellIcon} from '../assets/icon/bell.svg';
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+import RenderProfileImage from './RenderProfileImage.js';
 
 function Header()  {
-  const navigate = useNavigate();
   const location = useLocation();
   const [Selected , setSelected] = useState(location);
   const { isLoggedIn, user} = useContext(AuthContext);
@@ -69,55 +69,43 @@ function Header()  {
               <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'black' } className='icon'
               onClick={handleNotification} /> 
               <Link to={`user/${user.username}`} onClick={()=>{select('Profile')}} >
-                { user.profile ?
-                  <img src={user.profile} alt='' className='icon' />
-                :
-                  <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'icon'/>
-                }
+                <RenderProfileImage source={user.profile} className='icon' />
               </Link>
             </>
           ) : (
             <Button text='Login' to='login' onClick={()=>{select('Login')}} />
           )}
-      
-        {/*<div className="search-container">
-          <SearchBar onSearch={onSearch} initialValue={searchParams.get('query') || ''} />
-        </div>*/}
       </div>
       ):(
         <div className="header-container-mobile">
           <Link to="/" onClick={()=>{select('Home')}}>
             <HomeIcon fill={ Selected === 'Home' ? 
               'black' : 'white' } stroke={Selected === 'Home' ? 
-              'white' : '#767676'} className='icon' />
+              'white' : 'black'} className='icon' />
           </Link>
           <Link to="explore" onClick={()=>{select('Explore')}}>
             <CategoryIcon fill={ Selected === 'Explore' ? 
               'black' : 'white' } stroke={Selected === 'Explore' ? 
-              'white' : '#767676'} className='icon' />
+              'white' : 'black'} className='icon' />
           </Link>
           { isLoggedIn && (
             <Link to="create" onClick={()=>{select('Create')}}>
               <AddIcon fill={ Selected === 'Create' ? 
               'black' : 'white' } stroke={Selected === 'Create' ? 
-              'white' : '#767676'} className='icon' />
+              'white' : 'black'} className='icon' />
             </Link>
           )}
           {isLoggedIn ? (
           <>
-            <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'#767676' } className='icon'
+            <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'black' } className='icon'
             onClick={handleNotification} />
             <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
-              { user.profile ?
-                <img src={user.profile} alt='' className='icon' />
-              :
-                <ProfileIcon fill={Selected === 'Profile' ? 'black' : '#ccc'} className= 'icon' alt="User"/>
-              }
+              <RenderProfileImage source={user.profile} className='icon' />
             </Link>
           </>
           ) : (
             <Link to='login' onClick={()=>{select('Login')}} >
-              <ProfileIcon fill={Selected === 'Login' ? 'black' : '#ccc'} className= 'icon' />
+              <ProfileIcon fill={Selected === 'Login' ? 'black' : 'white'} className= 'icon' />
             </Link>
           )}
         </div>

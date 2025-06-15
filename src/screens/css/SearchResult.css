@@ -13,6 +13,8 @@
   margin-top: 10px;
 }
 
+/* Tab Bar */
+
 .search-result-tab-bar {
   display: flex;
   gap: 1rem;
@@ -34,6 +36,8 @@
   color: #000;
 }
 
+/* Search Content */
+
 .search-result-content {
     display: flex;
     flex-direction: column;
@@ -43,6 +47,7 @@
 
 .search-result-user-card{
   display: flex;
+  align-items: center;
   width: 100%;
   padding: 1rem;
   margin-bottom: 0.75rem;
@@ -51,37 +56,38 @@
 }
 
 .search-result-profile-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgb(255, 255, 255);
-    background-color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgb(255, 255, 255);
+  background-color: white;
 }
 
 .search-result-user-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .search-result-user-name {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  margin-left: 1rem;
+  margin-left: 0.75rem;
 }
 
 .search-result-user-username {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: rgb(122, 122, 122);
-    margin-left: 1rem;
+    margin-left: 0.75rem;
 }
 
 @media (max-width: 768px){
   .search-result-root {
-    padding: 75px 0px 60px 0px;
+    padding: 0px 0px 60px 0px;
+    margin-top: 0px;
   }
 
   .search-result-back-icon-container{
@@ -91,8 +97,8 @@
   }
 
   .search-result-profile-img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
   }
 
   .search-result-user-name {
