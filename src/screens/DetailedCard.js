@@ -403,7 +403,7 @@ function DetailedCard() {
         <SearchBar />
       </div>
       {loading ? <Loading height='85vh' /> :
-        <div className="modal-wrapper">
+        <>
           {userAlert.visible &&
             <Alert
               message={userAlert.message}
@@ -458,43 +458,41 @@ function DetailedCard() {
               </p>
               <p className="detailed-card-post-time">{timeAgo(cardData.createdAt)}</p>
             </div>
-            {hideComments &&
-              <div className="modal-box">
-                <div className='comment-container'>
-                  <div className='commnet-title-container'>
-                    <p className='comment-header'>Comments</p>
-                    <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
-                  </div>
-                  <div className='commnet-section' style={{ marginBottom: '10px' }}>
-                  {hideComments ? (
-                    cardData.comments.length > 0 ? (
-                      <>
-                        {cardData.comments.map((comment) => (
-                          <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={isLoggedIn ? user._id : null} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
-                        ))}
-                        <p style={{fontSize:'2rem'}}>.</p>
-                      </>
-                    ) : (
-                      <div className='empty-state-container'>
-                        <p className='empty-state-message'>No thoughts shared yet.</p>
-                      </div>
-                    )
-                  ) : null}
-                  </div>
+            <div className="modal-box">
+              <div className='comment-container'>
+                <div className='comment-title-container'>
+                  <p className='comment-header'>Comments</p>
+                  <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
                 </div>
-                { replyingTo &&
-                  <div className='replyingTo-container'>
-                    <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
-                    <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
-                  </div>
-                }
-                <div className='add-comment-container'>
-                  <RenderProfileImage source={user.profile} className='user-profile-image' />
-                  <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
-                  <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
+                <div className='comment-section' style={{ marginBottom: '10px' }}>
+                {hideComments ? (
+                  cardData.comments.length > 0 ? (
+                    <>
+                      {cardData.comments.map((comment) => (
+                        <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={isLoggedIn ? user._id : null} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
+                      ))}
+                      <p style={{fontSize:'2rem'}}>.</p>
+                    </>
+                  ) : (
+                    <div className='empty-state-container'>
+                      <p className='empty-state-message'>No thoughts shared yet.</p>
+                    </div>
+                  )
+                ) : null}
                 </div>
               </div>
-            }
+              { replyingTo &&
+                <div className='replyingTo-container'>
+                  <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
+                  <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
+                </div>
+              }
+              <div className='add-comment-container'>
+                <RenderProfileImage source={user.profile} className='user-profile-image' />
+                <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
+                <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
+              </div>
+            </div>
           </div>
           <div className='post-controle'>
             <div className='control-wrapper' onClick={handleSpeak} >
@@ -502,24 +500,24 @@ function DetailedCard() {
               <PlayIcon className='post-icon' /> : 
               <PauseIcon className='post-icon' />
               }
-              <p className='controle-lable'>{isPlaying ? 'Pause' : 'Play' }</p>
+              <p className='controle-label'>{isPlaying ? 'Pause' : 'Play' }</p>
             </div>
             <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
               <LikeIcon 
                 fill={liked ? 'red' : 'white'}
                 stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='1.5' className='post-icon'/>
-              <p className='controle-lable'>{formatNumber(likes)}</p>
+              <p className='controle-label'>{formatNumber(likes)}</p>
             </div>
             <div className='control-wrapper' onClick={handleCopy}>
               <CopyIcon className='post-icon' />
-              <p className='controle-lable'>{!copied ? 'Copy' : 'Copied'}</p>
+              <p className='controle-label'>{!copied ? 'Copy' : 'Copied'}</p>
             </div>
             <div className='control-wrapper' onClick={()=>{setHideComments(!hideComments)}}>
               <CommentIcon className='post-icon' />
-              <p className='controle-lable'>{formatNumber(cardData.comments.length)}</p>
+              <p className='controle-label'>{formatNumber(cardData.comments.length)}</p>
             </div>
           </div>
-        </div>
+        </>
       }
     </div>
   );

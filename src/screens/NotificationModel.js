@@ -52,22 +52,17 @@ function NotificationModel() {
   }, []);
 
   return (
-    <div className='notification-model'>
-      <div className='notification-header'>
-          <p className='notification-title'>Updates</p>
-      </div>
-      <div className='notification-body'>
-        {loading ? <Loading height='100%' /> : 
-          notificationData.length > 0 ?
-            notificationData?.map((data) => (
-              <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />
-            ))
-            :
-            <div className='empty-state-container'>
-              <p className='empty-state-message'>All is calm — no new words for now.</p>
-            </div>
-        }
-      </div>
+    <div className='notification-body'>
+      {loading ? <Loading height='100%' /> : 
+        notificationData.length > 0 ?
+          notificationData?.map((data) => (
+            <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />
+          ))
+          :
+          <div className='empty-state-container'>
+            <p className='empty-state-message'>All is calm — no new words for now.</p>
+          </div>
+      }
     </div>
   );
 }

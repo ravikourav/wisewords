@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './css/Profile.css';
 import { useParams } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 import CardGrid from '../components/CardGrid.js';
 import { AuthContext } from '../hooks/AuthContext.js';
 import Cookies from 'js-cookie';
@@ -12,9 +13,11 @@ import IconButton from '../components/IconButton.js';
 import Badge from '../components/Badge.js';
 import BackButton from '../components/BackButton.js';
 import SearchBar from '../components/SearchBar.js';
+import NotificationModel from './NotificationModel.js';
 
 //icons
-import {ReactComponent as ShareIcon } from '../assets/icon/share.svg';
+import {ReactComponent as ShareIcon} from '../assets/icon/share.svg';
+import {ReactComponent as BellIcon} from '../assets/icon/bell.svg';
 import Dropdown from '../components/Dropdown.js';
 import ProfileSetting from './ProfielSetting.js';
 import RenderProfileImage from '../components/RenderProfileImage.js';
@@ -35,6 +38,8 @@ function Profile() {
 
     const [isOwner , setIsOwner] = useState(false);
     const [isFollowing , setIsFollowing] = useState(null);
+
+    const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
     const followUnfollowOwner = async () => {
         const token = Cookies.get('authToken');
@@ -89,6 +94,7 @@ function Profile() {
 
     useEffect(() => {
         if (data) {
+            setTab('home');
             setPostedData(data.posts || []);
             setSaveCardData(data.saved || []);
         }
@@ -139,9 +145,13 @@ function Profile() {
 
     const handleProfileClick = (username) => {
         navigate(`/user/${username}`);
-        setTab('home');
     };
 
+    useEffect(()=>{
+        if(!isMobile && tab === 'notification'){
+            setTab('home');
+        }
+    },[isMobile])
 
     const displayData = selected === 'your-thought' ? postedData : saveCardData;
 
@@ -151,6 +161,9 @@ function Profile() {
                 <>
                     <div className='searchbar-header-container'>
                         <SearchBar />
+                        {isMobile && 
+                            <BellIcon fill='white' stroke='black' className='icon' onClick={()=>setTab('notification')} /> 
+                        }
                     </div>
                     {loading ? <Loading height='65vh'/> :
                         <div className='profile-page'>
@@ -274,8 +287,19 @@ function Profile() {
                     }
                 </>
             )}
+            {tab === 'notification' && (
+                <>
+                    <div className='pannel-header' onClick={() => setTab('home')}>
+                        <BackButton  onClick={() => setTab('home')}/>
+                        <h2 className='pannel-title' >Updates</h2>
+                    </div>
+                    {loadingFol ? <Loading height='65vh'/> : 
+                        <NotificationModel onClick={()=>setTab('home')}/>
+                    }
+                </>
+            )}
             {tab === 'settings' && (
-                <ProfileSetting onClose={()=>setTab('home')}/>
+                <ProfileSetting />
             )}
         </div>
     );

@@ -3,15 +3,12 @@ import ExploreCard from '../components/ExploreCard';
 import CardGrid from '../components/CardGrid.js';
 import './css/Explore.css';
 import Alert from '../components/Alert.js';
-import { useIsMobile } from '../utils/screenSize.js';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
 import SearchBar from '../components/SearchBar.js';
 import BackButton from '../components/BackButton.js';
 
 function Explore() {
-  
-  const isMobile = useIsMobile();
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedTagPosts, setSelectedTagPosts] = useState([]);
@@ -57,6 +54,7 @@ function Explore() {
   return (
     <div className='page-root'>
       <div className="searchbar-header-container">
+        {selectedTag && <BackButton onClick={closeSelectedTag} />}
         <SearchBar />
       </div>
       { loading ? <Loading height='85vh' /> :
@@ -84,7 +82,6 @@ function Explore() {
                 setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
               />
             }
-            <BackButton type='fixed' onClick={closeSelectedTag} />
             <ExploreCard
               className='tagSelected'
               name={selectedTag.name}

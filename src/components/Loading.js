@@ -4,6 +4,7 @@ import { HashLoader } from "react-spinners";
 function Loading(props) {
   const loaderStyle = {
     display: 'flex',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     height: props.height ? props.height : '100vh',

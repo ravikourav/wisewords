@@ -32,6 +32,10 @@ function Header()  {
     setSelected(clicked);
   };
 
+  useEffect(()=>{
+    select(notificationBgPage);
+  },[isMobile])
+
   const handleNotification = () => {
     if(Selected !== 'Notification'){
       setNotificationBgPage(Selected);
@@ -95,23 +99,26 @@ function Header()  {
               'white' : 'black'} className='icon' />
             </Link>
           )}
-          {isLoggedIn ? (
-          <>
-            <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'black' } className='icon'
-            onClick={handleNotification} />
+          {isLoggedIn ? 
             <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
               <RenderProfileImage source={user.profile} className='icon' />
             </Link>
-          </>
-          ) : (
+          : 
             <Link to='login' onClick={()=>{select('Login')}} >
               <ProfileIcon fill={Selected === 'Login' ? 'black' : 'white'} className= 'icon' />
             </Link>
-          )}
+          }
         </div>
       )}    
 
-      {Selected === 'Notification' && <NotificationModel />}
+      {Selected === 'Notification' && 
+        <div className='notification-model'>
+          <div className='notification-header'>
+            <p className='notification-title'>Updates</p>
+          </div>
+          <NotificationModel />
+        </div>
+      }
     </div>
   );
 }

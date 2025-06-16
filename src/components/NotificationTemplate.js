@@ -3,7 +3,7 @@ import timeAgo from '../utils/timeAgo';
 import { notificationMessage } from '../utils/notificationMessages';
 import { truncateText } from '../utils/truncate';
 
-import RenderProfileImage from './RenderProfileImage';
+import RenderProfileImage from './RenderProfileImage.js';
 
 function NotificationTemplate({data , markRead}) {
   const navigate = useNavigate();
@@ -23,14 +23,17 @@ function NotificationTemplate({data , markRead}) {
   return (
     <div className='notification-wrapper' >
       <div onClick={()=>{handleCommentClick('profile')}} >
-        <RenderProfileImage profile={data.sender.profile} className='notification-user-img' />
+        <RenderProfileImage source={data.sender.profile} className='notification-user-img' />
       </div>
       <div className='notification-info' onClick={()=>{handleCommentClick(data.type === 'follow' ? 'profile' : 'post')}}>
-        <p className={data.read ? 'notification-msg-read' : 'notification-msg-unread'}>
+        <p className={data.read ? 'notification-msg-content-read' : 'notification-msg-content'}>
           <span className={data.read ? 'notification-username-read' : 'notification-username'}>
             @{data.sender.username}
           </span> 
-        {message + (data.type !== 'follow' ? ' : ' + truncateText(data.data.comment, 5) : '')}
+          <span className={data.read ? 'notification-msg-read' : 'notification-msg'}>
+            {message}
+          </span>
+          {(data.type !== 'follow' ? ' ' + truncateText(data.data.comment, 5) : '')}
         </p>
         <p className='notification-time'>{timeAgo(data.createdAt)}</p>
       </div>
