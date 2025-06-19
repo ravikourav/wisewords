@@ -488,7 +488,7 @@ function DetailedCard() {
                 </div>
               }
               <div className='add-comment-container'>
-                <RenderProfileImage source={user.profile} className='user-profile-image' />
+                <RenderProfileImage source={user?.profile} className='user-profile-image' />
                 <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
                 <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
               </div>

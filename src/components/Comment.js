@@ -88,12 +88,8 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
     else {
       return [ 
         { 
-          label : 'Report' ,
+          label : 'Report' , 
           onClick : () => console.log('Reported')
-        },
-        { 
-          label : 'Block' ,
-          onClick : () => console.log('Blocked')
         }
       ]
     }
@@ -141,7 +137,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
   return (
     <div className='comment-warper'>
       <div className='main-comment'>
-        <RenderProfileImage src={data.comment_author.profile} className='comment-profile-picture' />
+        <RenderProfileImage source={data.comment_author.profile} className='comment-profile-picture' />
         <div className='comment-body'>
           <div className='row'>
             <p className='comment-name'>{data.comment_author.name} <Badge badge={data.comment_author.badge} size={12}/></p>
