@@ -1,13 +1,15 @@
-import React, { useEffect, useContext ,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './css/ProfileSetting.css';
 import Button from '../components/Button.js';
 import axios from 'axios';
 import BrowseImage from '../screens/BrowseImage.js';
 import Loading from '../components/Loading.js';
-import { AuthContext } from '../hooks/AuthContext.js';
 import IconButton from '../components/IconButton.js';
 import Dropdown from '../components/Dropdown.js';
 import Cookies from 'js-cookie';
+
+import { useAlert } from '../context/AlertContext.js';
+import { useAuth } from '../context/AuthContext.js';
 
 //Profile Icon
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
@@ -16,7 +18,8 @@ import BackButton from '../components/BackButton.js';
 
 
 function ProfileSetting({onClose}) {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
+  const { showAlert } = useAlert();
   const [data , setData] = useState();
   const [newProfile, setNewProfile] = useState(null);
   const [newCoverImage, setNewCoverImage] = useState(null);
@@ -58,7 +61,7 @@ function ProfileSetting({onClose}) {
         setNewProfile(file);
         setShowProfileDropdown(false);
       } else {
-        alert('Please select a valid image file');
+        showAlert('Please select a valid image file' , 'error');
         e.target.value = '';
       }
     }
@@ -72,7 +75,7 @@ function ProfileSetting({onClose}) {
         setNewCoverImage(file);
         setShowCoverDropdown(false);
       } else {
-        alert('Please select a valid image file');
+        showAlert('Please select a valid image file', 'error');
         e.target.value = '';
       }
     }
@@ -131,7 +134,7 @@ function ProfileSetting({onClose}) {
       }
     } catch (error) {
       console.error('Failed to download image', error);
-      alert('Failed to download image. Please try again.');
+      showAlert('Failed to download image. Please try again.' , 'error');
     }
   };
 

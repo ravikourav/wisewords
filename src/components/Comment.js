@@ -3,7 +3,7 @@ import './css/Comment.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import timeAgo from '../utils/timeAgo';
-import { AuthContext } from '../hooks/AuthContext';
+import  { useAuth } from '../context/AuthContext';
 import Dropdown from '../components/Dropdown.js';
 
 //icons
@@ -12,7 +12,7 @@ import Badge from './Badge.js';
 import RenderProfileImage from './RenderProfileImage.js';
 
 function Comment({data , userId , postId , postOwnerId , deleteComment , deleteReply , reply}) {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn } = useAuth();
   const [likes, setLikes] = useState(data.likes.length || 0);
   const [liked, setLiked] = useState(false);
 

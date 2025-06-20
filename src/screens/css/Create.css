@@ -67,6 +67,12 @@
     flex-direction: column;
 }
 
+.asterisk {
+    color: red;
+    margin-left: 4px;
+    vertical-align: baseline;
+}
+
 .input-title {
     width: 600px;
 }

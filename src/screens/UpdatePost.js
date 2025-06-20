@@ -14,8 +14,10 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { calculateAspectRatio } from '../utils/calculateDimensions';
 import BackButton from '../components/BackButton';
+import { useAlert } from '../context/AlertContext';
 
 function UpdatePost() {
+  const { showAlert } = useAlert();
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -77,7 +79,7 @@ function UpdatePost() {
         img.src = URL.createObjectURL(file);
         setBackgroundImage(file);
       } else {
-        alert('Please select a valid image file');
+        showAlert('Please select a valid image file', 'error');
         e.target.value = '';
       }
     }
@@ -100,14 +102,14 @@ function UpdatePost() {
       setBackgroundImage(file);
     } catch (error) {
       console.error('Failed to download image', error);
-      alert('Failed to download image. Please try again.');
+      showAlert('Failed to download image. Please try again.' , 'error');
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!title || !content || !author || !category || !tags.length || (!backgroundImage && !existingImage)) {
-      alert('Please fill in all fields.');
+    if (!content || !author || !category || !tags.length || (!backgroundImage && !existingImage)) {
+      showAlert('Please fill in all fields.' , 'error');
       return;
     }
     setLoading(true);
@@ -134,11 +136,11 @@ function UpdatePost() {
         },
       });
       setLoading(false);
-      alert('Post updated successfully');
+      showAlert('Post updated successfully' , 'success');
     } catch (error) {
       setLoading(false);
       console.error('Operation failed', error);
-      alert('Failed to update post. Please try again.');
+      showAlert('Failed to update post. Please try again.' , 'error');
     }
   };
 

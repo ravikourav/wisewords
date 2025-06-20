@@ -1,11 +1,18 @@
-// src/index.js
 import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals.js';
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+
+//Context
+import AuthProvider from './context/AuthContext.js';
+import ProtectedRoute from './context/ProtectedRoute.js';
+import { AlertProvider } from './context/AlertContext.js';
+
+//Screens
 import App from './App.js';
 import Error from './screens/Error.js';
 import Home from './screens/Home.js';
@@ -14,9 +21,6 @@ import Profile from './screens/Profile.js';
 import Create from './screens/Create.js';
 import UpdatePost from './screens/UpdatePost.js';
 import Login from './screens/Login.js';
-import AuthProvider from './hooks/AuthContext.js';
-import ProtectedRoute from './hooks/ProtectedRoute.js';
-import reportWebVitals from './reportWebVitals.js';
 import DetailedCard from './screens/DetailedCard.js';
 import SearchResult from './screens/SearchResult.js';
 
@@ -64,9 +68,11 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <AlertProvider>
+        <RouterProvider router={router} />
+      </AlertProvider>
     </AuthProvider>
-  </React.StrictMode>
+</React.StrictMode>
 );
 
 reportWebVitals();

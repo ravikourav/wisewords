@@ -3,7 +3,7 @@ import './css/Header.css';
 import { Link, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import NotificationModel from '../screens/NotificationModel.js';
-import {  AuthContext } from '../hooks/AuthContext.js';
+import {  useAuth } from '../context/AuthContext.js';
 import Button from './Button.js';
 
 //icons
@@ -17,7 +17,7 @@ import RenderProfileImage from './RenderProfileImage.js';
 function Header()  {
   const location = useLocation();
   const [Selected , setSelected] = useState(location);
-  const { isLoggedIn, user} = useContext(AuthContext);
+  const { isLoggedIn, user} = useAuth();
 
   const [notificationBgPage , setNotificationBgPage] = useState();
 

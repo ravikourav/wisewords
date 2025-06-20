@@ -11,12 +11,12 @@ import Cookies from 'js-cookie';
 import Comment from '../components/Comment.js';
 import BackButton from '../components/BackButton.js';
 import axios from 'axios';
-import { AuthContext } from '../hooks/AuthContext.js';
+import  { useAuth } from '../context/AuthContext';
 import IconButton from '../components/IconButton.js';
 
 import { calculateAspectRatio } from '../utils/calculateDimensions.js';
 import Badge from '../components/Badge.js';
-import Alert from '../components/Alert.js';
+import { useAlert } from '../context/AlertContext.js';
 import SearchBar from '../components/SearchBar.js';
 
 //icons
@@ -33,9 +33,10 @@ import timeAgo from '../utils/timeAgo.js';
 import RenderProfileImage from '../components/RenderProfileImage.js';
 
 function DetailedCard() {
+  const { showAlert } = useAlert();
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isLoggedIn, user, setUser} = useContext(AuthContext);
+  const { isLoggedIn, user, setUser} = useAuth();
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
   const [isOwner , setIsOwner] = useState(false);
@@ -56,8 +57,6 @@ function DetailedCard() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const utteranceRef = useRef(null);
-
-  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
   const featchCardData = async() =>{
     setLoading(true);
@@ -190,7 +189,7 @@ function DetailedCard() {
         console.log(liked ? 'post unliked succesfully' : 'post liked succesfully');
       }
     } catch (error) {
-      setUserAlert({ message: liked ? 'Error while liking post' : 'Error while liking post' , type: 'error', visible: true });
+      showAlert(liked ? 'Error while liking post' : 'Error while liking post' , 'error');
     }
   };
 
@@ -230,7 +229,7 @@ function DetailedCard() {
       }
     }catch(err) {
       console.error('Error Adding Comment/Reply user:', err);
-      setUserAlert({ message: replyingTo ? `Error while Replying to ${replyingTo}` : 'Error Adding Comment' , type: 'error', visible: true });
+      showAlert(replyingTo ? `Error while Replying to ${replyingTo}` : 'Error Adding Comment' ,'error');
     }
   }
 
@@ -253,7 +252,7 @@ function DetailedCard() {
         }));
       }
     }catch(err) {
-      setUserAlert({ message: 'Error deleting comment', type: 'error', visible: true });
+      showAlert('Error deleting comment', 'error');
     }
   }
 
@@ -278,7 +277,7 @@ function DetailedCard() {
         }));
       }
     } catch (error) {
-      setUserAlert({ message: 'Error deleting reply', type: 'error', visible: true });
+      showAlert('Error deleting reply', 'error');
     }
   };
   
@@ -308,7 +307,7 @@ function DetailedCard() {
         setIsPlaying(false);
       }
     } else {
-      setUserAlert({ message: 'your browser does not support text to speech.', type: 'error', visible: true });
+      showAlert('your browser does not support text to speech.' , 'error' );
     }
   };
 
@@ -367,7 +366,7 @@ function DetailedCard() {
         setTimeout(() => setCopied(false), 2000);
       }
     } catch (err) {
-      setUserAlert({ message: 'Oops, unable to copy', type: 'error', visible: true });
+      showAlert('Oops, unable to copy', 'error');
     }
 
     document.body.removeChild(textArea);
@@ -392,7 +391,7 @@ function DetailedCard() {
       }});
       navigate(-1);
     }catch {
-      setUserAlert({ message: 'Error Deleting this Post', type: 'error', visible: true });
+      showAlert('Error Deleting this Post', 'error');
     }
   }
 
@@ -404,16 +403,6 @@ function DetailedCard() {
       </div>
       {loading ? <Loading height='85vh' /> :
         <>
-          {userAlert.visible &&
-            <Alert
-              message={userAlert.message}
-              type={userAlert.type}
-              duration={3000}
-              visible={userAlert.visible}
-              setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
-            />
-          }
-          
           <div className='content-wrapper'>
             <div className='card-container'>
               <div className='post-owner-container'>

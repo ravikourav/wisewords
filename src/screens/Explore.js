@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import ExploreCard from '../components/ExploreCard';
 import CardGrid from '../components/CardGrid.js';
 import './css/Explore.css';
-import Alert from '../components/Alert.js';
+import { useAlert } from '../context/AlertContext.js';
 import axios from 'axios';
 import Loading from '../components/Loading.js';
 import SearchBar from '../components/SearchBar.js';
 import BackButton from '../components/BackButton.js';
 
 function Explore() {
+  const { showAlert } = useAlert();
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedTagPosts, setSelectedTagPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
   useEffect(() => {
     fetchAllTags();
@@ -26,7 +26,7 @@ function Explore() {
       const response = await axios.get(endpoint);
       setTags(response.data);
     } catch (err) {
-      setUserAlert({ message: 'Unable to Load Tags' , type: 'error', visible: true });
+      showAlert('Unable to Load Tags' ,'error');
     } finally {
       setLoading(false);
     }
@@ -39,7 +39,7 @@ function Explore() {
       const response = await axios.get(endPoint);
       setSelectedTagPosts(response.data);
     } catch (err) {
-      setUserAlert({ message: 'Unable to fetch Posts' , type: 'error', visible: true });
+      showAlert('Unable to fetch Posts' ,'error');
     } finally {
       setLoading(false);
     }
@@ -73,15 +73,6 @@ function Explore() {
           </div>
         ) : (
           <div className='explore-tag-selected-layout'>
-            {userAlert.visible &&
-              <Alert
-                message={userAlert.message}
-                type={userAlert.type}
-                duration={3000}
-                visible={userAlert.visible}
-                setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
-              />
-            }
             <ExploreCard
               className='tagSelected'
               name={selectedTag.name}

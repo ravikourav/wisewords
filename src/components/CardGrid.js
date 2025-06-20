@@ -5,12 +5,12 @@ import axios from 'axios';
 import { Masonry } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentSize } from '../utils/resposiveSize.js';
-import { AuthContext } from '../hooks/AuthContext';
+import  { useAuth } from '../context/AuthContext';
 
 import SimpleCard from './SimpleCard.js';
 
 const CardGrid = ({ data }) => {
-  const { isLoggedIn , user, setUser } = useContext(AuthContext);
+  const { isLoggedIn , user, setUser } = useAuth();
   const navigate = useNavigate();
   const [numOfColumns , setNumOfColumns] = useState(1);
 

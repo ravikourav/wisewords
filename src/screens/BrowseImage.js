@@ -7,11 +7,12 @@ import axios from 'axios';
 import { Masonry } from '@mui/lab';
 import Switch from '@mui/material/Switch';
 import Button from '../components/Button.js';
-import Alert from '../components/Alert.js';
+import { useAlert } from '../context/AlertContext.js';
 import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import pixabayLogo from '../assets/other/pixabaylogo192.png'; 
 
 function BrowseImage({ onClose, onSelectImage, title }) {
+  const { showAlert } = useAlert();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchInput, setSearchInput] = useState(title || '');
@@ -19,8 +20,6 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   const PIXABAY_API_KEY = process.env.REACT_APP_PIXABAY_API_KEY;
   const [page, setPage] = useState(1); // Current page for pagination
   const [fullResolutionImage, setFullResolutionImage] = useState(false);
-
-  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
   // Handle search submission
   const handleSearch = () => {
@@ -50,7 +49,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
       }
       setPage((prevPage) => prevPage + 1); // Increment page number
     } catch (error) {
-      setUserAlert({ message: 'Error fetching images' , type: 'error', visible: true });
+      showAlert('Error fetching images' , 'error');
     } finally {
       setLoading(false);
     }
@@ -95,15 +94,6 @@ function BrowseImage({ onClose, onSelectImage, title }) {
 
   return (
     <div className='browse-image-container'>
-      {userAlert.visible &&
-        <Alert
-          message={userAlert.message}
-          type={userAlert.type}
-          duration={3000}
-          visible={userAlert.visible}
-          setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
-        />
-      }
       <div className='searchbar-header-container'>
         <BackButton onClick={onClose} />
         <div className='custom-search-box'>

@@ -1,7 +1,7 @@
 import './css/Login.css';
 import React, { useState , useContext } from 'react';
 import axios from 'axios';
-import  { AuthContext } from '../hooks/AuthContext';
+import  { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 
@@ -9,6 +9,8 @@ import Button from '../components/Button';
 import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
 
 function Login() {
+  
+  const {login} = useAuth();
   const [name , setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -16,9 +18,6 @@ function Login() {
   const [error, setError] = useState('');
   const [hasAccount, setHasAccount] = useState(true);
   const navigate = useNavigate();
-
-  const {login} = useContext(AuthContext);
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();

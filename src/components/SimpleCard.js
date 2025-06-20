@@ -8,6 +8,8 @@ import IconButton from './IconButton.js';
 import Dropdown from './Dropdown.js';
 import Badge from './Badge.js';
 import { truncateTextByChars } from '../utils/truncate.js';
+import Report from './Report.js';
+
 //icons 
 import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
 import { ReactComponent as BookmarkIcon } from '../assets/icon/bookmark.svg';
@@ -94,53 +96,48 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
     
     return (
     <div className='simple-card-container'>
-        <div className='simple-card-header'>
-          <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
-            <RenderProfileImage source={card.owner_id.profile} className='simple-card-profile-picture' />
-            <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
-              <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
-              <p className='simple-card-time'>{timeAgo(card.createdAt)}</p>
+      <div className='simple-card-header'>
+        <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
+          <RenderProfileImage source={card.owner_id.profile} className='simple-card-profile-picture' />
+          <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+            <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
+            <p className='simple-card-time'>{timeAgo(card.createdAt)}</p>
+          </div>
+        </div>
+        <Dropdown report={true} iconOrientation='vertical' menuPosition='bottom-right' showIcon={true} size='22' paddingNone={true}/>
+      </div>
+
+      <Card
+        margin={true}
+        content={cardContent}
+        textColor={card.contentColor}
+        author={card.author}
+        authorColor={card.authorColor}
+        background={card.backgroundImage}
+        sampleSize={cardSize}
+        onClick={() => cardClick(card._id)}
+      />
+
+      <div className='simple-card-footer'>
+          
+          <p className='simple-card-title'>{card.title}</p>
+
+          <div className='simple-card-icon'>
+            <div onClick={isLoggedIn ? handleLike : null}>
+                <IconButton 
+                  icon={LikeIcon}
+                  fill={liked ? 'red' : 'white'}
+                  stroke={liked ? 'red' : 'black'}
+                  disabled={!isLoggedIn} 
+                  strokeWidth='1.5'
+                  size='25'
+                />
+            </div>
+            <div onClick={isLoggedIn ? () => setSaved(saveClick(card._id , saved)) : null }>
+              <IconButton disabled={!isLoggedIn} icon={BookmarkIcon} fill={saved ? 'black' : 'white'}  size='25'/>
             </div>
           </div>
-          <Dropdown options={[
-              { 
-                label : 'Report' ,
-                onClick : () => console.log('Reported')
-              }]
-            } iconOrientation='vertical' menuPosition='bottom-right' showIcon={true} size='22' paddingNone={true}/>
-        </div>
-
-        <Card
-          margin={true}
-          content={cardContent}
-          textColor={card.contentColor}
-          author={card.author}
-          authorColor={card.authorColor}
-          background={card.backgroundImage}
-          sampleSize={cardSize}
-          onClick={() => cardClick(card._id)}
-        />
-
-        <div className='simple-card-footer'>
-            
-            <p className='simple-card-title'>{card.title}</p>
-
-            <div className='simple-card-icon'>
-              <div onClick={isLoggedIn ? handleLike : null}>
-                  <IconButton 
-                    icon={LikeIcon}
-                    fill={liked ? 'red' : 'white'}
-                    stroke={liked ? 'red' : 'black'}
-                    disabled={!isLoggedIn} 
-                    strokeWidth='1.5'
-                    size='25'
-                  />
-              </div>
-              <div onClick={isLoggedIn ? () => setSaved(saveClick(card._id , saved)) : null }>
-                <IconButton disabled={!isLoggedIn} icon={BookmarkIcon} fill={saved ? 'black' : 'white'}  size='25'/>
-              </div>
-            </div>
-        </div>
+      </div>
     </div>
     )
 }

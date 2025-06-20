@@ -1,27 +1,32 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './css/Alert.css';
 
-function Alert({ message, type = 'info', duration = 3000, setVisible, visible }) {
+function Alert({ message, type = 'info', duration = 3000, setVisible }) {
+  const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
-    if (visible) {
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, duration);
-      return () => clearTimeout(timer);
-    }
-  }, [visible, duration, setVisible]);
+    const timer = setTimeout(() => {
+      handleClose(); // Begin exit
+    }, duration);
 
-  if (!visible) return null;
+    return () => clearTimeout(timer);
+  }, [duration]);
+
+  const handleClose = () => {
+    if (exiting) return;
+    setExiting(true);
+    setTimeout(() => {
+      setVisible(false); // Remove from state after animation
+    }, 300); // Matches animation duration
+  };
 
   return (
-    <div className={`custom-alert custom-alert--${type}`}>
+    <div className={`custom-alert custom-alert--${type} ${exiting ? 'slide-out' : 'slide-in'}`}>
       <span>{message}</span>
-      <button className="custom-alert__close" onClick={() => setVisible(false)}>
+      <button className="custom-alert__close" onClick={handleClose}>
         &times;
       </button>
     </div>
   );
 }
-
 export default Alert;

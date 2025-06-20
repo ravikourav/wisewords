@@ -1,8 +1,19 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-export const AuthContext = createContext();
+
+const AuthContext = createContext();
+
+// Export reusable hook
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
+
 
 const AuthProvider = ({ children }) => {
   const [isLoading, setLoading] = useState(true); 

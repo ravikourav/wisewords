@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../hooks/AuthContext';
+import  { useAuth } from '../context/AuthContext';
 import Loading from '../components/Loading';
 
 const ProtectedRoute = ({ element }) => {
-  const { isLoggedIn, isLoading } = useContext(AuthContext);
+  const { isLoggedIn, isLoading } = useAuth();
 
   if (isLoading) {
     return <Loading />;

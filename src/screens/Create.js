@@ -9,9 +9,10 @@ import Button from '../components/Button';
 import Loading from '../components/Loading';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import Alert from '../components/Alert.js';
+import { useAlert } from '../context/AlertContext';
 
 function Create() {
+  const { showAlert } = useAlert();
   const [loading , setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -24,8 +25,6 @@ function Create() {
   const [tintColor, setTintColor] = useState('rgba(0, 0, 0, 0.4)');
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isAnonymous, setIsAnonymous] = useState(false);
-  
-  const [userAlert, setUserAlert] = useState({ message: '', type: '', visible: false });
 
   // Separate states for each color picker visibility
   const [activePicker, setActivePicker] = useState(null);
@@ -40,7 +39,7 @@ function Create() {
         img.src = URL.createObjectURL(file);
         setBackgroundImage(file);
       } else {
-        setUserAlert({ message: 'Please select a valid image file' , type: 'error', visible: true });
+        showAlert('Please select a valid image file' , 'error');
         e.target.value = '';
       }
     }
@@ -61,15 +60,15 @@ function Create() {
       setBackgroundImage(file);
     } catch (error) {
       console.error('Failed to download image', error);
-      setUserAlert({ message: 'Failed to download image. Please try again.', type: 'error', visible: true });
+      showAlert('Failed to download image. Please try again.', 'error');
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!title || !content || !author || !category || !tags.length || !backgroundImage) {
-      setUserAlert({ message: 'Please fill in all fields.', type: 'error', visible: true });
+    if ( !content || !author || !category || !tags.length || !backgroundImage) {
+      showAlert('Please fill in all fields.', 'error');
       return;
     }
     setLoading(true);
@@ -86,18 +85,18 @@ function Create() {
       formData.append('authorColor', authorColor);
       formData.append('tintColor', tintColor);
       formData.append('backgroundImage', backgroundImage);
-      await axios.post(endpoint, formData ,{
+      const response = await axios.post(endpoint, formData ,{
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
         }
       });
-      setUserAlert({ message: 'Post created Successfully', type: 'success', visible: true });
+      showAlert('Post created Successfully', 'success');
       defaultCreateValues();
     } catch (error) {
       setLoading(false);
       console.error('Operation failed', error);
-      setUserAlert({ message: 'Failed to create post. Please try again.', type: 'error', visible: true });
+      showAlert('Failed to create post. Please try again.', 'error');
     }
   };
 
@@ -133,7 +132,7 @@ function Create() {
       setAllTags(response.data.names);
     }
     catch{
-      setUserAlert({ message: 'Unable to featch tags.', type: 'error', visible: true });
+      showAlert('Unable to featch tags.','error');
     }
   }
 
@@ -159,15 +158,6 @@ function Create() {
         <BrowseImage onClose={closeOnlineImage} onSelectImage={handleImageSelect} title={title} />
       ) : (
         <>
-          {userAlert.visible &&
-            <Alert
-              message={userAlert.message}
-              type={userAlert.type}
-              duration={3000}
-              visible={userAlert.visible}
-              setVisible={(isVisible) => setUserAlert((prev) => ({ ...prev, visible: isVisible }))}
-            />
-          }
           <div className='create-page-header'>
             <p className='create-page-title'>Create Post</p>
           </div>
@@ -200,12 +190,12 @@ function Create() {
                 <input className='main-input input-title' type='text' placeholder='Title' value={title} onChange={(e) => setTitle(e.target.value)} />
               </label>
               <label>
-                The Essence of Your Creation
+                The Essence of Your Creation <span className="asterisk">*</span>
                 <textarea className='main-input input-create-content' placeholder='Content' value={content} onChange={(e) => setContent(e.target.value)} />
               </label>
               <div className='multi-input-container'>
                 <label>
-                  Crafted By
+                  Crafted By <span className="asterisk">*</span>
                   <input className='main-input input-author' type='text' placeholder='Author' value={author} onChange={(e) => setAuthor(e.target.value)} disabled={isAnonymous} />
                 </label>
                 <label>
@@ -215,7 +205,7 @@ function Create() {
               </div>
               <div className='multi-input-container'>
                 <label>
-                  Whispers of the Essence
+                  Whispers of the Essence <span className="asterisk">*</span>
                   <Autocomplete
                     className='autocomplete'
                     multiple
@@ -230,7 +220,7 @@ function Create() {
                   />
                 </label>
                 <label>
-                  Realm of Creation
+                  Realm of Creation <span className="asterisk">*</span>
                   <select className='main-input category-input' value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value='quote'>Quote</option>
                     <option value='proverb'>Proverb</option>
