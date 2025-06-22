@@ -86,3 +86,9 @@
 .rotate-icon {
   transform: rotateZ(90deg)
 }
+
+.dropdown-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

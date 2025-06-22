@@ -98,17 +98,18 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
   return (
   <div className='simple-card-container'>
     {showHeader &&
-    <div className='simple-card-header'>
-      <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
-        <RenderProfileImage source={card.owner_id.profile} className='simple-card-profile-picture' />
-        <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
-          <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
-          <p className='simple-card-time'>{timeAgo(card.createdAt)}</p>
+      <div className='simple-card-header'>
+        <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
+          <RenderProfileImage source={card.owner_id.profile} className='simple-card-profile-picture' />
+          <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+            <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
+            <p className='simple-card-time'>{timeAgo(card.createdAt)}</p>
+          </div>
         </div>
-      </div>
-      {isLoggedIn &&
+
         <Dropdown 
           report={true} 
+          disabled={!isLoggedIn}
           options={[
             { label : 'Report' , onClick : ()=>{openReport('post', card._id)} }
           ]} 
@@ -117,8 +118,8 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
           showIcon={true} size='22' 
           paddingNone={true}
         />
-      }
-    </div>
+        
+      </div>
     }
 
     <Card

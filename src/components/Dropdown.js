@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './css/Dropdown.css';
 import IconButton from './IconButton';
 import { ReactComponent as DotmenuIcon } from '../assets/icon/dot-menu.svg';
-import Report from './Report';
 
-const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrientation, menuPosition}) => {
+const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrientation, menuPosition, disabled = false}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
   
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -29,7 +27,18 @@ const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrient
     <>
       <div className="dropdown">
         {showIcon && (
-          <IconButton icon={DotmenuIcon} fill={iconColor} size={size} onClick={toggleDropdown} className={`${iconOrientation === 'vertical' ? 'rotate-icon' : ''} ${isOpen ? 'icon-button-selected ' : 'icon-button-not-selected '}`} />
+          <IconButton 
+            icon={DotmenuIcon} 
+            fill={iconColor} 
+            size={size} 
+            onClick={toggleDropdown}
+            disabled={disabled}
+            className={`
+              ${iconOrientation === 'vertical' ? 'rotate-icon' : ''} 
+              ${isOpen ? 'icon-button-selected ' : 'icon-button-not-selected '}
+              ${disabled ? 'dropdown-disabled' : ''}
+            `}
+          />
         )}
         {isOpen && (
           <ul className={`dropdown-menu ${menuPosition}`}>
@@ -45,9 +54,6 @@ const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrient
           </ul>
         )}
       </div>
-      {showReportModal &&
-        <Report />
-      }
     </>
   );
 };
