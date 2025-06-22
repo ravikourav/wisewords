@@ -65,7 +65,6 @@ function Login() {
 
         <div className="body">
           <div className="login-appname-container">
-            <p className="login-model-welcome">Step Into</p>
             <p className="login-model-name">Wise Men Said</p>
             <p className="login-model-slogan">"Echoes of Insight, Shared in Light"</p>
           </div>

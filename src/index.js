@@ -11,6 +11,7 @@ import {
 import AuthProvider from './context/AuthContext.js';
 import ProtectedRoute from './context/ProtectedRoute.js';
 import { AlertProvider } from './context/AlertContext.js';
+import { ReportProvider } from './context/ReportContext.js';
 
 //Screens
 import App from './App.js';
@@ -69,7 +70,9 @@ root.render(
   <React.StrictMode>
     <AuthProvider>
       <AlertProvider>
-        <RouterProvider router={router} />
+        <ReportProvider>
+          <RouterProvider router={router} />
+        </ReportProvider>
       </AlertProvider>
     </AuthProvider>
 </React.StrictMode>

@@ -4,7 +4,7 @@ import IconButton from './IconButton';
 import { ReactComponent as DotmenuIcon } from '../assets/icon/dot-menu.svg';
 import Report from './Report';
 
-const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrientation, menuPosition, report}) => {
+const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrientation, menuPosition}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   
@@ -18,11 +18,6 @@ const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrient
     }
     setIsOpen(false); 
   };
-
-  const handleReportModal = () =>{
-    setShowReportModal(!showReportModal)
-    setIsOpen(false);
-  }
 
   useEffect(() => {
     if (!showIcon) {
@@ -47,14 +42,6 @@ const Dropdown = ({ options , iconColor, showIcon, handleMenu , size ,iconOrient
                 {option.label}
               </li>
             ))}
-            {report &&
-              <li
-                className="dropdown-item"
-                onClick={() => handleReportModal()}
-              >
-                Report
-              </li>
-            }
           </ul>
         )}
       </div>

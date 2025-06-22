@@ -77,7 +77,9 @@ function Header()  {
               </Link>
             </>
           ) : (
-            <Button text='Login' to='login' onClick={()=>{select('Login')}} />
+            <Link to='login' onClick={()=>{select('Login')}} >
+              <ProfileIcon stroke={Selected === 'Login' ? '#FF000000' : 'black' } fill={Selected === 'Login' ? 'black' : 'white'} className= 'icon' />
+            </Link>
           )}
       </div>
       ):(
@@ -105,7 +107,7 @@ function Header()  {
             </Link>
           : 
             <Link to='login' onClick={()=>{select('Login')}} >
-              <ProfileIcon fill={Selected === 'Login' ? 'black' : 'white'} className= 'icon' />
+              <ProfileIcon stroke={Selected === 'Login' ? '#FF000000' : 'black' } fill={Selected === 'Login' ? 'black' : 'white'} className= 'icon' />
             </Link>
           }
         </div>

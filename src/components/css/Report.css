@@ -14,10 +14,30 @@
 .report-modal {
   background: white;
   padding: 20px;
-  width: 300px;
+  width: 425px;
+  height: 610px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+}
+
+.report-header{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.report-title {
+  padding-left: 10px;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.report-reason-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .report-textarea {
@@ -29,6 +49,7 @@
 
 .report-actions {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   margin-top: 10px;
 }
