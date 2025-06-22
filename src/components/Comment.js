@@ -5,13 +5,14 @@ import Cookies from 'js-cookie';
 import timeAgo from '../utils/timeAgo';
 import  { useAuth } from '../context/AuthContext';
 import Dropdown from '../components/Dropdown.js';
-
+import { useReport } from '../context/ReportContext.js';
 //icons
 import { ReactComponent as LikedIcon } from '../assets/icon/like.svg';
 import Badge from './Badge.js';
 import RenderProfileImage from './RenderProfileImage.js';
 
 function Comment({data , userId , postId , postOwnerId , deleteComment , deleteReply , reply}) {
+  const { openReport } = useReport();
   const { isLoggedIn } = useAuth();
   const [likes, setLikes] = useState(data.likes.length || 0);
   const [liked, setLiked] = useState(false);
@@ -65,7 +66,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
       return [ 
         { 
           label : 'Report' ,
-          onClick : () => console.log('Reported')
+          onClick : () =>  openReport(isReply ? ('reply' , replyId) : ('comment',data._id))
         },
         { 
           label : 'Block' ,
@@ -89,7 +90,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
       return [ 
         { 
           label : 'Report' , 
-          onClick : () => console.log('Reported')
+          onClick : () =>  openReport(isReply ? ('reply' , replyId) : ('comment',data._id))
         }
       ]
     }

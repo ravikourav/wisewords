@@ -1,4 +1,4 @@
-import { styled } from "@mui/material";
+import { margin } from "@mui/system";
 import { HashLoader } from "react-spinners";
 
 function Loading(props) {
@@ -7,7 +7,8 @@ function Loading(props) {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: props.height ? props.height : '100vh',
+    marginTop: '40px',
+    height: '100%',
     width: '100%',
   };
   return (

@@ -135,12 +135,12 @@ function UpdatePost() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      setLoading(false);
       showAlert('Post updated successfully' , 'success');
     } catch (error) {
-      setLoading(false);
-      console.error('Operation failed', error);
       showAlert('Failed to update post. Please try again.' , 'error');
+    }
+    finally {
+      setLoading(false);
     }
   };
 

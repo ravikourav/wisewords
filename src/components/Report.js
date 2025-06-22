@@ -72,7 +72,7 @@ function Report({ isOpen, onClose, reportType, reportId }) {
         </div>
         <div className="report-reason-options">
           {REASONS[reportType]?.map((r, i) => (
-            <label key={i}>
+            <label key={i} className="custom-radio">
               <input
                 type="radio"
                 name="reason"
@@ -80,10 +80,11 @@ function Report({ isOpen, onClose, reportType, reportId }) {
                 checked={selectedReason === r}
                 onChange={() => setSelectedReason(r)}
               />
+              <span className="custom-radio-mark"></span>
               {r}
             </label>
           ))}
-          <label>
+          <label className='custom-radio'>
             <input
               type="radio"
               name="reason"
@@ -95,14 +96,13 @@ function Report({ isOpen, onClose, reportType, reportId }) {
           </label>
         </div>
 
-        {selectedReason === 'Other' && (
-          <textarea
-            placeholder="Enter your reason"
-            value={customReason}
-            onChange={(e) => setCustomReason(e.target.value)}
-            className="report-textarea"
-          />
-        )}
+        <textarea disabled={selectedReason === 'Other' ? false : true}
+          placeholder="Enter your reason"
+          value={customReason}
+          onChange={(e) => setCustomReason(e.target.value)}
+          className="report-textarea"
+        />
+        
         <div className="report-actions">
           <Button text={submitting ? 'Submitting...' : 'Submit'} onClick={handleSubmit} disabled={submitting} />
         </div>

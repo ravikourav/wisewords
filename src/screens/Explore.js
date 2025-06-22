@@ -57,7 +57,7 @@ function Explore() {
         {selectedTag && <BackButton onClick={closeSelectedTag} />}
         <SearchBar />
       </div>
-      { loading ? <Loading height='85vh' /> :
+      { loading ? <Loading /> :
         !selectedTag ? (
           <div className='explore-card-grid'>
             {tags.map((card, index) => (

@@ -9,7 +9,7 @@ import  { useAuth } from '../context/AuthContext';
 
 import SimpleCard from './SimpleCard.js';
 
-const CardGrid = ({ data }) => {
+const CardGrid = ({ data , header = true, footer = true}) => {
   const { isLoggedIn , user, setUser } = useAuth();
   const navigate = useNavigate();
   const [numOfColumns , setNumOfColumns] = useState(1);
@@ -90,6 +90,8 @@ const CardGrid = ({ data }) => {
                 cardClick={handleCardClick} 
                 profileClick={handleProfileClick}
                 currentUser={isLoggedIn ? user._id :  null}
+                showHeader={header}
+                showFooter={footer}
               />
             ))}
           </Masonry>

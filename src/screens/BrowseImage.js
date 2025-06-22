@@ -111,7 +111,7 @@ function BrowseImage({ onClose, onSelectImage, title }) {
       </div>
       
       <div className='switch-container'>
-        <p className='browse-suggestion-2'>Preview resolution</p>
+        <p className='browse-suggestion-2'>Preview in high resolution</p>
         <Switch 
           checked={fullResolutionImage}
           onChange={(e) => {handleImgStateChange(e)}}

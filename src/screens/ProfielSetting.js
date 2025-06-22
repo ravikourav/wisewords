@@ -42,10 +42,12 @@ function ProfileSetting({onClose}) {
       setData(response.data);
       setName(response.data.name);
       setBio(response.data.bio);
-      setLoading(false);
     }
     catch{
       console.log('unable to featch user data');
+    }
+    finally {
+      setLoading(false);
     }
   }
   
@@ -109,10 +111,11 @@ function ProfileSetting({onClose}) {
           'Authorization': `Bearer ${token}`
         }
       }); 
-      setLoading(false);
-
+      showAlert('Profile updated successfully' , 'success');
+      onClose();
     }catch (err){
       console.log('cant not update profile');
+    }finally {
       setLoading(false);
     }
   };
@@ -160,14 +163,14 @@ const removeCoverImage = () => {
             <BackButton onClick={onClose} />
             <p className='update-page-title'>Edit Profile</p>
           </div>
-          { loading ? <Loading height='65vh'/> : (
+          {loading ? <Loading /> : (
             <form className='form-group-profile' onSubmit={handleSubmit}>
               <div className='profile-img-container'>
                 <div className='cover-container'>
                   {data?.coverImg || newCoverImage ? 
                     <>
                       <img className='cover-img' src={newCoverImage ? URL.createObjectURL(newCoverImage) : data?.coverImg} alt='' />
-                      <IconButton className='close-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} size={30} type='button'/>
+                      <IconButton className='remove-img-button remove-cover-button' icon={CloseImg} onClick={removeCoverImage} size={30} type='button'/>
                     </>
                     :
                     <>
@@ -204,7 +207,7 @@ const removeCoverImage = () => {
                   {data?.profile || newProfile  ?
                     <>
                       <img src={newProfile ? URL.createObjectURL(newProfile) : data?.profile} alt='' className='profile-img' />
-                      <IconButton className='close-button remove-profile-button' size='20px' icon={CloseImg} onClick={removeProfileImage} type='button'/>
+                      <IconButton className='remove-img-button remove-profile-button' size='20px' icon={CloseImg} onClick={removeProfileImage} type='button'/>
                     </>
                     :
                     <div className='edit-profile-img-container'>

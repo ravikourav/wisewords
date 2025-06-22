@@ -15,7 +15,7 @@ import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
 import { ReactComponent as BookmarkIcon } from '../assets/icon/bookmark.svg';
 import RenderProfileImage from './RenderProfileImage.js';
 
-function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , likes , profileClick , currentUser}) {
+function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , likes , profileClick , currentUser , showHeader = true , showFooter = true}) {
 
   const { openReport } = useReport();
   const [savedCardId, setSavedCardId] = useState([]);
@@ -97,6 +97,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
   
   return (
   <div className='simple-card-container'>
+    {showHeader &&
     <div className='simple-card-header'>
       <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
         <RenderProfileImage source={card.owner_id.profile} className='simple-card-profile-picture' />
@@ -118,6 +119,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
         />
       }
     </div>
+    }
 
     <Card
       margin={true}
@@ -129,7 +131,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
       sampleSize={cardSize}
       onClick={() => cardClick(card._id)}
     />
-
+    {showFooter && 
     <div className='simple-card-footer'>
         
         <p className='simple-card-title'>{card.title}</p>
@@ -150,6 +152,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
           </div>
         </div>
     </div>
+    }
   </div>
   )
 }

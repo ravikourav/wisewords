@@ -14,6 +14,7 @@ import Badge from '../components/Badge.js';
 import BackButton from '../components/BackButton.js';
 import SearchBar from '../components/SearchBar.js';
 import NotificationModel from './NotificationModel.js';
+import { useReport } from '../context/ReportContext.js';
 
 //icons
 import {ReactComponent as ShareIcon} from '../assets/icon/share.svg';
@@ -24,8 +25,9 @@ import RenderProfileImage from '../components/RenderProfileImage.js';
 
 function Profile() {
     const navigate = useNavigate();
+    const { openReport } = useReport();
     const { username } = useParams();
-    const { logout, user, isLoggedIn} = useAuth();
+    const { logout, user, updateUser, isLoggedIn} = useAuth();
     const [data, setData] = useState(null);
     const [postedData, setPostedData] = useState([]);
     const [saveCardData, setSaveCardData] = useState([]);
@@ -155,6 +157,11 @@ function Profile() {
 
     const displayData = selected === 'your-thought' ? postedData : saveCardData;
 
+    const handleUpdateClose = () => {
+        updateUser();
+        setTab('home');
+    };
+
     return (
         <div className='page-root'>
             {tab === 'home' && (
@@ -165,7 +172,7 @@ function Profile() {
                             <BellIcon fill='white' stroke='black' className='icon' onClick={()=>setTab('notification')} /> 
                         }
                     </div>
-                    {loading ? <Loading height='65vh'/> :
+                    {loading ? <Loading /> :
                         <div className='profile-page'>
                             <div className='profile-img-container'>
                                 {data.coverImg && <img className='cover-img' src={data.coverImg} alt=''/>
@@ -214,7 +221,7 @@ function Profile() {
                                         <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} /> 
                                     </div>   
                                     <div className='control-button'>
-                                        <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => console.log('Reported')}]} />
+                                        <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => openReport('user' , data._id)}]} menuPosition='top-right' />
                                     </div>
                                 </div>
                             }
@@ -222,7 +229,7 @@ function Profile() {
                                 <p className={`post-selector ${selected === 'your-thought' && 'post-selected'}`} onClick={() => selectContent('your-thought')}>{isOwner ? 'Your Posts' : 'Created'}</p>
                                 <p className={`post-selector ${selected === 'saved' && 'post-selected'}`} onClick={() => selectContent('saved')}>Saved</p>
                             </div>
-                            <CardGrid data={displayData} />
+                            <CardGrid data={displayData} header={selected === 'your-thought' ? false : true} footer={selected === 'your-thought' ? false : true} />
                         </div>
                     }
                 </>
@@ -233,7 +240,7 @@ function Profile() {
                         <BackButton onClick={() => setTab('home')} />
                         <h2 className='pannel-title'>Followers</h2>
                     </div>
-                    {loadingFol ? <Loading height='65vh'/> : 
+                    {loadingFol ? <Loading /> : 
                         <div className='followers-container'>
                             {/* Followers List */}
                             {followerUsers.length > 0 ? (
@@ -263,7 +270,7 @@ function Profile() {
                         <BackButton  onClick={() => setTab('home')}/>
                         <h2 className='pannel-title' >Following</h2>
                     </div>
-                    {loadingFol ? <Loading height='65vh'/> : 
+                    {loadingFol ? <Loading /> : 
                         <div className='following-container'>
                             {/* Following List */}
                             {followingUsers.length > 0 ? (
@@ -293,13 +300,13 @@ function Profile() {
                         <BackButton  onClick={() => setTab('home')}/>
                         <h2 className='pannel-title' >Updates</h2>
                     </div>
-                    {loadingFol ? <Loading height='65vh'/> : 
+                    {loadingFol ? <Loading /> : 
                         <NotificationModel onClick={()=>setTab('home')}/>
                     }
                 </>
             )}
             {tab === 'settings' && (
-                <ProfileSetting />
+                <ProfileSetting onClose={handleUpdateClose} />
             )}
         </div>
     );

@@ -61,7 +61,7 @@ function SearchResult() {
         <BackButton onClick={()=>navigate(-1)}/>
         <SearchBar />
       </div>
-      {loading ? <Loading height='85vh' /> :
+      {loading ? <Loading /> :
         <div className='search-result-root'>
           {/* Tab Bar */}
           <div className='search-result-tab-bar'>

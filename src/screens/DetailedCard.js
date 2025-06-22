@@ -401,7 +401,7 @@ function DetailedCard() {
         <BackButton onClick={handleClose}/>
         <SearchBar />
       </div>
-      {loading ? <Loading height='85vh' /> :
+      {loading ? <Loading /> :
         <>
           <div className='content-wrapper'>
             <div className='card-container'>

@@ -34,16 +34,28 @@
   font-weight: 500;
 }
 
+/* report option */
 .report-reason-options {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+.custom-radio {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding: 10px 0px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .report-textarea {
   margin-top: 10px;
   padding: 8px;
   height: 80px;
+  border-radius: 10px;
   resize: none;
 }
 

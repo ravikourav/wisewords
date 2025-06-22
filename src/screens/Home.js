@@ -69,7 +69,7 @@ function Home() {
         <div className='searchbar-header-container'>
           <SearchBar />
         </div>
-        {loading ? <Loading height='85vh'/> : 
+        {loading ? <Loading /> : 
           <div className='home-data-container'>
             <CardGrid data={data} />
             <div className='paginate-container'>

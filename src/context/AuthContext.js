@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { use } from 'react';
 
 const AuthContext = createContext();
 
@@ -54,6 +55,12 @@ const AuthProvider = ({ children }) => {
     authenticate();
   }, []);
 
+  const updateUser = async () => {
+    const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${user.username}`;
+    const response = await axios.get(endPoint);
+    setUser(response.data);
+  }
+
   const fetchLatestUser = async (username) => {
     try {
       setLoading(true);
@@ -86,7 +93,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, isLoading, user, setUser, login, logout}}>
+    <AuthContext.Provider value={{ isLoggedIn, isLoading, user, setUser, login, logout , updateUser}}>
       {children}
     </AuthContext.Provider>
   );
