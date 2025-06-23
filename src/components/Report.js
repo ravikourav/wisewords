@@ -5,6 +5,8 @@ import Cookies from 'js-cookie';
 
 import BackButton from '../components/BackButton.js';
 import Button from '../components/Button.js';
+import { useAlert } from '../context/AlertContext.js';
+import { useAuth } from '../context/AuthContext.js';
 
 const REASONS = {
   post: ['Inappropriate content','Inappropriate background', 'Copyright violation', 'Spam',  'Misinformation'],
@@ -14,25 +16,26 @@ const REASONS = {
 };
 
 function Report({ isOpen, onClose, reportType, reportId }) {
+  const { showAlert } = useAlert();
+  const { user } = useAuth();
   const [selectedReason, setSelectedReason] = useState('');
   const [customReason, setCustomReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState(null);
 
   const handleSubmit = async () => {
     const reasonToSend = selectedReason === 'Other' ? customReason : selectedReason;
     if (!reasonToSend.trim()) {
-      setFeedback({ type: 'error', message: 'Please select or write a reason.' });
+      showAlert('Please select or write a reason.' , 'error')
       return;
     }
 
     setSubmitting(true);
     const token = Cookies.get('authToken');
-    const reporterId = Cookies.get('userId'); // or from session/context
+    const reporterId = user._id; // or from session/context
 
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_BACKEND_API_URL}/api/report`,
+        `${process.env.REACT_APP_BACKEND_API_URL}/api/report/create`,
         {
           reporterId,
           type: reportType,
@@ -41,22 +44,20 @@ function Report({ isOpen, onClose, reportType, reportId }) {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
           },
         }
       );
 
-      setFeedback({ type: 'success', message: res.data.message });
-      setTimeout(() => {
-        onClose();
-        setSelectedReason('');
-        setCustomReason('');
-        setFeedback(null);
-        setSubmitting(false);
-      }, 1500);
+      showAlert(res.data.message , 'success');
+      onClose();
+      setSelectedReason('');
+      setCustomReason('');
+      setSubmitting(false);
+
     } catch (err) {
       const message = err.response?.data?.message || 'Failed to submit report.';
-      setFeedback({ type: 'error', message });
+      showAlert(message , 'error')
       setSubmitting(false);
     }
   };
