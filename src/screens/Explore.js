@@ -8,6 +8,7 @@ import Loading from '../components/Loading.js';
 import SearchBar from '../components/SearchBar.js';
 import BackButton from '../components/BackButton.js';
 import Button from '../components/Button.js';
+import Pagination from '../components/Pagination.js';
 import { useCategories } from '../context/CategoryContext';
 import { useTags } from '../context/TagContext.js';
 
@@ -113,13 +114,15 @@ function Explore() {
                 {resultPosts.length > 0 ? (
                   <>
                     <CardGrid data={resultPosts} />
-                    { page < totalPages &&
-                      <div className='paginate-container'>
-                        <Button 
-                          text='More' 
-                          onClick={() => fetchPosts({ card: selectedCard, type: selectedType, nextPage: page + 1, append: true })}/>
-                      </div>
-                    }
+                    <div className='paginate-container'>
+                      <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={(newPage) =>
+                          fetchPosts({ card: selectedCard, type: selectedType, nextPage: newPage })
+                        }
+                      />
+                    </div>
                   </>
                 ) : (
                   <div className='empty-state-container'>

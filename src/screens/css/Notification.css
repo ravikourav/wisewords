@@ -3,7 +3,7 @@
     top: 10px;
     left: 85px;
     bottom: 10px;
-    width: 400px;
+    width: 450px;
     background-color: white;
     border-radius: 15px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px 0px;
@@ -15,11 +15,13 @@
     width: 100%;
     background-color: rgb(255, 255, 255);
     z-index: 102;
+    position: sticky;
+    top: 0;
 }
 .notification-title {
     font-weight: 600;
     font-size: 1.2rem;
-    padding: 15px;
+    padding: 25px 15px;
     text-align: center;
 }
 
