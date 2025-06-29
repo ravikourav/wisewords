@@ -7,30 +7,17 @@ import axios from 'axios';
 import Loading from '../components/Loading.js';
 import SearchBar from '../components/SearchBar.js';
 import BackButton from '../components/BackButton.js';
+import { useCategories } from '../context/CategoryContext';
+import { useTags } from '../context/TagContext.js';
 
 function Explore() {
   const { showAlert } = useAlert();
-  const [tags, setTags] = useState([]);
+  const { categories, loadingCategories } = useCategories();
+  const { tags, loadingTags } = useTags();
+  
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedTagPosts, setSelectedTagPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchAllTags();
-  }, []);
-
-  const fetchAllTags = async () => {
-    setLoading(true);
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/all`;
-    try {
-      const response = await axios.get(endpoint);
-      setTags(response.data);
-    } catch (err) {
-      showAlert('Unable to Load Tags' ,'error');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCardClick = async (card) => {
     setLoading(true);
@@ -57,39 +44,60 @@ function Explore() {
         {selectedTag && <BackButton onClick={closeSelectedTag} />}
         <SearchBar />
       </div>
-      { loading ? <Loading /> :
-        !selectedTag ? (
-          <div className='explore-card-grid'>
-            {tags.map((card, index) => (
-              <ExploreCard
-                key={index}
-                name={card.name}
-                background={card.backgroundImage}
-                slogan={card.description}
-                postCount={card.postCount}
-                onClick={() => handleCardClick(card)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className='explore-tag-selected-layout'>
-            <ExploreCard
-              className='tagSelected'
-              name={selectedTag.name}
-              background={selectedTag.backgroundImage}
-              slogan={selectedTag.description}
-              postCount={selectedTag.postCount}
-            />
-            <div className='tag-post-container'>
-              {selectedTagPosts.length > 0 ? (
-                <CardGrid data={selectedTagPosts} />
-              ) : (
-                <div className='empty-state-container'>
-                  <p className='empty-state-message'>The silence of this tag remains unbroken.</p>
-                </div>
-              )}
+      {!selectedTag ? (
+        <>
+          <p className='explore-card-header-label'>Categories</p>
+          {loadingCategories ? <Loading /> :
+            <div className='explore-card-grid'>
+              {categories.map((card, index) => (
+                <ExploreCard
+                  key={index}
+                  name={card.name}
+                  background={card.backgroundImage}
+                  slogan={card.description}
+                  postCount={card.postCount}
+                  onClick={() => handleCardClick(card)}
+                />
+              ))}
             </div>
-          </div>
+          }
+
+          <p className='explore-card-header-label'>Tags</p>
+          {loadingTags ? <Loading /> :
+            <div className='explore-card-grid'>
+              {tags.map((card, index) => (
+                <ExploreCard
+                  key={index}
+                  name={card.name}
+                  background={card.backgroundImage}
+                  slogan={card.description}
+                  postCount={card.postCount}
+                  onClick={() => handleCardClick(card)}
+                />
+              ))}
+            </div>
+          }
+        </>
+        ) : (
+          loading ? <Loading /> :
+            <div className='explore-tag-selected-layout'>
+              <ExploreCard
+                className='tagSelected'
+                name={selectedTag.name}
+                background={selectedTag.backgroundImage}
+                slogan={selectedTag.description}
+                postCount={selectedTag.postCount}
+              />
+              <div className='tag-post-container'>
+                {selectedTagPosts.length > 0 ? (
+                  <CardGrid data={selectedTagPosts} />
+                ) : (
+                  <div className='empty-state-container'>
+                    <p className='empty-state-message'>The silence of this tag remains unbroken.</p>
+                  </div>
+                )}
+              </div>
+            </div>
         )
       }
     </div>    

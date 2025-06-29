@@ -12,6 +12,8 @@ import AuthProvider from './context/AuthContext.js';
 import ProtectedRoute from './context/ProtectedRoute.js';
 import { AlertProvider } from './context/AlertContext.js';
 import { ReportProvider } from './context/ReportContext.js';
+import { TagProvider } from './context/TagContext.js';
+import { CategoryProvider } from './context/CategoryContext.js';
 
 //Screens
 import App from './App.js';
@@ -71,7 +73,11 @@ root.render(
     <AuthProvider>
       <AlertProvider>
         <ReportProvider>
-          <RouterProvider router={router} />
+          <CategoryProvider>
+            <TagProvider>
+              <RouterProvider router={router} />
+            </TagProvider>
+          </CategoryProvider>
         </ReportProvider>
       </AlertProvider>
     </AuthProvider>

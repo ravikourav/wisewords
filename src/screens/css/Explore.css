@@ -1,7 +1,14 @@
-.explore-tag-layout{
+.explore-card-grid{
     display: flex;
-    margin-top: 10px;
     justify-content: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.explore-card-header-label {
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 25px 0px 10px 0px;
 }
 
 .explore-tag-selected-layout{
@@ -15,14 +22,6 @@
     display: flex;
     margin-top: 10px;
 }
-
-.explore-card-grid{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    flex-wrap: wrap;
-}
-
 
 @media (max-width: 768px){
     .explore-tag-selected-layout{

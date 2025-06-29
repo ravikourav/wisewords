@@ -10,16 +10,19 @@ import Loading from '../components/Loading';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { useAlert } from '../context/AlertContext';
+import { useTags } from '../context/TagContext';
+import { useCategories } from '../context/CategoryContext';
 
 function Create() {
   const { showAlert } = useAlert();
+  const { categories } = useCategories();
+  const { tagsName } = useTags();
   const [loading , setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
-  const [category, setCategory] = useState('Quote');
-  const [tags, setTags] = useState([]);
-  const [allTags, setAllTags] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('Quote');
+  const [selectedTags, setSelectedTags] = useState([]);
   const [contentColor, setContentColor] = useState('rgba(255, 255, 255, 1)');
   const [authorColor, setAuthorColor] = useState('rgba(255, 255, 255, 1)');
   const [tintColor, setTintColor] = useState('rgba(0, 0, 0, 0.4)');
@@ -67,7 +70,7 @@ function Create() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if ( !content || !author || !category || !tags.length || !backgroundImage) {
+    if ( !content || !author || !selectedCategory || !selectedTags.length || !backgroundImage) {
       showAlert('Please fill in all fields.', 'error');
       return;
     }
@@ -79,8 +82,8 @@ function Create() {
       formData.append('title', title);
       formData.append('content', content);
       formData.append('author', author);
-      formData.append('category', category);
-      formData.append('tags', tags);
+      formData.append('category', selectedCategory);
+      formData.append('tags', selectedTags);
       formData.append('contentColor', contentColor);
       formData.append('authorColor', authorColor);
       formData.append('tintColor', tintColor);
@@ -104,8 +107,8 @@ function Create() {
     setTitle('');
     setContent('');
     setAuthor('');
-    setCategory('Quote');
-    setTags([]);
+    setSelectedCategory('Quote');
+    setSelectedTags([]);
     setContentColor('rgba(255, 255, 255, 1)');
     setAuthorColor('rgba(255, 255, 255, 1)');
     setTintColor('rgba(0, 0, 0, 0.4)');
@@ -120,21 +123,6 @@ function Create() {
       }
     };
   }, [backgroundImage]);
-
-  useEffect(()=>{
-    featchTags();
-  },[])
-
-  const featchTags = async () =>{
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/names`;
-    try{
-      const response = await axios.get(endpoint);
-      setAllTags(response.data.names);
-    }
-    catch{
-      showAlert('Unable to featch tags.','error');
-    }
-  }
 
   const closeOnlineImage = () =>{
     setBrowseOnline(false);
@@ -209,11 +197,11 @@ function Create() {
                   <Autocomplete
                     className='autocomplete'
                     multiple
-                    limitTags={2}
+                    limitTags={4}
                     id="multiple-limit-tags"
-                    options={allTags}
-                    value={tags}
-                    onChange={(event, newValue) => setTags(newValue)}
+                    options={tagsName}
+                    value={selectedTags}
+                    onChange={(event, newValue) => setSelectedTags(newValue)}
                     renderInput={(params) => (
                       <TextField {...params} placeholder="Tag" />
                     )}
@@ -221,13 +209,13 @@ function Create() {
                 </label>
                 <label>
                   Realm of Creation <span className="asterisk">*</span>
-                  <select className='main-input category-input' value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value='quote'>Quote</option>
-                    <option value='proverb'>Proverb</option>
-                    <option value='poetry'>Poetry</option>
-                    <option value='thought'>Thought</option>
-                    <option value='haiku'>Haiku</option>
-                    <option value='riddle'>Riddle</option>
+                  <select 
+                    className='main-input category-input' 
+                    value={selectedCategory} 
+                    onChange={(e) => setSelectedCategory(e.target.value)}>
+                      {categories.map((cat)=>(
+                        <option key={cat._id} value={cat.name}>{cat.name}</option>
+                      ))}
                   </select>
                 </label>
               </div>
