@@ -7,6 +7,7 @@ import axios from 'axios';
 import Loading from '../components/Loading.js';
 import SearchBar from '../components/SearchBar.js';
 import BackButton from '../components/BackButton.js';
+import Button from '../components/Button.js';
 import { useCategories } from '../context/CategoryContext';
 import { useTags } from '../context/TagContext.js';
 
@@ -15,36 +16,56 @@ function Explore() {
   const { categories, loadingCategories } = useCategories();
   const { tags, loadingTags } = useTags();
   
-  const [selectedTag, setSelectedTag] = useState(null);
-  const [selectedTagPosts, setSelectedTagPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [resultPosts, setResultPosts] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
-  const handleCardClick = async (card) => {
+  const fetchPosts = async ({ card, type, nextPage = 1, append = false }) => {
+
+    if (nextPage > totalPages && append) return;
     setLoading(true);
-    const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/tag/${card._id}/posts`;
     try {
-      const response = await axios.get(endPoint);
-      setSelectedTagPosts(response.data);
+      const baseURL = process.env.REACT_APP_BACKEND_API_URL;
+      const url = `${baseURL}/api/${type}/${card._id}/posts?page=${nextPage}&limit=9`;
+
+      const response = await axios.get(url);
+      const posts = response.data.posts;
+      const pages = response.data.totalPages;
+
+      if (append) {
+        setResultPosts(prev => [...prev, ...posts]);
+      } else {
+        setResultPosts(posts);
+        setSelectedCard(card);
+        setSelectedType(type);
+      }
+
+      setPage(nextPage);
+      setTotalPages(pages);
     } catch (err) {
-      showAlert('Unable to fetch Posts' ,'error');
+      showAlert('Unable to fetch posts', 'error');
+      console.error(err);
     } finally {
       setLoading(false);
     }
-    setSelectedTag(card);
   };
 
   const closeSelectedTag = () => {
-    setSelectedTagPosts([]);
-    setSelectedTag(null);
+    setResultPosts([]);
+    setSelectedCard(null);
   };
 
   return (
     <div className='page-root'>
       <div className="searchbar-header-container">
-        {selectedTag && <BackButton onClick={closeSelectedTag} />}
+        {selectedCard && <BackButton onClick={closeSelectedTag} />}
         <SearchBar />
       </div>
-      {!selectedTag ? (
+      {!selectedCard ? (
         <>
           <p className='explore-card-header-label'>Categories</p>
           {loadingCategories ? <Loading /> :
@@ -56,7 +77,7 @@ function Explore() {
                   background={card.backgroundImage}
                   slogan={card.description}
                   postCount={card.postCount}
-                  onClick={() => handleCardClick(card)}
+                  onClick={() => fetchPosts({card, type: 'category'})}
                 />
               ))}
             </div>
@@ -72,7 +93,7 @@ function Explore() {
                   background={card.backgroundImage}
                   slogan={card.description}
                   postCount={card.postCount}
-                  onClick={() => handleCardClick(card)}
+                  onClick={() => fetchPosts({ card, type: 'tag' })}
                 />
               ))}
             </div>
@@ -80,20 +101,29 @@ function Explore() {
         </>
         ) : (
           loading ? <Loading /> :
-            <div className='explore-tag-selected-layout'>
+            <div className='explore-card-selected-layout'>
               <ExploreCard
-                className='tagSelected'
-                name={selectedTag.name}
-                background={selectedTag.backgroundImage}
-                slogan={selectedTag.description}
-                postCount={selectedTag.postCount}
+                className='cardSelected'
+                name={selectedCard.name}
+                background={selectedCard.backgroundImage}
+                slogan={selectedCard.description}
+                postCount={selectedCard.postCount}
               />
-              <div className='tag-post-container'>
-                {selectedTagPosts.length > 0 ? (
-                  <CardGrid data={selectedTagPosts} />
+              <div className='explore-result-post-container'>
+                {resultPosts.length > 0 ? (
+                  <>
+                    <CardGrid data={resultPosts} />
+                    { page < totalPages &&
+                      <div className='paginate-container'>
+                        <Button 
+                          text='More' 
+                          onClick={() => fetchPosts({ card: selectedCard, type: selectedType, nextPage: page + 1, append: true })}/>
+                      </div>
+                    }
+                  </>
                 ) : (
                   <div className='empty-state-container'>
-                    <p className='empty-state-message'>The silence of this tag remains unbroken.</p>
+                    <p className='empty-state-message'>The silence of this {selectedType} remains unbroken.</p>
                   </div>
                 )}
               </div>

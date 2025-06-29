@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { calculateAspectRatio } from '../utils/calculateDimensions';
 import BackButton from '../components/BackButton';
 import { useAlert } from '../context/AlertContext';
 import { useTags } from '../context/TagContext';
