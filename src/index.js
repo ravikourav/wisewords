@@ -7,14 +7,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-//Context
-import AuthProvider from './context/AuthContext.js';
-import ProtectedRoute from './context/ProtectedRoute.js';
-import { AlertProvider } from './context/AlertContext.js';
-import { ReportProvider } from './context/ReportContext.js';
-import { TagProvider } from './context/TagContext.js';
-import { CategoryProvider } from './context/CategoryContext.js';
-
 //Screens
 import App from './App.js';
 import Error from './screens/Error.js';
@@ -26,6 +18,15 @@ import UpdatePost from './screens/UpdatePost.js';
 import Login from './screens/Login.js';
 import DetailedCard from './screens/DetailedCard.js';
 import SearchResult from './screens/SearchResult.js';
+
+//Context
+import AuthProvider from './context/AuthContext.js';
+import ProtectedRoute from './context/ProtectedRoute.js';
+import { AlertProvider } from './context/AlertContext.js';
+import { ReportProvider } from './context/ReportContext.js';
+import { TagProvider } from './context/TagContext.js';
+import { CategoryProvider } from './context/CategoryContext.js';
+import { NotificationProvider } from './context/NotificationContext.js';
 
 const router = createBrowserRouter([{
   path: '/',
@@ -75,7 +76,9 @@ root.render(
         <ReportProvider>
           <CategoryProvider>
             <TagProvider>
-              <RouterProvider router={router} />
+              <NotificationProvider>
+                <RouterProvider router={router} />
+              </NotificationProvider>
             </TagProvider>
           </CategoryProvider>
         </ReportProvider>

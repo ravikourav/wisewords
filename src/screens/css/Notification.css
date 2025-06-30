@@ -42,10 +42,9 @@
     align-items: center;
     justify-content: center;
     background-color: #fff;
-    width: 85%;
+    width: 88%;
     border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
 }
 
 .notification-user-img {
@@ -79,7 +78,7 @@
 }
 
 .notification-username{
-    color: #3437ff;
+    color: #000000;
     font-weight: 600;
     padding-right: 5px;
 }
@@ -91,8 +90,7 @@
 
 .notification-msg{
     text-align: left;
-    color: #313131;
-    font-weight: 600;
+    color: #000000;
 }
 .notification-msg-read{
     text-align: left;

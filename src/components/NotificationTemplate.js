@@ -5,7 +5,7 @@ import { truncateText } from '../utils/truncate';
 
 import RenderProfileImage from './RenderProfileImage.js';
 
-function NotificationTemplate({data , markRead}) {
+function NotificationTemplate({data}) {
   const navigate = useNavigate();
 
   const handleCommentClick = (to) => {
@@ -15,7 +15,6 @@ function NotificationTemplate({data , markRead}) {
     else{
       navigate(`/user/${data.sender.username}`);
     }
-    markRead(data._id);
   };
 
   const message = notificationMessage(data.type, data.type === 'like' ? data.data.context : null);
@@ -28,7 +27,7 @@ function NotificationTemplate({data , markRead}) {
       <div className='notification-info' onClick={()=>{handleCommentClick(data.type === 'follow' ? 'profile' : 'post')}}>
         <p className={data.read ? 'notification-msg-content-read' : 'notification-msg-content'}>
           <span className={data.read ? 'notification-username-read' : 'notification-username'}>
-            @{data.sender.username}
+            {data.sender.username}
           </span> 
           <span className={data.read ? 'notification-msg-read' : 'notification-msg'}>
             {message}

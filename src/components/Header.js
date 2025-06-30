@@ -1,11 +1,10 @@
-import React, { useState , useEffect, useContext } from 'react';
+import { useState , useEffect} from 'react';
 import './css/Header.css';
 import { Link, useLocation } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import NotificationModel from '../screens/NotificationModel.js';
 import {  useAuth } from '../context/AuthContext.js';
-import Button from './Button.js';
-
+import { useNotification } from '../context/NotificationContext.js';
 //icons
 import { ReactComponent as HomeIcon } from '../assets/icon/home.svg';
 import { ReactComponent as AddIcon} from '../assets/icon/add.svg';
@@ -18,7 +17,7 @@ function Header()  {
   const location = useLocation();
   const [Selected , setSelected] = useState(location);
   const { isLoggedIn, user} = useAuth();
-
+  const { unreadCount } = useNotification();
   const [notificationBgPage , setNotificationBgPage] = useState();
 
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
@@ -34,7 +33,7 @@ function Header()  {
 
   useEffect(()=>{
     select(notificationBgPage);
-  },[isMobile])
+  },[isMobile , notificationBgPage])
 
   const handleNotification = () => {
     if(Selected !== 'Notification'){
@@ -70,8 +69,29 @@ function Header()  {
           </Link>)}
           {isLoggedIn ? (
             <>
-              <BellIcon fill={Selected === 'Notification' ? 'black' : 'white'} stroke={Selected === 'Notification' ? 'white' :'black' } className='icon'
-              onClick={handleNotification} /> 
+              <div style={{ position: 'relative' }}>
+                <BellIcon
+                  fill={Selected === 'Notification' ? 'black' : 'white'}
+                  stroke={Selected === 'Notification' ? 'white' : 'black'}
+                  className='icon'
+                  onClick={handleNotification}
+                />
+
+                {unreadCount > 0 && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: 2,
+                      border: '3px solid white',
+                      right: 2,
+                      width: 10,
+                      height: 10,
+                      borderRadius: '50%',
+                      backgroundColor: 'red',
+                    }}
+                  />
+                )}
+              </div>
               <Link to={`user/${user.username}`} onClick={()=>{select('Profile')}} >
                 <RenderProfileImage source={user.profile} className='icon' />
               </Link>
@@ -103,7 +123,23 @@ function Header()  {
           )}
           {isLoggedIn ? 
             <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
-              <RenderProfileImage source={user.profile} className='icon' />
+              <div style={{ position: 'relative' }}>
+                <RenderProfileImage source={user.profile} className='icon' />
+                {unreadCount > 0 && (
+                    <span
+                      style={{
+                        position: 'absolute',
+                        top: 2,
+                        border: '3px solid white',
+                        right: 2,
+                        width: 10,
+                        height: 10,
+                        borderRadius: '50%',
+                        backgroundColor: 'red',
+                      }}
+                    />
+                  )}
+              </div>
             </Link>
           : 
             <Link to='login' onClick={()=>{select('Login')}} >

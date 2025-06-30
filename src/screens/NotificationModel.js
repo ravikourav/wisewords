@@ -1,62 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import NotificationTemplate from '../components/NotificationTemplate.js';
 import './css/Notification.css';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 import Loading from '../components/Loading.js';
+import { useNotification } from '../context/NotificationContext.js';
+import NotificationTemplate from '../components/NotificationTemplate.js';
+import { useEffect } from 'react';
 
 function NotificationModel() {
-  const [loading, setLoading] = useState(false);
-  const [notificationData, setNotificationData] = useState([]);
+  const { notifications, loading, markAllAsRead } = useNotification();
 
-  const fetchNotification = async () => {
-    setLoading(true);
-    const token = Cookies.get('authToken');
-    try {
-      const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/notifications`;
-      const response = await axios.get(endpoint ,{headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }  } );
-      if (response.status === 200) {
-        setNotificationData(response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching Notification', error);
-    }
-    finally {
-      setLoading(false);
-    }
-  };
-
-  const markAsRead = async(id) =>{
-    const token = Cookies.get('authToken');
-    try {
-      const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/notifications/${id}/read`;
-      const response = await axios.post(endpoint, {} ,{
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      } );
-      if (response.status === 200) {
-        console.log('marked as read : ' ,response.data);
-      }
-    } catch (error) {
-      console.error('Error fetching Notification', error);
-    }
-  }
-
-  useEffect(() => {
-    fetchNotification();
-  }, []);
+  useEffect(()=>{
+    markAllAsRead();
+  },[markAllAsRead])
 
   return (
     <div className='notification-body'>
       {loading ? <Loading /> : 
-        notificationData.length > 0 ?
-          notificationData?.map((data) => (
-            <NotificationTemplate key={data._id} data={data} markRead={markAsRead} />
+        notifications.length > 0 ?
+          notifications?.map((data) => (
+            <NotificationTemplate key={data._id} data={data} />
           ))
           :
           <div className='empty-state-container'>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import './css/Profile.css';
 import { useParams } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
@@ -15,6 +15,7 @@ import BackButton from '../components/BackButton.js';
 import SearchBar from '../components/SearchBar.js';
 import NotificationModel from './NotificationModel.js';
 import { useReport } from '../context/ReportContext.js';
+import { useNotification } from '../context/NotificationContext.js';
 
 //icons
 import {ReactComponent as ShareIcon} from '../assets/icon/share.svg';
@@ -28,6 +29,7 @@ function Profile() {
     const { openReport } = useReport();
     const { username } = useParams();
     const { logout, user, updateUser, isLoggedIn} = useAuth();
+    const { unreadCount } = useNotification();
     const [data, setData] = useState(null);
     const [postedData, setPostedData] = useState([]);
     const [saveCardData, setSaveCardData] = useState([]);
@@ -36,6 +38,7 @@ function Profile() {
     const [tab, setTab] = useState('home');
     const [followerUsers, setFollowerUsers] = useState([]);
     const [followingUsers, setFollowingUsers] = useState([]);
+    const [followLoading, setFollowLoading] = useState(false);
     const [loadingFol, setLoadingFol] = useState(false);
 
     const [isOwner , setIsOwner] = useState(false);
@@ -45,22 +48,33 @@ function Profile() {
 
     const followUnfollowOwner = async () => {
         const token = Cookies.get('authToken');
-        const endpoint = isFollowing 
-          ? `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/unfollow` 
-          : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/follow`;
-      
+        const prevState = isFollowing;
+
+        // Optimistically toggle UI
+        setIsFollowing(!isFollowing);
+        setFollowLoading(true);
+
+        const endpoint = prevState 
+            ? `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/unfollow` 
+            : `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/follow`;
+
         try {
-            const response = await axios.post(endpoint,{}, { 
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${token}`
-                }
+            const response = await axios.post(endpoint, {}, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            }
             });
-            if (response.status === 200) {
-                setIsFollowing(!isFollowing);
+
+            if (response.status !== 200) {
+                // rollback if error
+                setIsFollowing(prevState);
             }
         } catch (error) {
-          console.error('Error following/unfollowing user:', error);
+            console.error('Error following/unfollowing user:', error);
+            setIsFollowing(prevState); // rollback
+        } finally {
+            setFollowLoading(false);
         }
     };
 
@@ -153,7 +167,7 @@ function Profile() {
         if(!isMobile && tab === 'notification'){
             setTab('home');
         }
-    },[isMobile])
+    },[isMobile , tab])
 
     const displayData = selected === 'your-thought' ? postedData : saveCardData;
 
@@ -168,9 +182,23 @@ function Profile() {
                 <>
                     <div className='searchbar-header-container'>
                         <SearchBar />
-                        {isMobile && 
-                            <BellIcon fill='white' stroke='black' className='icon' onClick={()=>setTab('notification')} /> 
-                        }
+                        {isMobile && <div style={{ position: 'relative' }}>
+                            <BellIcon fill='white' stroke='black' className='icon' onClick={()=>setTab('notification')} />
+                            {unreadCount > 0 && (
+                                <span
+                                    style={{
+                                    position: 'absolute',
+                                    top: 2,
+                                    border: '3px solid white',
+                                    right: 2,
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: '50%',
+                                    backgroundColor: 'red',
+                                    }}
+                                />
+                            )}
+                        </div>}
                     </div>
                     {loading ? <Loading /> :
                         <div className='profile-page'>
@@ -218,7 +246,12 @@ function Profile() {
                                         <IconButton icon={ShareIcon} size='25px' onClick={handleShare}/>
                                     </div>
                                     <div className='control-button'>
-                                        <Button text={isFollowing ? 'Following' : 'Follow' } selected={isFollowing ? true : false} disabled= {!isLoggedIn} onClick={followUnfollowOwner} /> 
+                                        <Button
+                                            text={followLoading ? 'Loading...' : isFollowing ? 'Following' : 'Follow'}
+                                            selected={isFollowing}
+                                            disabled={!isLoggedIn || followLoading}
+                                            onClick={followUnfollowOwner}
+                                        />
                                     </div>   
                                     <div className='control-button'>
                                         <Dropdown showIcon={true} options={[{ label : 'Report' , onClick : () => openReport('user' , data._id)}]} menuPosition='top-right' />
