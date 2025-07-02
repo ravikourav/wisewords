@@ -62,6 +62,7 @@ function Home() {
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -72,9 +73,11 @@ function Home() {
         {loading ? <Loading /> : 
           <div className='home-data-container'>
             <CardGrid data={data} />
-            <div className='paginate-container'>
-              <Button text='More' onClick={()=>fetchData(true)} />
-            </div>
+            {data.length !== 0 && 
+              <div className='paginate-container'>
+                <Button text='More' onClick={()=>fetchData(true)} />
+              </div>
+            }
           </div>
         }
       </div>
