@@ -6,7 +6,7 @@
 /* post content */
 .content-wrapper {
   display: flex;
-  margin-top: 20px;
+  margin-top: 10px;
   border-radius: 20px;
   flex-direction: column;
   overflow: hidden;
@@ -59,24 +59,35 @@
 
 /* post info */
 
+.detailed-card-post-info {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  justify-content: space-between;
+  color: black;
+}
+
 .detailed-card-post-title{
   font-size: 1.2rem;
-  margin: 20px 20px 0px 20px;
   text-align: left;
 }
 
 .detailed-card-post-tag{
   font-size: 0.8rem;
-  margin: 0px 20px 0px 20px;
   text-align: left;
   color: blue;
 }
 
 .detailed-card-post-time{
   font-size: 0.8rem;
-  margin: 0px 20px 20px 20px;
   text-align: left;
   color: #818181;
+}
+
+.detailed-card-post-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 

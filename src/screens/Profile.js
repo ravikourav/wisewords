@@ -13,7 +13,7 @@ import IconButton from '../components/IconButton.js';
 import Badge from '../components/Badge.js';
 import BackButton from '../components/BackButton.js';
 import SearchBar from '../components/SearchBar.js';
-import NotificationModel from './NotificationModel.js';
+import NotificationModel from '../components/NotificationModel.js';
 import { useReport } from '../context/ReportContext.js';
 import { useNotification } from '../context/NotificationContext.js';
 
@@ -21,7 +21,7 @@ import { useNotification } from '../context/NotificationContext.js';
 import {ReactComponent as ShareIcon} from '../assets/icon/share.svg';
 import {ReactComponent as BellIcon} from '../assets/icon/bell.svg';
 import Dropdown from '../components/Dropdown.js';
-import ProfileSetting from './ProfielSetting.js';
+import ProfileSetting from '../components/ProfielSetting.js';
 import RenderProfileImage from '../components/RenderProfileImage.js';
 
 function Profile() {

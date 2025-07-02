@@ -1,82 +1,194 @@
-import { useState , useEffect} from 'react';
+import { useEffect, useState } from 'react';
 import './css/Header.css';
-import { Link, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
-import NotificationModel from '../screens/NotificationModel.js';
-import {  useAuth } from '../context/AuthContext.js';
+import { useAuth } from '../context/AuthContext.js';
 import { useNotification } from '../context/NotificationContext.js';
-//icons
-import { ReactComponent as HomeIcon } from '../assets/icon/home.svg';
-import { ReactComponent as AddIcon} from '../assets/icon/add.svg';
-import { ReactComponent as CategoryIcon} from '../assets/icon/category.svg';
-import { ReactComponent as BellIcon} from '../assets/icon/bell.svg';
-import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+
+import NotificationModel from './NotificationModel.js';
 import RenderProfileImage from './RenderProfileImage.js';
 
-function Header()  {
-  const location = useLocation();
-  const [Selected , setSelected] = useState(location);
-  const { isLoggedIn, user} = useAuth();
-  const { unreadCount } = useNotification();
-  const [notificationBgPage , setNotificationBgPage] = useState();
+// icons
+import { ReactComponent as HomeIcon } from '../assets/icon/home.svg';
+import { ReactComponent as AddIcon } from '../assets/icon/add.svg';
+import { ReactComponent as CategoryIcon } from '../assets/icon/category.svg';
+import { ReactComponent as BellIcon } from '../assets/icon/bell.svg';
+import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
+import { ReactComponent as AboutIcon } from '../assets/icon/info.svg';
 
+function Header() {
+  const { isLoggedIn, user } = useAuth();
+  const { unreadCount } = useNotification();
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
+  const [showingNotification, setShowingNotification] = useState(false);
+
   useEffect(() => {
-    const path = location.pathname.substring(1) || 'Home';
-    setSelected(path.charAt(0).toUpperCase() + path.slice(1));
-  }, [location]);
-
-  const select = (clicked) => {
-    setSelected(clicked);
-  };
-
-  useEffect(()=>{
-    select(notificationBgPage);
-  },[isMobile , notificationBgPage])
+    if(isMobile && showingNotification) {
+      setShowingNotification(false); // Close notification on mobile when screen size changes
+    }
+  }, [isMobile, showingNotification]);
 
   const handleNotification = () => {
-    if(Selected !== 'Notification'){
-      setNotificationBgPage(Selected);
-      select('Notification');
+    if (!showingNotification) {
+      setShowingNotification(true);
+    } else {
+      setShowingNotification(false);
     }
-    else{
-      select(notificationBgPage);
-    }
-  }
+  };
+
+  const renderNotificationIcon = () => (
+    <div style={{ position: 'relative' }}>
+      <BellIcon
+        className="icon"
+        fill={showingNotification ? 'black' : 'white'}
+        stroke={showingNotification ? 'white' : 'black'}
+        onClick={handleNotification}
+      />
+      {unreadCount > 0 && (
+        <span
+          style={{
+            position: 'absolute',
+            top: 2,
+            border: '3px solid white',
+            right: 2,
+            width: 10,
+            height: 10,
+            borderRadius: '50%',
+            backgroundColor: 'red',
+          }}
+        />
+      )}
+    </div>
+  );
 
   return (
-    <div className='header-root'>
+    <div className="header-root">
       {!isMobile ? (
-      <div className="header-container-desktop">
-        <img className="header-logo" src="/logo192.png" alt="Logo" />
-          <Link to="/" onClick={()=>{select('Home')}}>
-            <HomeIcon className='icon' 
-              fill={Selected === 'Home' ? 'black' : 'white'} 
-              stroke={Selected === 'Home' ? 'white' :'black' } 
-            />
-          </Link>
-          <Link to="explore" onClick={()=>{select('Explore')}}>
-            <CategoryIcon className='icon' fill={ Selected === 'Explore' ? 
-              'black' : 'white' } stroke={Selected === 'Explore' ? 
-              'white' : 'black'} />
-          </Link>
-          { isLoggedIn && (
-          <Link to="create" onClick={()=>{select('Create')}}>
-            <AddIcon fill={ Selected === 'Create' ? 
-              'black' : 'white' } stroke={Selected === 'Create' ? 
-              'white' : 'black'} className='icon' />
-          </Link>)}
-          {isLoggedIn ? (
-            <>
-              <div style={{ position: 'relative' }}>
-                <BellIcon
-                  fill={Selected === 'Notification' ? 'black' : 'white'}
-                  stroke={Selected === 'Notification' ? 'white' : 'black'}
-                  className='icon'
-                  onClick={handleNotification}
-                />
+        // Desktop Header
+        <>
+          <div className="header-container-desktop">
+            <div className="header-top-icon-container">
+              <img className="header-logo" src="/logo192.png" alt="Logo" />
 
+              <NavLink to="/" className="icon-link">
+                {({ isActive }) => (
+                  <HomeIcon
+                    className="icon"
+                    fill={isActive ? 'black' : 'white'}
+                    stroke={isActive ? 'white' : 'black'}
+                  />
+                )}
+              </NavLink>
+
+              <NavLink to="/explore" className="icon-link">
+                {({ isActive }) => (
+                  <CategoryIcon
+                    className="icon"
+                    fill={isActive ? 'black' : 'white'}
+                    stroke={isActive ? 'white' : 'black'}
+                  />
+                )}
+              </NavLink>
+
+              {isLoggedIn && (
+                <NavLink to="/create" className="icon-link">
+                  {({ isActive }) => (
+                    <AddIcon
+                      className="icon"
+                      fill={isActive ? 'black' : 'white'}
+                      stroke={isActive ? 'white' : 'black'}
+                    />
+                  )}
+                </NavLink>
+              )}
+
+              {isLoggedIn ? (
+                <>
+                  {renderNotificationIcon()}
+                  <NavLink to={`/user/${user.username}`} className="icon-link">
+                    {({ isActive }) => (
+                      <RenderProfileImage
+                        source={user.profile}
+                        className="icon"
+                        style={{
+                          border: isActive ? '2px solid white' : 'none',
+                          borderRadius: '50%',
+                        }}
+                      />
+                    )}
+                  </NavLink>
+                </>
+              ) : (
+                <NavLink to="/login" className="icon-link">
+                  {({ isActive }) => (
+                    <ProfileIcon
+                      className="icon"
+                      fill={isActive ? 'black' : 'white'}
+                      stroke={isActive ? 'white' : 'black'}
+                    />
+                  )}
+                </NavLink>
+              )}
+            </div>
+
+            <NavLink to="/about" className="icon-link">
+              {({ isActive }) => (
+                <AboutIcon
+                  className={`header-info-icon ${isActive ? 'header-info-icon-selected' : ''}`}
+                  fill={isActive ? 'white' : 'black'}
+                />
+              )}
+            </NavLink>
+          </div>
+          {showingNotification && (
+            <div className="notification-model">
+              <div className="notification-header">
+                <p className="notification-title">Updates</p>
+              </div>
+              <NotificationModel />
+            </div>
+          )}
+        </>
+      ) : (
+        // Mobile Header
+        <div className="header-container-mobile">
+          <NavLink to="/" className="icon-link">
+            {({ isActive }) => (
+              <HomeIcon
+                className="icon"
+                fill={isActive ? 'black' : 'white'}
+                stroke={isActive ? 'white' : 'black'}
+              />
+            )}
+          </NavLink>
+
+          <NavLink to="/explore" className="icon-link">
+            {({ isActive }) => (
+              <CategoryIcon
+                className="icon"
+                fill={isActive ? 'black' : 'white'}
+                stroke={isActive ? 'white' : 'black'}
+              />
+            )}
+          </NavLink>
+
+          {isLoggedIn && (
+            <NavLink to="/create" className="icon-link">
+              {({ isActive }) => (
+                <AddIcon
+                  className="icon"
+                  fill={isActive ? 'black' : 'white'}
+                  stroke={isActive ? 'white' : 'black'}
+                />
+              )}
+            </NavLink>
+          )}
+
+          {isLoggedIn ? (
+            <NavLink to={`/user/${user.username}`} className="icon-link">
+              <div style={{ position: 'relative' }}>
+                <RenderProfileImage source={user.profile} className="icon" />
                 {unreadCount > 0 && (
                   <span
                     style={{
@@ -92,71 +204,20 @@ function Header()  {
                   />
                 )}
               </div>
-              <Link to={`user/${user.username}`} onClick={()=>{select('Profile')}} >
-                <RenderProfileImage source={user.profile} className='icon' />
-              </Link>
-            </>
+            </NavLink>
           ) : (
-            <Link to='login' onClick={()=>{select('Login')}} >
-              <ProfileIcon stroke={Selected === 'Login' ? '#FF000000' : 'black' } fill={Selected === 'Login' ? 'black' : 'white'} className= 'icon' />
-            </Link>
+            <NavLink to="/login" className="icon-link">
+              {({ isActive }) => (
+                <ProfileIcon
+                  className="icon"
+                  fill={isActive ? 'black' : 'white'}
+                  stroke={isActive ? 'white' : 'black'}
+                />
+              )}
+            </NavLink>
           )}
-      </div>
-      ):(
-        <div className="header-container-mobile">
-          <Link to="/" onClick={()=>{select('Home')}}>
-            <HomeIcon fill={ Selected === 'Home' ? 
-              'black' : 'white' } stroke={Selected === 'Home' ? 
-              'white' : 'black'} className='icon' />
-          </Link>
-          <Link to="explore" onClick={()=>{select('Explore')}}>
-            <CategoryIcon fill={ Selected === 'Explore' ? 
-              'black' : 'white' } stroke={Selected === 'Explore' ? 
-              'white' : 'black'} className='icon' />
-          </Link>
-          { isLoggedIn && (
-            <Link to="create" onClick={()=>{select('Create')}}>
-              <AddIcon fill={ Selected === 'Create' ? 
-              'black' : 'white' } stroke={Selected === 'Create' ? 
-              'white' : 'black'} className='icon' />
-            </Link>
-          )}
-          {isLoggedIn ? 
-            <Link to={`user/${user.username}`} onClick={()=>{select('Profile');}} >
-              <div style={{ position: 'relative' }}>
-                <RenderProfileImage source={user.profile} className='icon' />
-                {unreadCount > 0 && (
-                    <span
-                      style={{
-                        position: 'absolute',
-                        top: 2,
-                        border: '3px solid white',
-                        right: 2,
-                        width: 10,
-                        height: 10,
-                        borderRadius: '50%',
-                        backgroundColor: 'red',
-                      }}
-                    />
-                  )}
-              </div>
-            </Link>
-          : 
-            <Link to='login' onClick={()=>{select('Login')}} >
-              <ProfileIcon stroke={Selected === 'Login' ? '#FF000000' : 'black' } fill={Selected === 'Login' ? 'black' : 'white'} className= 'icon' />
-            </Link>
-          }
         </div>
-      )}    
-
-      {Selected === 'Notification' && 
-        <div className='notification-model'>
-          <div className='notification-header'>
-            <p className='notification-title'>Updates</p>
-          </div>
-          <NotificationModel />
-        </div>
-      }
+      )}
     </div>
   );
 }

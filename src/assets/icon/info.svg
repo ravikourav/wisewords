@@ -1,0 +1,10 @@
+<svg width="800px" height="800px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer Circle -->
+  <circle cx="24" cy="24" r="22" stroke="black" stroke-width="2" fill="none" />
+
+  <!-- Tilted Dot (shifted to match slant) -->
+  <circle cx="25.5" cy="14.5" r="2.2" fill="current" />
+
+  <!-- Italic Body of "i" -->
+  <path d="M21.5 20c2.3-1 4-1.2 5.2-1.2s1.8 0.6 1.8 1.6c0 0.6-0.1 1.2-0.3 1.8l-2 7.2c-0.3 1-0.4 1.7-0.4 2 0 0.7 0.2 1.1 0.8 1.1 0.3 0 0.6-0.1 1-0.3l0.4 1.7c-1.1 0.5-2.2 0.8-3.4 0.8s-2.2-0.4-3-1.1-1.1-1.5-1.1-2.4c0-0.5 0.1-1.2 0.4-2.1l2-7.4h-1.1L21.5 20z" fill="current"/>
+</svg>

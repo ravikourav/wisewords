@@ -3,70 +3,30 @@ import './css/BrowseImage.css';
 import BackButton from '../components/BackButton';
 import OnlineImageCard from '../components/OnlineImageCard';
 import Loading from '../components/Loading.js';
-import axios from 'axios';
 import { Masonry } from '@mui/lab';
 import Switch from '@mui/material/Switch';
 import Button from '../components/Button.js';
-import { useAlert } from '../context/AlertContext.js';
 import { ReactComponent as SearchIcon } from '../assets/icon/search.svg';
 import pixabayLogo from '../assets/other/pixabaylogo192.png'; 
+import { useImageSearch } from '../context/ImageSearchContext.js';
 
-function BrowseImage({ onClose, onSelectImage, title }) {
-  const { showAlert } = useAlert();
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [searchInput, setSearchInput] = useState(title || '');
-  const [searchQuery, setSearchQuery] = useState('');
-  const PIXABAY_API_KEY = process.env.REACT_APP_PIXABAY_API_KEY;
-  const [page, setPage] = useState(1); // Current page for pagination
+function BrowseImage({ onClose, onSelectImage }) {
+  const {
+    images,
+    loading,
+    fetchImages,
+    resetSearch,
+    searchQuery,
+  } = useImageSearch();
+  const [searchInput, setSearchInput] = useState('');
   const [fullResolutionImage, setFullResolutionImage] = useState(false);
-
-  // Handle search submission
-  const handleSearch = () => {
-    setSearchQuery(searchInput); // Update search query
-    setPage(1); // Reset page to 1 for a new search
-    setImages([]); // Clear previous images
-    setLoading(true); // Set loading state
-  };
-
-  // Fetch images from Pixabay API
-  const fetchImages = async (reset = false) => {
-    setLoading(true);
-    try {
-      const encodedQuery = encodeURIComponent(searchQuery.trim());
-      const response = await axios.get('https://pixabay.com/api/', {
-        params: {
-          key: PIXABAY_API_KEY,
-          q: encodedQuery,
-          image_type: 'photo',
-          page: page,
-        },
-      });
-      if (reset) {
-        setImages(response.data.hits); // Reset images on a new search
-      } else {
-        setImages((prevImages) => [...prevImages, ...response.data.hits]); // Append images for pagination
-      }
-      setPage((prevPage) => prevPage + 1); // Increment page number
-    } catch (error) {
-      showAlert('Error fetching images' , 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Handle Enter key press to trigger search
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleSearch();
+      resetSearch(searchInput); // this sets searchQuery and triggers fetch
     }
   };
-
-  // Fetch images when the component mounts and when searchQuery changes
-  useEffect(() => {
-    fetchImages(true); // Fetch images for new search (reset is true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]); // Fetch images only when the search query changes
 
   // Handle image selection
   const handleImageSelect = (image) => {
@@ -75,8 +35,15 @@ function BrowseImage({ onClose, onSelectImage, title }) {
   };
 
   useEffect(() => {
+    if (!searchQuery) {
+      resetSearch('new');
+    }else {
+      setSearchInput(searchQuery === 'new' ? '' : searchQuery);
+    }
+
     const savedSetting = localStorage.getItem('fullResolutionImage') === 'true';
     setFullResolutionImage(savedSetting);
+    // eslint-disable-next-line
   }, []);
   
   const handleImgStateChange = (e) => {

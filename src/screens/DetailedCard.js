@@ -1,4 +1,4 @@
-import React, { useState , useRef, useEffect, useContext } from 'react';
+import { useState , useRef, useEffect } from 'react';
 import './css/DetailedCard.css';
 import Card from '../components/Card.js';
 import { formatNumber } from '../utils/formatNumbers.js';
@@ -20,12 +20,12 @@ import { useAlert } from '../context/AlertContext.js';
 import SearchBar from '../components/SearchBar.js';
 
 //icons
+import { CiPause1 } from "react-icons/ci";
 import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
 import { ReactComponent as DropDownIcon } from '../assets/icon/dropdown.svg';
 import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
 import { ReactComponent as CopyIcon } from '../assets/icon/copy.svg';
 import { ReactComponent as PlayIcon } from '../assets/icon/play.svg';
-import { ReactComponent as PauseIcon } from '../assets/icon/pause.svg';
 import { ReactComponent as CloseIcon } from '../assets/icon/close.svg';
 import { ReactComponent as CommentIcon } from '../assets/icon/comment.svg';
 import Dropdown from '../components/Dropdown.js';
@@ -46,6 +46,7 @@ function DetailedCard() {
 
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const [cardWidth , setCardWidth] = useState('');
+  // eslint-disable-next-line
   const [cardHeight , setCardHeight] = useState('');
 
   const [comment, setComment] = useState('');
@@ -439,13 +440,15 @@ function DetailedCard() {
                 background={cardData.backgroundImage}
                 tint={cardData.tintColor}
               />
-              <p className='detailed-card-post-title'>{cardData.title}</p>
-              <p className="detailed-card-post-tag">
-                {cardData.tags.map((tag, index) => (
-                  <span key={index}>#{tag} </span>
-                ))}
-              </p>
-              <p className="detailed-card-post-time">{timeAgo(cardData.createdAt)}</p>
+              <div className='detailed-card-post-info'>
+                <p className='detailed-card-post-title'>{cardData.title}</p>
+                <p className="detailed-card-post-tag">
+                  {cardData.tags.map((tag, index) => (
+                    <span key={index}>#{tag} </span>
+                  ))}
+                </p>
+                <p className="detailed-card-post-time">{timeAgo(cardData.createdAt)}</p>
+              </div>
             </div>
             <div className="modal-box">
               <div className='comment-container'>
@@ -484,26 +487,26 @@ function DetailedCard() {
             </div>
           </div>
           <div className='post-controle'>
-            <div className='control-wrapper' onClick={handleSpeak} >
-              {!isPlaying ? 
-              <PlayIcon className='post-icon' /> : 
-              <PauseIcon className='post-icon' />
-              }
-              <p className='controle-label'>{isPlaying ? 'Pause' : 'Play' }</p>
-            </div>
             <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
               <LikeIcon 
                 fill={liked ? 'red' : 'white'}
                 stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='1.5' className='post-icon'/>
               <p className='controle-label'>{formatNumber(likes)}</p>
             </div>
-            <div className='control-wrapper' onClick={handleCopy}>
-              <CopyIcon className='post-icon' />
-              <p className='controle-label'>{!copied ? 'Copy' : 'Copied'}</p>
-            </div>
             <div className='control-wrapper' onClick={()=>{setHideComments(!hideComments)}}>
               <CommentIcon className='post-icon' />
               <p className='controle-label'>{formatNumber(cardData.comments.length)}</p>
+            </div>
+            <div className='control-wrapper' onClick={handleSpeak} >
+              {!isPlaying ? 
+              <PlayIcon className='post-icon' /> : 
+              <CiPause1 className='post-icon' />
+              }
+              <p className='controle-label'>{isPlaying ? 'Pause' : 'Play' }</p>
+            </div>
+            <div className='control-wrapper' onClick={handleCopy}>
+              <CopyIcon className='post-icon' />
+              <p className='controle-label'>{!copied ? 'Copy' : 'Copied'}</p>
             </div>
           </div>
         </>

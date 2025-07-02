@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SketchPicker } from 'react-color';
 import './css/Create.css';
-import BrowseImage from './BrowseImage';
+import BrowseImage from '../components/BrowseImage';
 import Card from '../components/Card';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -88,7 +88,7 @@ function Create() {
       formData.append('authorColor', authorColor);
       formData.append('tintColor', tintColor);
       formData.append('backgroundImage', backgroundImage);
-      const response = await axios.post(endpoint, formData ,{
+      await axios.post(endpoint, formData ,{
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'

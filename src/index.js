@@ -18,6 +18,7 @@ import UpdatePost from './screens/UpdatePost.js';
 import Login from './screens/Login.js';
 import DetailedCard from './screens/DetailedCard.js';
 import SearchResult from './screens/SearchResult.js';
+import About from './screens/About.js';
 
 //Context
 import AuthProvider from './context/AuthContext.js';
@@ -27,6 +28,7 @@ import { ReportProvider } from './context/ReportContext.js';
 import { TagProvider } from './context/TagContext.js';
 import { CategoryProvider } from './context/CategoryContext.js';
 import { NotificationProvider } from './context/NotificationContext.js';
+import { ImageSearchProvider } from './context/ImageSearchContext.js';
 
 const router = createBrowserRouter([{
   path: '/',
@@ -64,6 +66,10 @@ const router = createBrowserRouter([{
     {
       path: 'updatePost/:id',
       element: <ProtectedRoute element={<UpdatePost />} />
+    },
+    {
+      path: 'about',
+      element: <About />
     }
   ]
 }]);
@@ -77,14 +83,16 @@ root.render(
           <CategoryProvider>
             <TagProvider>
               <NotificationProvider>
-                <RouterProvider router={router} />
+                <ImageSearchProvider>
+                  <RouterProvider router={router} />
+                </ImageSearchProvider>
               </NotificationProvider>
             </TagProvider>
           </CategoryProvider>
         </ReportProvider>
       </AlertProvider>
     </AuthProvider>
-</React.StrictMode>
+  </React.StrictMode>
 );
 
 reportWebVitals();

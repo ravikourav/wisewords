@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import timeAgo from '../utils/timeAgo';
-import { notificationMessage } from '../utils/notificationMessages';
-import { truncateText } from '../utils/truncate';
+import timeAgo from '../utils/timeAgo.js';
+import { notificationMessage } from '../utils/notificationMessages.js';
+import { truncateText } from '../utils/truncate.js';
 
 import RenderProfileImage from './RenderProfileImage.js';
 
@@ -25,13 +25,19 @@ function NotificationTemplate({data}) {
         <RenderProfileImage source={data.sender.profile} className='notification-user-img' />
       </div>
       <div className='notification-info' onClick={()=>{handleCommentClick(data.type === 'follow' ? 'profile' : 'post')}}>
-        <p className={data.read ? 'notification-msg-content-read' : 'notification-msg-content'}>
-          <span className={data.read ? 'notification-username-read' : 'notification-username'}>
+        <p className='notification-msg-content' >
+
+          {/* Message sender username */}
+          <span className='notification-username' >
             {data.sender.username}
           </span> 
-          <span className={data.read ? 'notification-msg-read' : 'notification-msg'}>
+          
+          {/* Type of message */}
+          <span className='notification-msg' >
             {message}
           </span>
+          
+          {/* Main message text */}
           {(data.type !== 'follow' ? ' ' + truncateText(data.data.comment, 5) : '')}
         </p>
         <p className='notification-time'>{timeAgo(data.createdAt)}</p>

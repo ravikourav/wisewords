@@ -7,7 +7,6 @@ import axios from 'axios';
 import Loading from '../components/Loading.js';
 import SearchBar from '../components/SearchBar.js';
 import BackButton from '../components/BackButton.js';
-import Button from '../components/Button.js';
 import Pagination from '../components/Pagination.js';
 import { useCategories } from '../context/CategoryContext';
 import { useTags } from '../context/TagContext.js';

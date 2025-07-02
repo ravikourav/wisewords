@@ -1,13 +1,11 @@
 .header-root {
   padding: 0px;
   margin: 0px;
-} 
+}
 
-.header-container-desktop {
-  padding-top: 24px;
+.header-container-desktop{
   position: fixed;
   width: 75px;
-  gap: 20px;
   height: 100%;
   top: 0;
   left: 0;
@@ -16,7 +14,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   z-index: 10000;
+}
+
+.header-top-icon-container{
+  padding-top: 24px;
+  width: 75px;
+  gap: 20px;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .header-logo {
@@ -35,6 +46,20 @@
 .search-container {
   display: flex;
   flex-grow: 1;
+}
+
+/* info icon need saprate css to change bg color */
+.header-info-icon{
+  width: 30px;
+  height: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+.header-info-icon-selected {
+  background-color: black;
 }
 
 @media (max-width: 768px) {

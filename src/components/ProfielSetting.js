@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './css/ProfileSetting.css';
-import Button from '../components/Button.js';
+import Button from './Button.js';
 import axios from 'axios';
-import BrowseImage from '../screens/BrowseImage.js';
-import Loading from '../components/Loading.js';
-import IconButton from '../components/IconButton.js';
-import Dropdown from '../components/Dropdown.js';
+import BrowseImage from './BrowseImage.js';
+import Loading from './Loading.js';
+import IconButton from './IconButton.js';
+import Dropdown from './Dropdown.js';
 import Cookies from 'js-cookie';
 
 import { useAlert } from '../context/AlertContext.js';
@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext.js';
 //Profile Icon
 import { ReactComponent as ProfileIcon } from '../assets/icon/profile.svg';
 import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
-import BackButton from '../components/BackButton.js';
+import BackButton from './BackButton.js';
 
 
 function ProfileSetting({onClose}) {

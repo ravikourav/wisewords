@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SketchPicker } from 'react-color';
 import './css/Create.css';
-import BrowseImage from './BrowseImage';
+import BrowseImage from '../components/BrowseImage';
 import Card from '../components/Card';
 import axios from 'axios';
 import Cookies from 'js-cookie';
