@@ -12,7 +12,7 @@ const Card = (props) => {
       <img className={`bg-img ${props.sampleSize && `${props.sampleSize}`}`} src={props.background} alt='' />
       <div className='card-bg-tint' style={{backgroundColor : `${props.tint}` }} >
         <p style={{ color: props.textColor }} className='content'>{props.content}</p>
-        <p style={{ color: props.authorColor }} className='author'>{'-' + props.author}</p>
+        <p style={{ color: props.authorColor }} className='author'>{props.author}</p>
       </div>
     </div>
   );

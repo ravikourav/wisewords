@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './css/SimpleCard.css';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -111,7 +111,7 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
         <div className='simple-card-user-container' onClick={()=>profileClick(card.owner_id.username)}>
           <RenderProfileImage source={card.owner_id.profile} className='simple-card-profile-picture' />
           <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
-            <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={13}/></p>
+            <p className='simple-card-username'>{card.owner_id.name} <Badge badge={card.owner_id.badge} size={15}/></p>
             <p className='simple-card-time'>{timeAgo(card.createdAt)}</p>
           </div>
         </div>
@@ -135,9 +135,10 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
       margin={true}
       content={cardContent}
       textColor={card.contentColor}
-      author={card.author}
+      author={'-' + card.author}
       authorColor={card.authorColor}
       background={card.backgroundImage}
+      tint={card.tintColor}
       sampleSize={cardSize}
       onClick={() => cardClick(card._id)}
     />
@@ -148,14 +149,14 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
 
           <div className='simple-card-icon'>
             <div onClick={isLoggedIn ? handleLike : null}>
-                <IconButton 
-                  icon={LikeIcon}
-                  fill={liked ? 'red' : 'white'}
-                  stroke={liked ? 'red' : 'black'}
-                  disabled={!isLoggedIn} 
-                  strokeWidth='1.5'
-                  size='25'
-                />
+              <IconButton 
+                icon={LikeIcon}
+                fill={liked ? 'red' : 'white'}
+                stroke={liked ? 'red' : 'black'}
+                disabled={!isLoggedIn} 
+                strokeWidth='1.5'
+                size='25'
+              />
             </div>
             <div onClick={isLoggedIn ? handleSaveClick : null }>
               <IconButton disabled={!isLoggedIn} icon={BookmarkIcon} fill={saved ? 'black' : 'white'}  size='25'/>

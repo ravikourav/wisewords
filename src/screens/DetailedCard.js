@@ -382,6 +382,7 @@ function DetailedCard() {
   };
 
   const deletePost = async() => {
+    setLoading(true);
     const token = Cookies.get('authToken');
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
     try {
@@ -435,7 +436,7 @@ function DetailedCard() {
                 margin={false}
                 content={cardData.content}
                 textColor={cardData.contentColor}
-                author={cardData.author}
+                author={'-' + cardData.author}
                 authorColor={cardData.authorColor}
                 background={cardData.backgroundImage}
                 tint={cardData.tintColor}

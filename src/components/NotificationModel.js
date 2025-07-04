@@ -5,11 +5,13 @@ import { useNotification } from '../context/NotificationContext.js';
 import NotificationTemplate from './NotificationTemplate.js';
 
 function NotificationModel() {
-  const { notifications, loading, markAllAsRead } = useNotification();
+  const { notifications, unreadCount, loading, markAllAsRead } = useNotification();
 
   useEffect(()=>{
-    markAllAsRead();
-  },[markAllAsRead])
+    if(unreadCount > 0)
+      markAllAsRead();
+    // eslint-disable-next-line
+  },[unreadCount])
 
   return (
     <div className='notification-body'>
