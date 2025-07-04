@@ -117,6 +117,11 @@
     text-decoration-style: solid;
 }
 
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}
 
 /* Follower/Following pannel */
 
@@ -192,11 +197,6 @@
   font-size: 0.9rem;
   color: #777;
   margin: 0;
-}
-
-/* notificatiton */
-.profile-page-notification-container {
-
 }
 
 /* Media */

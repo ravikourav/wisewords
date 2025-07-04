@@ -1,4 +1,4 @@
-import React,{ useEffect, useContext ,useState } from 'react';
+import React,{ useEffect, useCallback ,useState } from 'react';
 import './css/CardGrid.css';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -14,36 +14,38 @@ const CardGrid = ({ data , header = true, footer = true}) => {
   const navigate = useNavigate();
   const [numOfColumns , setNumOfColumns] = useState(1);
 
-  const handleCardClick = (id) => {
+  const handleCardClick = useCallback((id) => {
     navigate(`/post/${id}`);
-  };
+  }, [navigate]);
 
-  const handleProfileClick = (username) => {
+  const handleProfileClick = useCallback((username) => {
     navigate(`/user/${username}`);
-  };
+  }, [navigate]);
 
-  const handleSave = async (postId , isSaved) => {
+  const handleSave = useCallback(async (postId, isSaved) => {
     const token = Cookies.get('authToken');
     const action = isSaved ? 'unsave' : 'save';
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${postId}/${action}`;
     try {
-      const response = await axios.put(endpoint, {} , { headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }  });
+      const response = await axios.put(endpoint, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
       if (response.status === 200) {
         const updatedSaved = isSaved 
           ? user.saved.filter(id => id !== postId) 
           : [...user.saved, postId];
 
-        // Update the user's saved array in the context
         setUser({ ...user, saved: updatedSaved });
         return !isSaved;
       }
     } catch (error) {
-      console.error('Error Saving Post:', error);
+      console.error('Error saving post:', error);
     }
-  };
+  }, [user]);
 
   const breakpoint = {
     xl: 3,

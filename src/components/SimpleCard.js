@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import './css/SimpleCard.css';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -18,7 +18,8 @@ import RenderProfileImage from './RenderProfileImage.js';
 function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , likes , profileClick , currentUser , showHeader = true , showFooter = true}) {
 
   const { openReport } = useReport();
-  const [savedCardId, setSavedCardId] = useState([]);
+
+  const [saving, setSaving] = useState(false);
   const [saved , setSaved] = useState(false);
   const [liked , setLiked] = useState(false);
 
@@ -59,42 +60,50 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
 
 
   useEffect(() => {
-      // Set savedCard to user.saved only if the user is logged in
-      if (isLoggedIn) {
-        setSavedCardId(savedCard.map((savedPost) => savedPost._id));
-      }
-    }, [ savedCard , isLoggedIn])
-
-  useEffect(() => {
-      if( isLoggedIn){
-        setSaved(savedCardId.includes(card._id));
-        setLiked(likes.includes(currentUser));   
-      }
-  }, [ savedCardId , isLoggedIn ,likes, card._id,currentUser]);
+    if (isLoggedIn && showFooter) {
+      setSaved(savedCard.includes(card._id));  // Directly check if this card is saved
+      setLiked(likes.includes(currentUser));   // Like logic stays the same
+    }
+  }, [savedCard, isLoggedIn, showFooter, card._id, likes, currentUser]);
 
   const handleLike = async () => {
-      const token = Cookies.get('authToken');
-      const endpoint = liked
-        ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${card._id}/unlike`
-        : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${card._id}/like`;
-  
-      try {
-        const response = await axios.post(endpoint, {}, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-  
-        if (response.status === 200) {
-          setLiked(!liked);
-          console.log(liked ? 'Post unliked successfully' : 'Post liked successfully');
+    const token = Cookies.get('authToken');
+    const prevLiked = liked;
+    setLiked(!liked); // Instant feedback
+
+    const endpoint = prevLiked
+      ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${card._id}/unlike`
+      : `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${card._id}/like`;
+
+    try {
+      const response = await axios.post(endpoint, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
-      } catch (error) {
-        console.error('Error liking/unliking post:', error);
+      });
+
+      if (response.status !== 200) {
+        setLiked(prevLiked); // Rollback if failed
       }
+    } catch (error) {
+      console.error('Error liking/unliking post:', error);
+      setLiked(prevLiked); // Rollback if error
+    }
   };
-  
+
+  const handleSaveClick = async () => {
+    if (!saveClick || saving) return;
+
+    setSaving(true);
+    const newSaved = !saved;
+    setSaved(newSaved);
+
+    const updated = await saveClick(card._id, !newSaved);
+    setSaved(updated);
+    setSaving(false);
+  };
+
   return (
   <div className='simple-card-container'>
     {showHeader &&
@@ -133,26 +142,26 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
       onClick={() => cardClick(card._id)}
     />
     {showFooter && 
-    <div className='simple-card-footer'>
-        
-        <p className='simple-card-title'>{card.title}</p>
+      <div className='simple-card-footer'>
+          
+          <p className='simple-card-title'>{card.title}</p>
 
-        <div className='simple-card-icon'>
-          <div onClick={isLoggedIn ? handleLike : null}>
-              <IconButton 
-                icon={LikeIcon}
-                fill={liked ? 'red' : 'white'}
-                stroke={liked ? 'red' : 'black'}
-                disabled={!isLoggedIn} 
-                strokeWidth='1.5'
-                size='25'
-              />
+          <div className='simple-card-icon'>
+            <div onClick={isLoggedIn ? handleLike : null}>
+                <IconButton 
+                  icon={LikeIcon}
+                  fill={liked ? 'red' : 'white'}
+                  stroke={liked ? 'red' : 'black'}
+                  disabled={!isLoggedIn} 
+                  strokeWidth='1.5'
+                  size='25'
+                />
+            </div>
+            <div onClick={isLoggedIn ? handleSaveClick : null }>
+              <IconButton disabled={!isLoggedIn} icon={BookmarkIcon} fill={saved ? 'black' : 'white'}  size='25'/>
+            </div>
           </div>
-          <div onClick={isLoggedIn ? () => setSaved(saveClick(card._id , saved)) : null }>
-            <IconButton disabled={!isLoggedIn} icon={BookmarkIcon} fill={saved ? 'black' : 'white'}  size='25'/>
-          </div>
-        </div>
-    </div>
+      </div>
     }
   </div>
   )

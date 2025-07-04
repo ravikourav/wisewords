@@ -30,14 +30,29 @@ function Profile() {
     const { username } = useParams();
     const { logout, user, updateUser, isLoggedIn} = useAuth();
     const { unreadCount } = useNotification();
+
+    // user data of username
     const [data, setData] = useState(null);
+
+    // posts by user in pagenation
     const [postedData, setPostedData] = useState([]);
-    const [saveCardData, setSaveCardData] = useState([]);
+    const [postPage, setPostPage] = useState(1);
+    const [postHasMore, setPostHasMore] = useState(true);
+    const [loadingPosts, setLoadingPosts] = useState(false);
+    
+    // saved posts by user in pagenation
+    const [savedPosts, setSavedPosts] = useState([]);
+    const [savedPage, setSavedPage] = useState(1);
+    const [savedHasMore, setSavedHasMore] = useState(true);
+    const [loadingSaved, setLoadingSaved] = useState(false);
+
     const [loading, setLoading] = useState(true);
-    const [selected, setSelected] = useState('your-thought');
+    const [selected, setSelected] = useState('posts');
     const [tab, setTab] = useState('home');
+    
     const [followerUsers, setFollowerUsers] = useState([]);
     const [followingUsers, setFollowingUsers] = useState([]);
+
     const [followLoading, setFollowLoading] = useState(false);
     const [loadingFol, setLoadingFol] = useState(false);
 
@@ -45,6 +60,174 @@ function Profile() {
     const [isFollowing , setIsFollowing] = useState(null);
 
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+
+    useEffect(() => {
+        const checkOwner = (id) => {
+            if(user?._id === id){
+                setIsOwner(true);
+            }else{
+                setIsOwner(false);
+                setIsFollowing(user?.following.includes(id));
+            }
+        }
+
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}`;
+                const response = await axios.get(endPoint);
+                setData(response.data);
+                checkOwner(response.data._id);
+                console.log(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (username) {
+            fetchData();
+        }
+    }, [username, user ]);
+
+    const fetchUserPosts = async (page = 1) => {
+        if (!data) return;
+
+        setLoadingPosts(true);
+
+        try {
+            const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data.username}/posts?page=${page}&limit=10`;
+            const res = await axios.get(endPoint);
+            console.log(endPoint);
+
+            if (page === 1) {
+                setPostedData(res.data.posts);
+            } else {
+                setPostedData(prev => [...prev, ...res.data.posts]);
+            }
+
+            setPostHasMore(page < res.data.totalPages);
+            setPostPage(page);
+            console.log(res.data.posts);
+        } catch (error) {
+            console.error('Error fetching user posts:', error);
+        } finally {
+            setLoadingPosts(false);
+        }
+    };
+
+    const fetchSavedPosts = async (page = 1) => {
+        if (!data) return;
+
+        setLoadingSaved(true);
+
+        try {
+            const res = await axios.get(
+                `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data.username}/saved?page=${page}&limit=10`
+            );
+
+            if (page === 1) {
+                setSavedPosts(res.data.posts);
+            } else {
+                setSavedPosts(prev => [...prev, ...res.data.posts]);
+            }
+
+            setSavedHasMore(page < res.data.totalPages);
+            setSavedPage(page);
+        } catch (error) {
+            console.error('Error fetching saved posts:', error);
+        } finally {
+            setLoadingSaved(false);
+        }
+    };
+
+    useEffect(() => {
+        if (data) {
+            setTab('home');
+            //reset posts pagenation
+            setPostedData([]);
+            setPostPage(1);
+            setPostHasMore(true);
+
+            //reset saved posts pagenation
+            setSavedPosts([]);
+            setSavedPage(1);
+            setSavedHasMore(true);
+        }
+
+    }, [data]);
+
+    useEffect(() => {
+        if (!data) return;
+
+        if (selected === 'posts' && postedData.length === 0) {
+            fetchUserPosts(1);
+        }
+
+        if (selected === 'saved' && savedPosts.length === 0) {
+            fetchSavedPosts(1);
+        }
+        // eslint-disable-next-line
+    }, [selected, data]);
+
+
+    useEffect(() => {
+        const fetchUserList = async (setter) => {
+            setLoadingFol(true);
+            try {
+                const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/${tab}`;
+                const response = await axios.get(endPoint);
+                setter(response.data);
+            } catch (error) {
+                console.error('Error fetching user list:', error);
+            }finally {
+                setLoadingFol(false);
+            }
+        };
+
+        if (tab === 'followers' && data?.followers?.length > 0) {
+            fetchUserList(setFollowerUsers);
+        }
+
+        if (tab === 'following' && data?.following?.length > 0) {
+            fetchUserList(setFollowingUsers);
+        }
+    }, [tab, data]);
+
+    // mobile view tab change
+    useEffect(()=>{
+        if(!isMobile && tab === 'notification'){
+            setTab('home');
+        }
+    },[isMobile , tab])
+
+    // handel button clicks
+    const displayData = selected === 'posts' ? postedData : savedPosts;
+
+    const selectContent = (select) => {
+        setSelected(select);
+    }
+
+    const handleShare = async (url) => {
+        const encodedUrl = encodeURIComponent(url);
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                url: encodedUrl,
+                });
+            } catch (error) {
+                console.error('Error sharing content:', error);
+            }
+        } else {
+        console.log('Web Share API is not supported in your browser.');
+        }
+    };
+
+    const handleProfileClick = (username) => {
+        navigate(`/user/${username}`);
+    };
 
     const followUnfollowOwner = async () => {
         const token = Cookies.get('authToken');
@@ -77,100 +260,7 @@ function Profile() {
             setFollowLoading(false);
         }
     };
-
-    useEffect(() => {
-        const checkOwner = (id) => {
-            if(user?._id === id){
-                setIsOwner(true);
-            }else{
-                setIsOwner(false);
-                setIsFollowing(user?.following.includes(id));
-            }
-        }
-
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${username}`;
-                const response = await axios.get(endPoint);
-                setData(response.data);
-                checkOwner(response.data._id);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (username) {
-            fetchData();
-        }
-    }, [username, user ]);
-
-    useEffect(() => {
-        if (data) {
-            setTab('home');
-            setPostedData(data.posts || []);
-            setSaveCardData(data.saved || []);
-        }
-    }, [data]);
-
-    useEffect(() => {
-        const fetchUserList = async (setter) => {
-            setLoadingFol(true);
-            try {
-                const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/user/${data._id}/${tab}`;
-                const response = await axios.get(endPoint);
-                setter(response.data);
-            } catch (error) {
-                console.error('Error fetching user list:', error);
-            }finally {
-                setLoadingFol(false);
-            }
-        };
-
-        if (tab === 'followers' && data?.followers?.length > 0) {
-            fetchUserList(setFollowerUsers);
-        }
-
-        if (tab === 'following' && data?.following?.length > 0) {
-            fetchUserList(setFollowingUsers);
-        }
-    }, [tab, data]);
-
-    const selectContent = (select) => {
-        setSelected(select);
-    }
-
-    const handleShare = async (url) => {
-        const encodedUrl = encodeURIComponent(url);
-
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                url: encodedUrl,
-                });
-            } catch (error) {
-                console.error('Error sharing content:', error);
-            }
-        } else {
-        console.log('Web Share API is not supported in your browser.');
-        }
-    };
-
-    const handleProfileClick = (username) => {
-        navigate(`/user/${username}`);
-    };
-
-    useEffect(()=>{
-        if(!isMobile && tab === 'notification'){
-            setTab('home');
-        }
-    },[isMobile , tab])
-
-    const displayData = selected === 'your-thought' ? postedData : saveCardData;
-
+    
     const handleUpdateClose = () => {
         updateUser();
         setTab('home');
@@ -259,10 +349,31 @@ function Profile() {
                                 </div>
                             }
                             <div className='post-selector-container'>
-                                <p className={`post-selector ${selected === 'your-thought' && 'post-selected'}`} onClick={() => selectContent('your-thought')}>{isOwner ? 'Your Posts' : 'Created'}</p>
+                                <p className={`post-selector ${selected === 'posts' && 'post-selected'}`} onClick={() => selectContent('posts')}>{isOwner ? 'Your Posts' : 'Created'}</p>
                                 <p className={`post-selector ${selected === 'saved' && 'post-selected'}`} onClick={() => selectContent('saved')}>Saved</p>
                             </div>
-                            <CardGrid data={displayData} header={selected === 'your-thought' ? false : true} footer={selected === 'your-thought' ? false : true} />
+
+                            { loadingPosts || loadingSaved ? 
+                                <Loading /> :
+                                <>
+                                    <CardGrid
+                                        data={displayData}
+                                        header={false}
+                                        footer={false}
+                                    />
+
+                                    {selected === 'posts' && postHasMore && !loadingPosts && (
+                                        <div className='load-more-container'>
+                                            <Button text='Load More' onClick={() => fetchUserPosts(postPage + 1)} />
+                                        </div>
+                                    )}
+                                    {selected === 'saved' && savedHasMore && !loadingSaved && (
+                                        <div className='load-more-container'>
+                                            <Button text='More' onClick={() => fetchSavedPosts(savedPage + 1)} />
+                                        </div>
+                                    )}
+                                </>
+                            }
                         </div>
                     }
                 </>
