@@ -8,7 +8,8 @@ import SearchBar from '../components/SearchBar';
 
 function Home() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const getCurrentColumnCount = () => {
     const width = window.innerWidth;
@@ -21,7 +22,9 @@ function Home() {
   const fetchData = async (concat = false) => {
     try {
       if(!concat)
-      setLoading(true);
+      setInitialLoading(true);
+      else
+      setLoadingMore(true);
 
       const columns = getCurrentColumnCount();
       const desiredPostCount = 20;
@@ -40,7 +43,8 @@ function Home() {
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setLoading(false);
+      setInitialLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -49,8 +53,6 @@ function Home() {
 
     if (savedData) {
       setData(JSON.parse(savedData));
-      setLoading(false);
-
     } else {
       fetchData();
     }
@@ -70,13 +72,14 @@ function Home() {
         <div className='searchbar-header-container'>
           <SearchBar />
         </div>
-        {loading ? <Loading /> : 
+        {initialLoading ? <Loading /> : 
           <div className='home-data-container'>
             <CardGrid data={data} />
             {data.length !== 0 && 
-              <div className='paginate-container'>
-                <Button text='More' onClick={()=>fetchData(true)} />
-              </div>
+              loadingMore ? <Loading /> :
+                <div className='paginate-container'>
+                  <Button text='More' onClick={()=>fetchData(true)} />
+                </div>
             }
           </div>
         }

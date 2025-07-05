@@ -16,9 +16,8 @@ export default function About() {
         <div className="about-main-card">
           <Card
             margin={true}
-            content="You never know what's around the corner. It could be everything. Or it could be nothing. You keep putting one foot in front of the other, and then one day you look back and you've climbed a mountain."
+            content="Dreams aren’t always about doing something big or leaving a name behind. sometimes, they’re just about being quiet and being happy."
             textColor="#ffffff"
-            author="Tom Hiddleston"
             authorColor="#ffffff"
             background='about_card0.jpg'
             sampleSize={isMobile ? 'small' :'large'}
@@ -37,7 +36,6 @@ export default function About() {
             margin={true}
             content="On this internet, it often feels like nobody cares. But maybe the truth is we just can’t reach the people who would."
             textColor="#ffffff"
-            author="Ravi Kourav"
             authorColor="#ffffff"
             background='about_card1.jpg'
             sampleSize='small'
@@ -58,7 +56,7 @@ export default function About() {
           </div>
           <section className="about-text-block">
             <h2>Where Things Stand</h2>
-            <p>Ink&amp;Muse isn’t a company. There’s no office or team. No big plan. Just me, experimenting, learning, creating.</p>
+            <p>This isn’t a company. There’s no office or team. No big plan. Just me, experimenting, learning, creating.</p>
             <p className="faded">This isn’t something big. It’s just something I needed to make.</p>
           </section>
         </div>
@@ -68,7 +66,7 @@ export default function About() {
             <h2>One Last Thing</h2>
             <p>This space is here when you need it,</p>
             <p>even if that’s only once in a while.</p>
-            <p className="faded" ><em>Ink&amp;Muse</em> is just a quiet corner. Not to perform. Not to impress. Just to be.</p>
+            <p className="faded" >But if you ever feel like leaving something behind, a thought, a quote, a memory, you’re more than welcome to.</p>
           </section>
           <div className="about-block">
             <Card

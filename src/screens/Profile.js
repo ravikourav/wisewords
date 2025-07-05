@@ -352,28 +352,39 @@ function Profile() {
                                 <p className={`post-selector ${selected === 'posts' && 'post-selected'}`} onClick={() => selectContent('posts')}>{isOwner ? 'Your Posts' : 'Created'}</p>
                                 <p className={`post-selector ${selected === 'saved' && 'post-selected'}`} onClick={() => selectContent('saved')}>Saved</p>
                             </div>
+                            <>
+                                <CardGrid
+                                    data={displayData}
+                                    header={false}
+                                    footer={false}
+                                />
 
-                            { loadingPosts || loadingSaved ? 
-                                <Loading /> :
-                                <>
-                                    <CardGrid
-                                        data={displayData}
-                                        header={false}
-                                        footer={false}
-                                    />
+                                {/* Loading indicator for initial load */}
+                                {displayData.length === 0 && (loadingPosts || loadingSaved) && <Loading />}
 
-                                    {selected === 'posts' && postHasMore && !loadingPosts && (
+                                {/* Load more buttons or loading indicator for more data */}
+                                {selected === 'posts' && (
+                                    <>
+                                    {postHasMore && !loadingPosts && (
                                         <div className='load-more-container'>
-                                            <Button text='Load More' onClick={() => fetchUserPosts(postPage + 1)} />
+                                        <Button text='More' onClick={() => fetchUserPosts(postPage + 1)} />
                                         </div>
                                     )}
-                                    {selected === 'saved' && savedHasMore && !loadingSaved && (
+                                    {loadingPosts && postPage > 1 && <Loading />}
+                                    </>
+                                )}
+
+                                {selected === 'saved' && (
+                                    <>
+                                    {savedHasMore && !loadingSaved && (
                                         <div className='load-more-container'>
-                                            <Button text='More' onClick={() => fetchSavedPosts(savedPage + 1)} />
+                                        <Button text='More' onClick={() => fetchSavedPosts(savedPage + 1)} />
                                         </div>
                                     )}
-                                </>
-                            }
+                                    {loadingSaved && savedPage > 1 && <Loading />}
+                                    </>
+                                )}
+                            </>
                         </div>
                     }
                 </>
