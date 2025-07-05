@@ -1,23 +1,28 @@
 import './css/Login.css';
-import React, { useState , useContext } from 'react';
+import React, { useState , useEffect } from 'react';
 import axios from 'axios';
 import  { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { useAlert } from '../context/AlertContext';
 
-//Profile Icon
-import { ReactComponent as CloseImg } from '../assets/icon/close.svg';
 
 function Login() {
-  
-  const {login} = useAuth();
+
+  const { showAlert } = useAlert();
+  const {login, isLoggedIn, user} = useAuth();
   const [name , setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [hasAccount, setHasAccount] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && isLoggedIn) {
+      navigate(`/user/${user.username}`);
+    }
+  }, [user, isLoggedIn, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -33,34 +38,27 @@ function Login() {
         navigate('/');
       } else {
         console.error('Token not found in response');
-        setError('Failed to retrieve token.');
+        showAlert('Failed to retrieve token.' , 'error');
       }
     } catch (error) {
       console.error('Operation failed', error);
-      setError('Please check your credentials and try again.');
+      showAlert('Please check your credentials and try again.' , 'error');
     }
   };
 
-  const onClose = () => {
-    navigate('/');
-  }
-
   const alreadyHasAccount = () => {
-    setError('');
     setHasAccount(true);
   };
 
   const dontHaveAccount = () => {
-    setError('');
     setHasAccount(false);
   };
 
   return (
-    <div className="overlay">
+    <div className="page-root login-page">
       <div className="overlay-content">
         <div className="overlay-header">
           <img src="./logo192.png" alt="logo" className="logo" />
-          <CloseImg onClick={onClose} className="close-button" />
         </div>
 
         <div className="body">
@@ -121,7 +119,6 @@ function Login() {
                 required
               />
             </div>
-            {error && <div className='loginErr'>{error}</div>}
             {hasAccount &&
               <div>
                 <button className="forgot-button" type="button">
@@ -131,13 +128,12 @@ function Login() {
             }
             <Button type='submit' text={hasAccount ? 'Log in' : 'Continue'} width={280} />
           </form>
-          <button
-            className="signup-button"
-            type="button"
-            onClick={hasAccount ? dontHaveAccount : alreadyHasAccount}
-          >
-            {hasAccount ? 'Still a stranger to the wisdom? Sign up.' : 'Already a voice among us? Step back in.'}
-          </button>
+          <p className="signup-lable">
+            {hasAccount ? 'New to the wisdom? ' : 'Already a voice among us? '}
+            <span className="signup-link" onClick={hasAccount ? dontHaveAccount : alreadyHasAccount}>
+              {hasAccount ? 'Sign up' : 'Log in'}
+            </span>
+          </p>
         </div>
       </div>
     </div>

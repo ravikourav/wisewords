@@ -7,7 +7,7 @@
     height: 300px;
     width: 250px;
     margin: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px 0px;
 }
 
 .cardSelected {
@@ -19,7 +19,7 @@
     height: 150px;
     width: 250px;
     margin: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px 0px;
 }
 
 .img-fit {

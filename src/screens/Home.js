@@ -8,7 +8,7 @@ import SearchBar from '../components/SearchBar';
 
 function Home() {
   const [data, setData] = useState([]);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
   const getCurrentColumnCount = () => {

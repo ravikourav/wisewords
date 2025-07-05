@@ -1,9 +1,8 @@
-
 .simple-card-container {
     font-family: 'Arial', sans-serif;
     background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px 0px;
     margin: 10px auto;
     padding: 10px;
     display: flex;
