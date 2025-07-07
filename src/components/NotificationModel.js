@@ -21,7 +21,7 @@ function NotificationModel() {
             <NotificationTemplate key={data._id} data={data} />
           ))
           :
-          <p className='empty-state-message'>All is calm — no new words for now.</p>
+          <p className='empty-state-message'>No notifications for now.</p>
       }
     </div>
   );

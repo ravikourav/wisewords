@@ -7,7 +7,7 @@
     background-color: white;
     border-radius: 15px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px 0px;
-    z-index: 8000;
+    z-index: 1500;
     overflow: auto;
 }
 

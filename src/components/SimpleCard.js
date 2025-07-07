@@ -15,7 +15,7 @@ import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
 import { ReactComponent as BookmarkIcon } from '../assets/icon/bookmark.svg';
 import RenderProfileImage from './RenderProfileImage.js';
 
-function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , likes , profileClick , currentUser , showHeader = true , showFooter = true}) {
+function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , likes , profileClick , currentUser , showHeader = true , showFooter = true , updateCache}) {
 
   const { openReport } = useReport();
 
@@ -62,14 +62,14 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
   useEffect(() => {
     if (isLoggedIn && showFooter) {
       setSaved(savedCard.includes(card._id));  // Directly check if this card is saved
-      setLiked(likes.includes(currentUser));   // Like logic stays the same
+      setLiked(card.hasLiked);   // Like logic stays the same
     }
   }, [savedCard, isLoggedIn, showFooter, card._id, likes, currentUser]);
 
   const handleLike = async () => {
     const token = Cookies.get('authToken');
     const prevLiked = liked;
-    setLiked(!liked); // Instant feedback
+    setLiked(!liked);
 
     const endpoint = prevLiked
       ? `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${card._id}/unlike`
@@ -83,14 +83,21 @@ function SimpleCard({card , isLoggedIn , cardClick , savedCard, saveClick , like
         }
       });
 
-      if (response.status !== 200) {
-        setLiked(prevLiked); // Rollback if failed
+      if (response.status === 200) {
+        updateCache(card._id, {
+          hasLiked: !prevLiked,
+          likesCount: response.data.likes.length,
+        });
+        console.log("hasLiked set to : ", !prevLiked);
+      } else {
+        setLiked(prevLiked);
       }
     } catch (error) {
       console.error('Error liking/unliking post:', error);
-      setLiked(prevLiked); // Rollback if error
+      setLiked(prevLiked);
     }
   };
+
 
   const handleSaveClick = async () => {
     if (!saveClick || saving) return;

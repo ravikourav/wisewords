@@ -1,0 +1,105 @@
+.comment-section-root {
+  width: 100%;
+  max-width: 800px;
+  height: 80vh;
+  position: fixed; /* ensures it's always visible */
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 15px 15px 0 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1200;
+
+  background-color: rgba(249, 249, 249, 0.8); /* use rgba for better transparency */
+  backdrop-filter: blur(10px); /* <--- this creates the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+
+.comment-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.comment-section-header-title {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Body */
+
+.comment-section-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.replying-to-container {
+  display: flex;
+  background-color: #eeeeee;
+  padding: 5px 0px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.replying-to-text {
+  flex: 1;
+  color: #767676;
+}
+
+.replying-to-username {
+  font-weight: 500;
+}
+
+.replying-to-close{
+  padding-right: 10px;
+}
+
+/* Footer */
+.add-comment-container {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-top: 1px solid #ddd;
+}
+
+.user-profile-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.comment-input {
+  display: flex;
+  flex: 1;
+  border-radius: 10px;
+  padding: 0px 0px 0px 5px;
+  height: 45px;
+  font-size: 1rem;
+  border: none;
+  color: #000000;
+  background-color: #f1f1f1;
+  outline: none;
+}
+
+@media (max-width: 1000px) {
+  .comment-section-root {
+    max-width: 500px;
+  }
+}

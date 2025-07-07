@@ -8,11 +8,9 @@ import { useMediaQuery } from 'react-responsive';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
-import Comment from '../components/Comment.js';
 import BackButton from '../components/BackButton.js';
 import axios from 'axios';
 import  { useAuth } from '../context/AuthContext';
-import IconButton from '../components/IconButton.js';
 
 import { calculateAspectRatio } from '../utils/calculateDimensions.js';
 import Badge from '../components/Badge.js';
@@ -21,21 +19,20 @@ import SearchBar from '../components/SearchBar.js';
 
 //icons
 import { CiPause1 } from "react-icons/ci";
-import { ReactComponent as SendIcon } from '../assets/icon/send.svg';
-import { ReactComponent as DropDownIcon } from '../assets/icon/dropdown.svg';
 import { ReactComponent as LikeIcon } from '../assets/icon/like.svg';
 import { ReactComponent as CopyIcon } from '../assets/icon/copy.svg';
 import { ReactComponent as PlayIcon } from '../assets/icon/play.svg';
-import { ReactComponent as CloseIcon } from '../assets/icon/close.svg';
 import { ReactComponent as CommentIcon } from '../assets/icon/comment.svg';
 import Dropdown from '../components/Dropdown.js';
 import timeAgo from '../utils/timeAgo.js';
 import RenderProfileImage from '../components/RenderProfileImage.js';
+import CommentScection from '../components/CommentScection.js';
 
-function DetailedCard() {
+function DetailedCard({data = null}) {
   const { showAlert } = useAlert();
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id: paramId } = useParams();
+  const id = data?._id || paramId;
   const { isLoggedIn, user, setUser} = useAuth();
   const [loading, setLoading] = useState(true);
   const [cardData, setCardData] = useState(null);
@@ -49,10 +46,7 @@ function DetailedCard() {
   // eslint-disable-next-line
   const [cardHeight , setCardHeight] = useState('');
 
-  const [comment, setComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState(null);
-  const [replyWithUsername , setReplyWithUsername] = useState(null);
-  const [hideComments , setHideComments] = useState(false);
+  const [showCommentSection , setShowCommentSection] = useState(false);
 
   const [copied, setCopied] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -61,10 +55,15 @@ function DetailedCard() {
 
   const featchCardData = async() =>{
     setLoading(true);
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const token = Cookies.get('authToken');
+    if (token) headers['Authorization'] = `Bearer ${token}`;
     const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${id}`;
-    const response = await axios.get(endpoint);
+    const response = await axios.get(endpoint, { headers });
     setCardData(response.data);
-    setLikes(response.data.likes.length);
+    setLikes(response.data.likeCount);
     console.log(response.data);
     if(isLoggedIn){
       await followStatus(response.data);
@@ -86,12 +85,7 @@ function DetailedCard() {
   };
   
   const likeStatus = async (data) => {
-    if(data.likes.includes(user._id)){
-      setLiked(true);
-    }
-    else{
-      setLiked(false);
-    }
+    setLiked(data.hasLiked);
     setLoading(false);
   }
 
@@ -112,27 +106,15 @@ function DetailedCard() {
   };
   
   useEffect(() => {
-    const handleResize = () => {
-        if (cardData) {
-          dimension(cardData);
-        }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // Call the function initially to set dimensions
-    if (cardData) {
-        dimension(cardData);
+    if(data) {
+      setCardData(data);
+      console.log('data from props : ', data);
+      setLoading(false);
+    }else{
+      featchCardData();
     }
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-}, [cardData]);
-
-  useEffect(() => {
-    featchCardData();// eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoggedIn]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn ]);
 
   const followUnfollowOwner = async () => {
     const token = Cookies.get('authToken');
@@ -193,106 +175,7 @@ function DetailedCard() {
       showAlert(liked ? 'Error while liking post' : 'Error while liking post' , 'error');
     }
   };
-
-  const addComment = async() => {
-    const token = Cookies.get('authToken');
-    const endpoint = replyingTo ? 
-      `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${replyingTo}/reply`:
-      `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment` ;
-    try {
-      const response = await axios.post( endpoint,  { comment },
-        { 
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          } 
-        }
-      );
-      if(response.status === 201){
-        if(replyingTo){
-          setCardData(prevCardData => ({
-            ...prevCardData,
-            comments: prevCardData.comments.map(comment => 
-              comment._id === replyingTo
-                ? { ...comment, replies: [...comment.replies, response.data.reply] }
-                : comment
-            )
-          }));
-        }
-        else {
-          setCardData(prevCardData => ({
-            ...prevCardData,
-            comments: [response.data.comment , ...prevCardData.comments]
-          }));
-        }
-        setComment('');
-        setReplyingTo(null);
-      }
-    }catch(err) {
-      console.error('Error Adding Comment/Reply user:', err);
-      showAlert(replyingTo ? `Error while Replying to ${replyingTo}` : 'Error Adding Comment' ,'error');
-    }
-  }
-
-  const handleDeleteCommnet = async(commentId)=>{
-    const token = Cookies.get('authToken');
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${commentId}` ;
-    try {
-      const response = await axios.delete( endpoint,
-        { 
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          } 
-        }
-      );
-      if(response.status === 200){
-        setCardData(prevCardData => ({
-          ...prevCardData,
-          comments: prevCardData.comments.filter(comment => comment._id !== commentId)
-        }));
-      }
-    }catch(err) {
-      showAlert('Error deleting comment', 'error');
-    }
-  }
-
-  const handleDeleteReply = async (commentId , replyId) => {
-    const token = Cookies.get('authToken');
-    const endpoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/${cardData._id}/comment/${commentId}/reply/${replyId}`;
-    try {
-      const response = await axios.delete(endpoint, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.status === 200) {
-        setCardData(prevCardData => ({
-          ...prevCardData,
-          comments: prevCardData.comments.map(comment =>
-            commentId === comment._id
-              ? { ...comment, replies: comment.replies.filter(reply => reply._id !== replyId) }
-              : comment
-          )
-        }));
-      }
-    } catch (error) {
-      showAlert('Error deleting reply', 'error');
-    }
-  };
   
-  const handleReplyingTo = (id , name) => {
-    setReplyingTo(id);
-    setReplyWithUsername(name);
-    setComment(`@${name} `);
-  }
-
-  const closeReplyingTo = () => {
-    setReplyingTo(null);
-    setReplyWithUsername(null);
-    setComment('');
-  }
 
   const handleTextToSpeech = (text) => {
     if ('speechSynthesis' in window) {
@@ -404,7 +287,7 @@ function DetailedCard() {
         <SearchBar />
       </div>
       {loading ? <Loading /> :
-        <>
+        <div className='detailed-card-body'>
           <div className='content-wrapper'>
             <div className='card-container'>
               <div className='post-owner-container'>
@@ -451,67 +334,35 @@ function DetailedCard() {
                 <p className="detailed-card-post-time">{timeAgo(cardData.createdAt)}</p>
               </div>
             </div>
-            <div className="modal-box">
-              <div className='comment-container'>
-                <div className='comment-title-container'>
-                  <p className='comment-header'>Comments</p>
-                  <IconButton className={hideComments ? 'flip' : 'flipOut'} icon={DropDownIcon} onClick={()=>{setHideComments(!hideComments)}} />
-                </div>
-                <div className='comment-section' style={{ marginBottom: '10px' }}>
-                {hideComments ? (
-                  cardData.comments.length > 0 ? (
-                    <>
-                      {cardData.comments.map((comment) => (
-                        <Comment key={comment._id} data={comment} deleteComment={handleDeleteCommnet} deleteReply={handleDeleteReply} userId={isLoggedIn ? user._id : null} postId={id} postOwnerId={cardData.owner_id._id} reply={handleReplyingTo} replyTo />
-                      ))}
-                      <p style={{fontSize:'2rem'}}>.</p>
-                    </>
-                  ) : (
-                    <div className='empty-state-container'>
-                      <p className='empty-state-message'>No thoughts shared yet.</p>
-                    </div>
-                  )
-                ) : null}
-                </div>
+          </div>
+          <div className='post-controle-wrapper'>
+            <div className='post-controle'>
+              <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
+                <LikeIcon 
+                  fill={liked ? 'red' : 'white'}
+                  stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='1.5' className='post-icon'/>
+                <p className='controle-label'>{formatNumber(cardData.likesCount)}</p>
               </div>
-              { replyingTo &&
-                <div className='replyingTo-container'>
-                  <p className='replyingTo-text'>Replying to {replyWithUsername}</p>
-                  <IconButton className='replyingTo-close' icon={CloseIcon} size='25px' onClick={closeReplyingTo} >X</IconButton>
-                </div>
-              }
-              <div className='add-comment-container'>
-                <RenderProfileImage source={user?.profile} className='user-profile-image' />
-                <input className='main-input comment-input' placeholder='Comment' type='text' value={comment} onChange={(e)=>setComment(e.target.value)} />
-                <IconButton icon={SendIcon} disabled={isLoggedIn? false : true} size='35px' onClick={addComment}/>
+              <div className='control-wrapper' onClick={()=>{setShowCommentSection(true)}}>
+                <CommentIcon className='post-icon' />
+                <p className='controle-label'>{formatNumber(cardData.commentsCount)}</p>
+              </div>
+              <div className='control-wrapper' onClick={handleSpeak} >
+                {!isPlaying ? 
+                <PlayIcon className='post-icon' /> : 
+                <CiPause1 className='post-icon' />
+                }
+                <p className='controle-label'>{isPlaying ? 'Pause' : 'Play' }</p>
+              </div>
+              <div className='control-wrapper' onClick={handleCopy}>
+                <CopyIcon className='post-icon' />
+                <p className='controle-label'>{!copied ? 'Copy' : 'Copied'}</p>
               </div>
             </div>
           </div>
-          <div className='post-controle'>
-            <div onClick={isLoggedIn ? handleLike : null} className={`control-wrapper ${isLoggedIn ? '' : 'control-wrapper-disabled'}`} >
-              <LikeIcon 
-                fill={liked ? 'red' : 'white'}
-                stroke={isLoggedIn ? (liked ? 'red' : 'black') : 'darkgray'} strokeWidth='1.5' className='post-icon'/>
-              <p className='controle-label'>{formatNumber(likes)}</p>
-            </div>
-            <div className='control-wrapper' onClick={()=>{setHideComments(!hideComments)}}>
-              <CommentIcon className='post-icon' />
-              <p className='controle-label'>{formatNumber(cardData.comments.length)}</p>
-            </div>
-            <div className='control-wrapper' onClick={handleSpeak} >
-              {!isPlaying ? 
-              <PlayIcon className='post-icon' /> : 
-              <CiPause1 className='post-icon' />
-              }
-              <p className='controle-label'>{isPlaying ? 'Pause' : 'Play' }</p>
-            </div>
-            <div className='control-wrapper' onClick={handleCopy}>
-              <CopyIcon className='post-icon' />
-              <p className='controle-label'>{!copied ? 'Copy' : 'Copied'}</p>
-            </div>
-          </div>
-        </>
+        </div>
       }
+      <CommentScection postId={id} visibilty={showCommentSection} onClose={()=> {setShowCommentSection(false)}}/>
     </div>
   );
 }

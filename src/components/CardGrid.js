@@ -9,7 +9,7 @@ import  { useAuth } from '../context/AuthContext';
 
 import SimpleCard from './SimpleCard.js';
 
-const CardGrid = ({ data , header = true, footer = true}) => {
+const CardGrid = ({ data , header = true, footer = true, updateCache}) => {
   const { isLoggedIn , user, setUser } = useAuth();
   const navigate = useNavigate();
   const [numOfColumns , setNumOfColumns] = useState(1);
@@ -61,6 +61,7 @@ const CardGrid = ({ data , header = true, footer = true}) => {
     xs: 1,
   };
 
+
   useEffect(() => {
     const handleResize = () => {
       const newSize = getCurrentSize();
@@ -86,7 +87,7 @@ const CardGrid = ({ data , header = true, footer = true}) => {
                 key={card._id} 
                 card={card} 
                 isLoggedIn={isLoggedIn}
-                savedCard={isLoggedIn ? user.saved  : null}
+                savedCard={isLoggedIn ? user.saved  : []}
                 likes={card.likes}
                 saveClick={isLoggedIn ? handleSave : null}
                 cardClick={handleCardClick} 
@@ -94,6 +95,7 @@ const CardGrid = ({ data , header = true, footer = true}) => {
                 currentUser={isLoggedIn ? user._id :  null}
                 showHeader={header}
                 showFooter={footer}
+                updateCache={updateCache}
               />
             ))}
           </Masonry>

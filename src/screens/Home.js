@@ -5,6 +5,8 @@ import Loading from '../components/Loading';
 import axios from 'axios';
 import Button from '../components/Button';
 import SearchBar from '../components/SearchBar';
+import DetailedCard from './DetailedCard';
+import Cookies from 'js-cookie';
 
 function Home() {
   const [data, setData] = useState([]);
@@ -32,11 +34,19 @@ function Home() {
       const remainder = desiredPostCount % columns;
       const adjustedLimit = remainder === 0 ? desiredPostCount : desiredPostCount + (columns - remainder);
 
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+      const token = Cookies.get('authToken');
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const endPoint = `${process.env.REACT_APP_BACKEND_API_URL}/api/post/random?limit=${adjustedLimit}`;
-      const response = await axios.get(endPoint);
+
+      const response = await axios.get(endPoint, { headers });
+
       const newData = concat ? [...data, ...response.data] : response.data;
       setData(newData);
-      
+      console.log('Fetched data:', newData);
       // Store data and scroll position
       sessionStorage.setItem('homeData', JSON.stringify(newData));
 
@@ -45,6 +55,22 @@ function Home() {
     } finally {
       setInitialLoading(false);
       setLoadingMore(false);
+    }
+  };
+
+  const updatePostInCache = (postId, updatedFields) => {
+    const cached = sessionStorage.getItem('homeData');
+    if (!cached) return;
+
+    try {
+      const posts = JSON.parse(cached);
+      const updatedPosts = posts.map((post) =>
+        post._id === postId ? { ...post, ...updatedFields } : post
+      );
+      sessionStorage.setItem('homeData', JSON.stringify(updatedPosts));
+      setData(updatedPosts); // Also update UI
+    } catch (error) {
+      console.error('Error updating cached post:', error);
     }
   };
 
@@ -70,11 +96,11 @@ function Home() {
   return (
       <div className='page-root home-page-layout'>
         <div className='searchbar-header-container'>
-          <SearchBar />
+          <SearchBar /> 
         </div>
         {initialLoading ? <Loading /> : 
           <div className='home-data-container'>
-            <CardGrid data={data} />
+            <CardGrid data={data} updateCache={updatePostInCache} />
             {data.length !== 0 && 
               loadingMore ? <Loading /> :
                 <div className='paginate-container'>

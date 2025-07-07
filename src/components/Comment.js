@@ -151,7 +151,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
           </div>
         </div>
         <div className='like-container' onClick={isLoggedIn ? handleLike : null}>
-          <LikedIcon fill={liked ? 'red' : 'white'} stroke={liked ? 'red' : 'gray'} className='like-comment-icon' />
+          <LikedIcon fill={liked ? 'red' : 'none'} stroke={liked ? 'red' : 'gray'} className='like-comment-icon' />
           <p className='commnet-like-count'>{likes}</p>
         </div>
       </div>
@@ -175,7 +175,7 @@ function Comment({data , userId , postId , postOwnerId , deleteComment , deleteR
           </div>
           </div>
           <div className='like-container' onClick={isLoggedIn? () => handleReplyLike(reply._id , index): null}>
-            <LikedIcon fill={replyLikes[index].liked ? 'red' : 'white'} stroke={replyLikes[index].liked ? 'red' : 'gray'} className='like-comment-icon' />
+            <LikedIcon fill={replyLikes[index].liked ? 'red' : 'none'} stroke={replyLikes[index].liked ? 'red' : 'gray'} className='like-comment-icon' />
             <p className='commnet-like-count'>{replyLikes[index].likes}</p>
           </div>
         </div>

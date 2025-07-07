@@ -4,7 +4,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,13 +11,16 @@
 }
 
 .report-modal {
-  background: white;
   padding: 20px;
   width: 425px;
   height: 610px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+
+  background-color: rgba(249, 249, 249, 0.8); /* use rgba for better transparency */
+  backdrop-filter: blur(10px); /* <--- this creates the blur effect */
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
 }
 
 .report-header{
